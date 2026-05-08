@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Thippeswamy K.S. — Interactive 3D Portfolio | AI, Robotics, Games, Embedded Systems">
+<title>Thippeswamy K.S. — 3D Portfolio</title>
+<link rel="icon" href="https://avatars.githubusercontent.com/u/73697198?v=4">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://esm.sh/three@0.158.0","three/addons/":"https://esm.sh/three@0.158.0/examples/jsm/"}}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06060f;--glass:rgba(8,12,30,0.88);--border:rgba(255,255,255,0.07);
+  --c-robotics:#06b6d4;--c-ai:#3b82f6;--c-games:#a855f7;
+  --c-embedded:#f97316;--c-apps:#22c55e;--c-tools:#ec4899;
+  --c-primary:#6366f1;--font-h:'Orbitron',monospace;--font-b:'Inter',sans-serif;
+}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:var(--font-b);color:#f1f5f9}
+#c{position:fixed;top:0;left:0;width:100%;height:100%;display:block}
+
+/* Loading */
+#load{position:fixed;inset:0;z-index:1000;background:#04040a;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:20px;transition:opacity .7s ease}
+#load.out{opacity:0;pointer-events:none}
+.l-logo{font-family:var(--font-h);font-size:1.8rem;font-weight:900;letter-spacing:4px;
+  background:linear-gradient(135deg,#6366f1,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.l-bar{width:200px;height:2px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden}
+.l-fill{height:100%;width:0;background:linear-gradient(90deg,#6366f1,#06b6d4);border-radius:2px;animation:lf 2s ease forwards}
+@keyframes lf{to{width:100%}}
+.l-sub{font-size:.65rem;color:#475569;letter-spacing:3px;text-transform:uppercase}
+
+/* Fade overlay for world transitions */
+#fade{position:fixed;inset:0;z-index:900;background:#04040a;opacity:0;pointer-events:none;transition:opacity .45s ease}
+#fade.on{opacity:1}
+
+/* UI layer */
+#ui{position:fixed;inset:0;z-index:100;pointer-events:none}
+#ui>*{pointer-events:auto}
+
+/* Top bar */
+#topbar{position:absolute;top:18px;left:18px;display:flex;align-items:center;gap:12px;
+  padding:9px 16px;background:var(--glass);border:1px solid var(--border);border-radius:40px;
+  backdrop-filter:blur(20px)}
+#topbar img{width:32px;height:32px;border-radius:50%;border:2px solid var(--c-primary)}
+.tb-name{font-family:var(--font-h);font-size:.68rem;font-weight:700;letter-spacing:2px;color:#e2e8f0}
+.tb-gh{font-size:.6rem;color:#64748b;text-decoration:none;letter-spacing:1px;transition:color .2s}
+.tb-gh:hover{color:var(--c-primary)}
+
+/* Back button */
+#back{position:absolute;top:18px;left:50%;transform:translateX(-50%);
+  padding:9px 22px;background:var(--glass);border:1px solid var(--border);border-radius:40px;
+  backdrop-filter:blur(20px);font-family:var(--font-h);font-size:.65rem;letter-spacing:2px;
+  color:#94a3b8;cursor:pointer;display:none;align-items:center;gap:8px;transition:all .2s}
+#back:hover{color:#f1f5f9;border-color:rgba(255,255,255,.18)}
+
+/* Cluster label (top-right when in a world) */
+#clabel{position:absolute;top:18px;right:18px;padding:9px 18px;
+  background:var(--glass);border:1px solid var(--border);border-radius:40px;
+  backdrop-filter:blur(20px);font-family:var(--font-h);font-size:.65rem;
+  letter-spacing:2px;color:#94a3b8;display:none}
+
+/* Hint text at bottom of lobby */
+#hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+  font-size:.65rem;color:#334155;letter-spacing:3px;text-transform:uppercase;
+  text-align:center;transition:opacity .4s}
+
+/* Info panel */
+#panel{position:absolute;top:0;right:0;width:380px;height:100%;
+  background:var(--glass);border-left:1px solid var(--border);
+  backdrop-filter:blur(28px);transform:translateX(100%);transition:transform .4s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;overflow:hidden;pointer-events:auto}
+#panel.open{transform:translateX(0)}
+.p-head{padding:28px 24px 18px;border-bottom:1px solid var(--border);flex-shrink:0}
+.p-cluster-badge{font-size:.55rem;letter-spacing:3px;text-transform:uppercase;
+  font-family:var(--font-h);margin-bottom:10px;opacity:.8}
+.p-title{font-family:var(--font-h);font-size:1.1rem;font-weight:700;letter-spacing:1px;
+  line-height:1.3;margin-bottom:6px}
+.p-tagline{font-size:.78rem;color:#94a3b8;line-height:1.5}
+.p-body{padding:20px 24px;flex:1;overflow-y:auto}
+.p-body::-webkit-scrollbar{width:4px}
+.p-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+.p-summary{font-size:.82rem;color:#cbd5e1;line-height:1.7;margin-bottom:18px}
+.p-h4{font-family:var(--font-h);font-size:.6rem;letter-spacing:3px;color:#475569;
+  text-transform:uppercase;margin-bottom:10px}
+.p-bullets{list-style:none;margin-bottom:20px}
+.p-bullets li{font-size:.78rem;color:#94a3b8;padding:4px 0 4px 16px;position:relative;line-height:1.5}
+.p-bullets li::before{content:'';position:absolute;left:0;top:11px;
+  width:6px;height:6px;border-radius:50%;background:var(--accent,#6366f1)}
+.p-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.p-tag{padding:4px 10px;border-radius:20px;font-size:.62rem;letter-spacing:1px;
+  font-family:var(--font-h);border:1px solid;opacity:.85}
+.p-footer{padding:18px 24px;border-top:1px solid var(--border);flex-shrink:0;display:flex;gap:10px;align-items:center}
+.p-gh-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;
+  border-radius:8px;font-family:var(--font-h);font-size:.65rem;letter-spacing:1px;
+  text-decoration:none;transition:all .2s;border:1px solid var(--border)}
+.p-gh-btn:hover{transform:translateY(-1px)}
+.p-private{font-size:.65rem;color:#64748b;display:flex;align-items:center;gap:6px}
+.p-close{margin-left:auto;width:32px;height:32px;border-radius:50%;border:1px solid var(--border);
+  background:transparent;color:#64748b;cursor:pointer;font-size:1rem;transition:all .2s;
+  display:flex;align-items:center;justify-content:center}
+.p-close:hover{color:#f1f5f9;border-color:rgba(255,255,255,.2)}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="load"><div class="l-logo">THIPPESWAMY</div><div class="l-bar"><div class="l-fill"></div></div><div class="l-sub">Loading 3D Portfolio...</div></div>
+<div id="fade"></div>
+<div id="ui">
+  <div id="topbar">
+    <img src="https://avatars.githubusercontent.com/u/73697198?v=4" alt="avatar">
+    <div><div class="tb-name">THIPPESWAMY K.S.</div><a class="tb-gh" href="https://github.com/thippeswammy" target="_blank">@thippeswammy</a></div>
+  </div>
+  <button id="back">&#8592; BACK TO LOBBY</button>
+  <div id="clabel"></div>
+  <div id="hint">HOVER A PORTAL &nbsp;·&nbsp; CLICK TO ENTER</div>
+  <div id="panel">
+    <div class="p-head">
+      <div class="p-cluster-badge" id="p-badge"></div>
+      <div class="p-title" id="p-title"></div>
+      <div class="p-tagline" id="p-tagline"></div>
+    </div>
+    <div class="p-body">
+      <div class="p-summary" id="p-summary"></div>
+      <div class="p-h4">KEY HIGHLIGHTS</div>
+      <ul class="p-bullets" id="p-bullets"></ul>
+      <div class="p-h4">TECH STACK</div>
+      <div class="p-tags" id="p-tags"></div>
+    </div>
+    <div class="p-footer" id="p-footer"></div>
+  </div>
+</div>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ─── CLUSTER DEFINITIONS ────────────────────────────────────────────────────
+const CLUSTERS = [
+  {id:'robotics', label:'ROBOTICS',      full:'Robotics & Autonomous Systems', color:0x06b6d4, css:'#06b6d4', emoji:'🤖', cam:{x:0,y:6,z:14}},
+  {id:'ai',       label:'AI & CV',       full:'AI & Computer Vision',           color:0x3b82f6, css:'#3b82f6', emoji:'🧠', cam:{x:0,y:6,z:14}},
+  {id:'games',    label:'GAMES',         full:'Games',                           color:0xa855f7, css:'#a855f7', emoji:'🎮', cam:{x:0,y:6,z:14}},
+  {id:'embedded', label:'EMBEDDED',      full:'Embedded & Hardware',             color:0xf97316, css:'#f97316', emoji:'⚡', cam:{x:0,y:6,z:14}},
+  {id:'apps',     label:'APPS',          full:'Apps & Software',                 color:0x22c55e, css:'#22c55e', emoji:'📱', cam:{x:0,y:6,z:14}},
+  {id:'tools',    label:'DEV TOOLS',     full:'Dev Tools & Research',            color:0xec4899, css:'#ec4899', emoji:'🔧', cam:{x:0,y:6,z:14}},
+];
+
+// ─── PROJECT DATA ───────────────────────────────────────────────────────────
+const PROJECTS = [
+  // ROBOTICS
+  {id:'orbslam2',cluster:'robotics',name:'ORB_SLAM2',tagline:'Real-time visual SLAM',
+   summary:'Feature-based simultaneous localization and mapping for monocular, stereo, and RGB-D cameras with real-time trajectory reconstruction and loop closure.',
+   highlights:['Monocular, stereo & RGB-D support','ORB feature extraction + DBoW2 place recognition','Real-time loop closure & map reuse','Evaluated on TUM, KITTI, EuRoC datasets'],
+   tech:['C++','OpenCV','Eigen','g2o','DBoW2'],github:'https://github.com/thippeswammy/ORB_SLAM2'},
+  {id:'orbslam3',cluster:'robotics',name:'ORB_SLAM3',tagline:'Multi-sensor visual-inertial SLAM',
+   summary:'First real-time SLAM library for Visual, Visual-Inertial and Multi-Map SLAM with monocular, stereo, RGB-D cameras and fisheye/pinhole lens support. IEEE TRO 2021.',
+   highlights:['Monocular + Stereo + IMU fusion','Multi-map SLAM with seamless merging','Fisheye & pinhole lens models','IEEE Transactions on Robotics 2021 paper'],
+   tech:['C++','Eigen','DBoW2','g2o','Pangolin'],github:'https://github.com/thippeswammy/ORB_SLAM3'},
+  {id:'droid',cluster:'robotics',name:'DROID_SLAM',tagline:'Deep visual SLAM, multi-GPU',
+   summary:'Deep learning SLAM system extended for monocular, stereo, and RGB-D setups with multi-GPU inference and ARM64/Jetson support for real-time trajectory reconstruction.',
+   highlights:['Monocular, stereo & RGB-D modes','Multi-GPU parallel inference','ARM64/Jetson Nano/AGX support','Real-time 3D trajectory visualization'],
+   tech:['Python','PyTorch','CUDA','ROS'],github:'https://github.com/thippeswammy/DROID_slam'},
+  {id:'dpvo',cluster:'robotics',name:'DPVO',tagline:'Deep patch visual odometry',
+   summary:'Lightweight deep visual odometry re-implementation with patch-based feature tracking for accurate, low-latency ego-motion estimation in complex real-world environments.',
+   highlights:['Patch-based deep feature tracking','Low-latency odometry pipeline','Evaluated on EuRoC & TUM-RGBD','C++ & Python hybrid pipeline'],
+   tech:['C++','Python','PyTorch'],github:'https://github.com/thippeswammy/DPVO'},
+  {id:'lanemapping',cluster:'robotics',name:'LaneMappingTool',tagline:'Lane graph mapping for AVs',
+   summary:'End-to-end lane mapping system transforming noisy recorded vehicle paths into structured graph-based networks with spline smoothing, junction logic, and React+Flask web UI.',
+   highlights:['Graph-based lane network (nodes + edges)','B-Spline path smoothing with adjustable weights','React + Vite frontend + Flask REST backend','Deploys to real AV stack via .pickle export'],
+   tech:['Python','React','Flask','Chart.js'],github:'https://github.com/thippeswammy/LaneMappingTool'},
+  {id:'zed2i',cluster:'robotics',name:'ZED2i',tagline:'Stereo vision + depth intelligence',
+   summary:'Professional-grade ZED2i and RealSense D435i integration for synchronized multi-camera acquisition, Mask R-CNN depth estimation, and cm-level distance measurement.',
+   highlights:['Synchronized ZED + RealSense recording','Mask R-CNN with Hungarian matching for depth','High-frequency IMU logging','CM-level stereo depth accuracy'],
+   tech:['Python','ZED SDK','PyTorch','OpenCV'],github:'https://github.com/thippeswammy/ZED2i'},
+  {id:'carla',cluster:'robotics',name:'Carla',tagline:'CARLA simulator AV development',
+   summary:'CARLA simulator-based autonomous driving repository with traffic generation scripts, scenario control, vehicle behavior testing, and perception experimentation.',
+   highlights:['Traffic generation & NPC control','Ego-vehicle perception & control scripts','Sensor suite simulation (camera, LiDAR, radar)','Python + C++ hybrid scripts'],
+   tech:['Python','C++','CARLA'],github:'https://github.com/thippeswammy/Carla'},
+  {id:'sdf2nav',cluster:'robotics',name:'sdf_to_nav_mesh',tagline:'SDF world to nav mesh converter',
+   summary:'ROS 2 tool converting Gazebo SDF/World files into navigation mesh assets (.ply, .dae, .h5) with geometric and terrain metadata for autonomous navigation pipelines.',
+   highlights:['Gazebo SDF → PLY/DAE/H5 pipeline','Terrain metadata extraction','ROS 2 native integration','Mesh-based AV navigation support'],
+   tech:['Python','ROS 2','Gazebo'],github:'https://github.com/thippeswammy/sdf_to_nav_mesh'},
+  {id:'rtab',cluster:'robotics',name:'rtab_ws',tagline:'RTAB-Map SLAM workspace',
+   summary:'RGB-D SLAM workspace using RTAB-Map for 3D mapping with loop closure, supporting ZED2i and RealSense cameras with ROS 2 integration.',
+   highlights:['RGB-D 3D mapping with loop closure','ZED2i + RealSense camera support','ROS 2 package configuration','Trajectory evaluation tools'],
+   tech:['C++','ROS 2','Python'],github:'https://github.com/thippeswammy/rtab_ws'},
+  {id:'kittieval',cluster:'robotics',name:'kitti-odom-eval',tagline:'KITTI odometry benchmarking',
+   summary:'Trajectory accuracy evaluation tool for visual odometry and SLAM systems, benchmarking against KITTI ground truth with ATE/RPE metrics.',
+   highlights:['ATE & RPE trajectory metrics','KITTI dataset format support','Visualization of trajectory errors','Multi-sequence batch evaluation'],
+   tech:['Python','NumPy','Matplotlib'],github:'https://github.com/thippeswammy/kitti-odom-eval'},
+  // AI & CV
+  {id:'autoseg',cluster:'ai',name:'AutoSegmentor',tagline:'Auto-labeling with SAM2 + CoTracker',
+   summary:'End-to-end auto-labeling ecosystem integrating Meta\'s SAM2 with CoTracker to convert raw video into YOLO-ready datasets with minimal human interaction.',
+   highlights:['SAM2 real-time mask propagation','CoTracker for complex scene keypoint tracking','Interactive PyQt5 GUI with zoom & undo','One-click YOLO v8/v11 dataset export with augmentation'],
+   tech:['Python','SAM2','PyTorch','PyQt5','CUDA'],github:'https://github.com/thippeswammy/AutoSegmentor'},
+  {id:'adas',cluster:'ai',name:'ADAS-for-Indian-Road-Vehicle',tagline:'ADAS for Indian road conditions',
+   summary:'ADAS system using YOLOv8-Seg for road segmentation and object detection on 45,000+ annotated Indian road images. Achieves 95%+ accuracy at real-time inference speeds.',
+   highlights:['YOLOv8-Seg instance segmentation','45K+ annotated Indian road images','Mean IoU: 0.8983, Accuracy: 95.21%','SLIC superpixel refinement for boundary accuracy'],
+   tech:['Python','YOLOv8','OpenCV','PyTorch'],github:'https://github.com/thippeswammy/ADAS-for-Indian-Road-Vehicle'},
+  {id:'facerec',cluster:'ai',name:'FaceRecognition',tagline:'Dual-engine face recognition system',
+   summary:'Two-engine face recognition: dynamic one-shot auto-tagging with depth sensing for new faces, and static YOLOv8 classification for secure known-face environments.',
+   highlights:['One-shot learning for new face registration','YOLOv8 static classification engine','ZED2i depth sensing for liveness check','Dual-mode: auto-tag vs secure mode'],
+   tech:['Python','YOLOv8','ZED SDK','OpenCV'],github:'https://github.com/thippeswammy/FaceRecognition'},
+  {id:'imgproc',cluster:'ai',name:'ImageProcessingCourse',tagline:'Core image processing techniques',
+   summary:'Implementation of fundamental image processing concepts from the Duke/Coursera course — filtering, transforms, morphology, and analysis using Python and OpenCV.',
+   highlights:['Spatial & frequency domain filtering','Geometric transformations','Morphological operations','Edge detection & segmentation algorithms'],
+   tech:['Python','OpenCV','NumPy','SciPy'],github:'https://github.com/thippeswammy/ImageProcessingCourse'},
+  {id:'deeplearn',cluster:'ai',name:'Deep-Learning-Specialization',tagline:'Coursera DL specialization exercises',
+   summary:'Coursera Deep Learning Specialization assignments covering neural networks, CNNs, RNNs, optimization algorithms, and practical deep learning applications.',
+   highlights:['5-course DL specialization exercises','CNN architectures (ResNet, VGG, Inception)','Sequence models & attention mechanism','Hyperparameter tuning & optimization'],
+   tech:['Python','TensorFlow','NumPy'],github:'https://github.com/thippeswammy/Deep-Learning-Specialization'},
+  // GAMES
+  {id:'snake',cluster:'games',name:'Snake-GUI-game',tagline:'Classic snake with real-time game loop',
+   summary:'Java Swing snake game with real-time game loop, collision detection, custom rendering, and smooth animation — demonstrating event-driven desktop app design.',
+   highlights:['Custom rendering with Java Graphics2D','Real-time game loop with thread timing','Collision detection with walls & self','Score tracking and difficulty scaling'],
+   tech:['Java','Swing'],github:'https://github.com/thippeswammy/Snake-GUI-game'},
+  {id:'tictacgui',cluster:'games',name:'TicTacToeGUI',tagline:'Tic Tac Toe with AI opponent',
+   summary:'Java Swing Tic Tac Toe with a strategy-driven AI opponent using game state evaluation, win-condition logic, and interactive GUI design.',
+   highlights:['AI with minimax strategy logic','Win-condition detection for all patterns','Event-driven programming architecture','Clean GUI with animated feedback'],
+   tech:['Java','Swing'],github:'https://github.com/thippeswammy/TicTacToeGUI'},
+  {id:'puzzle',cluster:'games',name:'Puzzle-game',tagline:'Number puzzle 3×3 to 6×6 grids',
+   summary:'Java Swing number puzzle supporting multiple grid sizes (3×3 to 6×6) with randomized initialization, move validation, and interactive state updates.',
+   highlights:['Dynamic grid sizes (3×3 to 6×6)','Randomized solvable initialization','Move validation & state tracking','Animated tile transitions'],
+   tech:['Java','Swing'],github:'https://github.com/thippeswammy/Puzzle-game'},
+  {id:'maze',cluster:'games',name:'Maze-game',tagline:'Maze with enemy AI & progression',
+   summary:'Greenfoot maze game with enemy AI behaviors, collision handling, speed boosts, and level progression demonstrating 2D game design and OOP principles.',
+   highlights:['Enemy AI with pathfinding behavior','Collision detection system','Speed boost power-ups','Multi-level progression system'],
+   tech:['Java','Greenfoot'],github:'https://github.com/thippeswammy/Maze-game'},
+  {id:'flappy',cluster:'games',name:'Flappy-bird-game',tagline:'Classic flappy bird clone',
+   summary:'Java Greenfoot Flappy Bird with obstacle navigation, real-time score tracking, and smooth physics-based gameplay mechanics.',
+   highlights:['Physics-based bird movement','Procedurally generated pipe obstacles','Score tracking & high score','Smooth animation at fixed frame rate'],
+   tech:['Java','Greenfoot'],github:'https://github.com/thippeswammy/Flappy-bird-game'},
+  {id:'shooter',cluster:'games',name:'DownShooterGame',tagline:'2D top-down shooter with boss battles',
+   summary:'Java Greenfoot top-down shooter with enemy AI, boss battles, health system, and score-based progression.',
+   highlights:['Enemy AI with movement patterns','Multi-stage boss battles','Health & shield system','Score-based difficulty scaling'],
+   tech:['Java','Greenfoot'],github:'https://github.com/thippeswammy/DownShooterGame'},
+  {id:'chain',cluster:'games',name:'ChainReactionGame',tagline:'Grid-based multiplayer strategy',
+   summary:'Java Greenfoot chain-reaction strategy game with turn-based gameplay, chain propagation logic, and multi-player support.',
+   highlights:['Chain-reaction propagation algorithm','Turn-based multi-player mechanics','Grid state management','Strategic territory capture gameplay'],
+   tech:['Java','Greenfoot'],github:'https://github.com/thippeswammy/ChainReactionGame'},
+  {id:'carracer',cluster:'games',name:'CarRacingUnity',tagline:'3D car racing in Unity',
+   summary:'3D Unity car racing game with multiple vehicles, dynamic environments, navigation guidance, sound effects, and adaptive screen scaling.',
+   highlights:['Multiple playable vehicle models','Dynamic race track environment','Real-time navigation guidance','3D spatial sound system'],
+   tech:['Unity','C#'],github:'https://github.com/thippeswammy/3D-Car-racing-game'},
+  {id:'arcube',cluster:'games',name:'AR-Cube-Drop',tagline:'Augmented reality cube placement',
+   summary:'Unity ARFoundation AR app for interactive cube placement with real-time object spawning and automated AR scene capture.',
+   highlights:['ARFoundation plane detection','Interactive object spawning on surfaces','Automated scene capture system','Real-time AR rendering pipeline'],
+   tech:['Unity','C#','ARFoundation'],github:'https://github.com/thippeswammy/AR-Cube-Drop'},
+  // EMBEDDED
+  {id:'arduino',cluster:'embedded',name:'Arduino',tagline:'Embedded systems project collection',
+   summary:'Collection of Arduino projects: obstacle avoidance vehicles, CAN bus communication, face tracking servo systems, traffic control, and IoT water management.',
+   highlights:['CAN bus with MCP2515 module','Face tracking servo control system','Ultrasonic obstacle avoidance car','IoT water management with ESP8266'],
+   tech:['C++','Arduino','ESP8266'],github:'https://github.com/thippeswammy/Arduino'},
+  {id:'matlab',cluster:'embedded',name:'MatlabModels',tagline:'MATLAB/Simulink automotive models',
+   summary:'MATLAB and Simulink models for embedded systems, automotive behavioral modeling, sensor interfacing, and hardware integration with Arduino, RPi, STM32, and dSPACE.',
+   highlights:['SIL/HIL workflow validation','Arduino/STM32/RPi hardware interfacing','Automotive behavioral modeling','CAN bus signal simulation in Simulink'],
+   tech:['MATLAB','Simulink','dSPACE'],github:'https://github.com/thippeswammy/MatlabModels'},
+  {id:'dspace',cluster:'embedded',name:'MBD-dSPACE',tagline:'dSPACE SCALEXIO vehicle control',
+   summary:'dSPACE SCALEXIO-based vehicle control system with MATLAB/Simulink. No physical ECUs — all signals generated and looped externally for SIL and HIL workflow validation.',
+   highlights:['External signal loopback (no physical ECU)','SIL + HIL behavioral comparison','dSPACE SCALEXIO rack integration','Simulink-to-hardware code generation'],
+   tech:['MATLAB','Simulink','dSPACE'],github:'https://github.com/thippeswammy/MBD-dSPACE',isPrivate:true},
+  {id:'ece',cluster:'embedded',name:'EceProject',tagline:'ECE engineering workspace',
+   summary:'Integrated ECE workspace covering computer vision, embedded systems, and robotics with Arduino control, stereo camera processing, and IoT prototyping on ESP8266/RPi.',
+   highlights:['Stereo camera processing pipeline','Arduino + ESP8266 IoT integration','Rapid prototyping experiments','Computer vision with Raspberry Pi'],
+   tech:['Python','C++','Arduino'],github:'https://github.com/thippeswammy/EceProject'},
+  // APPS
+  {id:'jarvis',cluster:'apps',name:'JarvisControlSystem',tagline:'J.A.R.V.I.S. AI desktop agent',
+   summary:'Autonomous AI desktop agent for Windows inspired by Iron Man\'s J.A.R.V.I.S. Uses local LLMs with A* UI navigation, DAG memory model, Telegram remote control, and self-learning macros.',
+   highlights:['LLM-powered intent recognition (Ollama)','A* pathfinding for UI state navigation','5-layer DAG persistent memory model','Telegram bot remote command interface'],
+   tech:['Python','Ollama','LLM'],github:'https://github.com/thippeswammy/JarvisControlSystem'},
+  {id:'parking',cluster:'apps',name:'SmartCarParkingSystem',tagline:'Real-time smart parking app',
+   summary:'Android smart parking app with Firebase real-time DB, Google Maps navigation, IoT sensor integration, payment gateway, and live slot availability for drivers and managers.',
+   highlights:['Firebase Firestore real-time slot updates','Google Maps navigation integration','Razorpay/Stripe payment gateway','IoT sensor + AI camera slot detection'],
+   tech:['Android','Java','Firebase','Google Maps'],github:'https://github.com/thippeswammy/SmartParking',isPrivate:true},
+  {id:'speech',cluster:'apps',name:'SpeechCalculator',tagline:'Voice-enabled math calculator',
+   summary:'Android calculator using speech recognition to parse spoken mathematical expressions into executable logic with custom priority-based expression evaluation.',
+   highlights:['Android SpeechRecognizer API integration','Custom expression tokenizer & parser','Operator precedence evaluation engine','Voice feedback for calculation results'],
+   tech:['Java','Android'],github:'https://github.com/thippeswammy/SpeechCalculator'},
+  {id:'roadtag',cluster:'apps',name:'RoadTagByCameraGps',tagline:'GPS-tagged road data collection',
+   summary:'Android app for collecting GPS-tagged road imagery, synchronizing camera and GPS data for road annotation and mapping workflows.',
+   highlights:['Synchronized camera + GPS capture','Geotagged image metadata embedding','Background location tracking service','CSV/JSON export for mapping tools'],
+   tech:['Kotlin','Android'],github:'https://github.com/thippeswammy/RoadTagByCameraGps',isPrivate:true},
+  {id:'jarvis2',cluster:'apps',name:'LoginSystemWithAdvanceGUI',tagline:'Advanced Java auth system',
+   summary:'Java Swing authentication system with structured login/registration workflows, modular GUI design, input validation, and event-driven architecture.',
+   highlights:['Modular login/registration workflow','Real-time input validation feedback','Event-driven programming pattern','Scalable desktop GUI architecture'],
+   tech:['Java','Swing'],github:'https://github.com/thippeswammy/LoginSystemWithAdvanceGUI'},
+  // TOOLS
+  {id:'rosrec',cluster:'tools',name:'ROSDataRecorder',tagline:'ROS sensor data recording & comparison',
+   summary:'Synchronized ROS sensor data recording tool with playback and comparison analysis for validating SLAM, odometry, and perception pipeline outputs.',
+   highlights:['Multi-sensor synchronized recording','Rosbag playback & comparison tools','Trajectory & sensor data overlay','Automated quality metric reporting'],
+   tech:['Python','ROS','ROS 2'],github:'https://github.com/thippeswammy/ROSDataRecorderandComparisonWalkthrough',isPrivate:true},
+  {id:'dataviz',cluster:'tools',name:'DataVisualizationEditingTool',tagline:'Interactive data visualization editor',
+   summary:'Custom Python tool for editing, annotating, and visualizing sensor data and trajectory datasets with interactive plotting and export capabilities.',
+   highlights:['Interactive plot annotation & editing','Multi-dataset overlay visualization','Custom color mapping & filtering','CSV/NumPy data export pipeline'],
+   tech:['Python','Matplotlib','NumPy'],github:'https://github.com/thippeswammy/DataVisualizationEditingTool',isPrivate:true},
+  {id:'lidar',cluster:'tools',name:'LidarScanSegment',tagline:'LiDAR point cloud segmentation',
+   summary:'Python tool for LiDAR scan-level segmentation of autonomous vehicle perception data, supporting ground removal, cluster extraction, and label export.',
+   highlights:['Ground plane removal (RANSAC)','Euclidean cluster extraction','Scan-level label assignment','ROS bag & PCL file input support'],
+   tech:['Python','PCL','ROS'],github:'https://github.com/thippeswammy/LidarScanSegment',isPrivate:true},
+  {id:'mcp',cluster:'tools',name:'my_mcp_project',tagline:'Model context protocol tooling',
+   summary:'MCP (Model Context Protocol) server implementation for integrating local tools and resources with LLM backends for AI agent workflows.',
+   highlights:['MCP server implementation','Tool & resource provider integration','LLM context management pipeline','Extensible plugin architecture'],
+   tech:['Python','MCP'],github:'https://github.com/thippeswammy/my_mcp_project'},
+  {id:'neetcode',cluster:'tools',name:'NeetCodeProblems',tagline:'Coding algorithm solutions',
+   summary:'Java solutions to NeetCode roadmap problems covering arrays, graphs, DP, trees, and system design — structured for interview preparation.',
+   highlights:['NeetCode 150 roadmap coverage','Graph, DP & tree algorithm solutions','Time/space complexity documentation','Clean OOP Java implementation style'],
+   tech:['Java'],github:'https://github.com/thippeswammy/NeetCodeProblems'},
+];
+
+// ─── UTILITIES ───────────────────────────────────────────────────────────────
+function mkMesh(geo, mat){ return new THREE.Mesh(geo, mat); }
+function mkBox(w,h,d,color,opts={}){
+  const mat=new THREE.MeshStandardMaterial({color,...opts});
+  return mkMesh(new THREE.BoxGeometry(w,h,d),mat);
+}
+function mkSphere(r,color,opts={}){
+  const mat=new THREE.MeshStandardMaterial({color,...opts});
+  return mkMesh(new THREE.SphereGeometry(r,16,16),mat);
+}
+function mkLabel(text,fontSize=28,textColor='#ffffff',bgColor=null){
+  const cv=document.createElement('canvas');
+  cv.width=512; cv.height=128;
+  const ctx=cv.getContext('2d');
+  if(bgColor){ctx.fillStyle=bgColor;ctx.fillRect(0,0,512,128);}
+  ctx.fillStyle=textColor;
+  ctx.font=`${fontSize}px Orbitron,monospace`;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(text,256,64);
+  const tex=new THREE.CanvasTexture(cv);
+  const mat=new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false});
+  const sp=new THREE.Sprite(mat);
+  sp.scale.set(4,1,1);
+  return sp;
+}
+function mkLabelSmall(text,textColor='#e2e8f0'){
+  const cv=document.createElement('canvas');cv.width=512;cv.height=80;
+  const ctx=cv.getContext('2d');
+  ctx.fillStyle=textColor;
+  ctx.font='bold 22px Orbitron,monospace';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(text,256,40);
+  const tex=new THREE.CanvasTexture(cv);
+  const mat=new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false});
+  const sp=new THREE.Sprite(mat);sp.scale.set(3,.6,1);return sp;
+}
+function mkScreen(w,h,text,color='#0a1628',textColor='#00d4ff'){
+  const cv=document.createElement('canvas');cv.width=512;cv.height=256;
+  const ctx=cv.getContext('2d');
+  ctx.fillStyle=color;ctx.fillRect(0,0,512,256);
+  ctx.strokeStyle=textColor;ctx.lineWidth=2;ctx.strokeRect(4,4,504,248);
+  ctx.fillStyle=textColor;
+  ctx.font='bold 20px Orbitron,monospace';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  const words=text.split('\n');
+  words.forEach((l,i)=>ctx.fillText(l,256,128+(i-(words.length-1)/2)*30));
+  const tex=new THREE.CanvasTexture(cv);
+  const mat=new THREE.MeshStandardMaterial({map:tex,emissive:new THREE.Color(textColor),emissiveIntensity:.1});
+  return mkMesh(new THREE.PlaneGeometry(w,h),mat);
+}
+function mkGround(size,color){
+  const mat=new THREE.MeshStandardMaterial({color,roughness:.8,metalness:.1});
+  const m=mkMesh(new THREE.PlaneGeometry(size,size),mat);
+  m.rotation.x=-Math.PI/2; return m;
+}
+function mkGridLines(size,div,color){
+  const g=new THREE.GridHelper(size,div,color,color);
+  g.material.opacity=.18;g.material.transparent=true;return g;
+}
+function addLight(scene,x,y,z,color,intensity=1.2,dist=12){
+  const l=new THREE.PointLight(color,intensity,dist);l.position.set(x,y,z);scene.add(l);return l;
+}
+function setProjectable(mesh,projectId){
+  mesh.traverse(o=>{if(o.isMesh)o.userData.projectId=projectId;});
+}
+// PORTAL SHADER
+const portalVS=`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`;
+const portalFS=`
+uniform float t;uniform vec3 col;varying vec2 vUv;
+void main(){
+  vec2 uv=vUv-.5;float d=length(uv);
+  float angle=atan(uv.y,uv.x)+t*.6;
+  float sw=sin(angle*5.+d*12.-t*2.)*.5+.5;
+  float v=smoothstep(.5,.0,d)*sw*(1.-d*2.);
+  gl_FragColor=vec4(col*v,v*.85);
+}`;
+// ─── LOBBY SCENE ─────────────────────────────────────────────────────────────
+class LobbyScene {
+  constructor(scene){
+    this.scene=scene; this.group=new THREE.Group(); this.portals=[];
+    this.uniforms=[]; this.time=0;
+    scene.add(this.group);
+  }
+  build(){
+    const g=this.group;
+    // Floor
+    const floor=mkGround(60,0x0d1117); floor.receiveShadow=true; g.add(floor);
+    const grid=mkGridLines(60,30,0x1e293b); g.add(grid);
+    // Title sprite
+    const title=mkLabel('3D PORTFOLIO PORTAL',32,'#e2e8f0');
+    title.position.set(0,7,-8); title.scale.set(7,1.5,1); g.add(title);
+    const sub=mkLabel('SELECT A CLUSTER TO BEGIN',18,'#475569');
+    sub.position.set(0,5.8,-8); sub.scale.set(6,1,1); g.add(sub);
+    // Ambient + key
+    g.add(new THREE.AmbientLight(0x0f172a,2));
+    const key=new THREE.DirectionalLight(0xffffff,.4);key.position.set(0,10,-5);g.add(key);
+    // 6 portals in semi-circle
+    const count=CLUSTERS.length;
+    const radius=10, startAngle=-Math.PI*.55, spread=Math.PI*1.1;
+    CLUSTERS.forEach((cl,i)=>{
+      const a=startAngle+(i/(count-1))*spread;
+      const px=Math.sin(a)*radius, pz=-Math.abs(Math.cos(a))*radius-2;
+      const pg=this._makePortal(cl,px,pz);
+      pg.userData.clusterId=cl.id;
+      this.portals.push(pg); g.add(pg);
+    });
+  }
+  _makePortal(cl,px,pz){
+    const g=new THREE.Group(); g.position.set(px,0,pz);
+    // Look toward camera
+    g.lookAt(0,2,12);
+    const col=new THREE.Color(cl.color);
+    // Pillars
+    const pilMat=new THREE.MeshStandardMaterial({color:0x1e293b,metalness:.7,roughness:.3,emissive:col,emissiveIntensity:.06});
+    const pilL=mkMesh(new THREE.BoxGeometry(.35,5.5,.35),pilMat); pilL.position.set(-1.3,2.75,0); g.add(pilL);
+    const pilR=mkMesh(new THREE.BoxGeometry(.35,5.5,.35),pilMat.clone()); pilR.position.set(1.3,2.75,0); g.add(pilR);
+    // Arch top (torus half)
+    const archGeo=new THREE.TorusGeometry(1.3,.18,8,24,Math.PI);
+    const archMat=new THREE.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:.5,metalness:.5});
+    const arch=mkMesh(archGeo,archMat); arch.position.set(0,5.5,0); arch.rotation.z=Math.PI; g.add(arch);
+    // Portal surface (shader)
+    const uni={t:{value:0},col:{value:new THREE.Color(cl.color)}};
+    this.uniforms.push(uni);
+    const portalMat=new THREE.ShaderMaterial({vertexShader:portalVS,fragmentShader:portalFS,uniforms:uni,transparent:true,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending});
+    const portalSurface=mkMesh(new THREE.PlaneGeometry(2.6,5.5),portalMat);
+    portalSurface.position.set(0,2.75,-.02);
+    portalSurface.userData.clusterId=cl.id;
+    g.add(portalSurface);
+    // Cluster label
+    const lbl=mkLabel(cl.label,24,cl.css);
+    lbl.position.set(0,6.4,0); lbl.scale.set(3.5,.8,1); g.add(lbl);
+    // Count label
+    const cnt=PROJECTS.filter(p=>p.cluster===cl.id).length;
+    const sub=mkLabel(`${cl.emoji}  ${cnt} PROJECTS`,16,'#64748b');
+    sub.position.set(0,-.5,0); sub.scale.set(3,.7,1); g.add(sub);
+    // Glow point light
+    const pl=new THREE.PointLight(cl.color,1.5,6); pl.position.set(0,3,1); g.add(pl);
+    return g;
+  }
+  update(dt){
+    this.time+=dt;
+    this.uniforms.forEach((u,i)=>{u.t.value=this.time+i*1.3;});
+  }
+  show(){this.group.visible=true;}
+  hide(){this.group.visible=false;}
+  getPortals(){return this.portals;}
+}
+
+// ─── BASE WORLD ───────────────────────────────────────────────────────────────
+class BaseWorld {
+  constructor(id,scene){this.id=id;this.scene=scene;this.group=new THREE.Group();this.interactables=[];this.animators=[];this.built=false;}
+  build(){this.scene.add(this.group);this.built=true;}
+  update(dt){this.animators.forEach(fn=>fn(dt));}
+  show(){this.group.visible=true;}
+  hide(){this.group.visible=false;}
+  addAnimator(fn){this.animators.push(fn);}
+  addProjectable(obj,pid){setProjectable(obj,pid);this.interactables.push(obj);}
+}
+
+// ─── ROBOTICS WORLD ──────────────────────────────────────────────────────────
+class RoboticsWorld extends BaseWorld {
+  constructor(scene){super('robotics',scene);}
+  build(){
+    super.build();
+    const g=this.group;
+    // Background color
+    g.add(new THREE.AmbientLight(0x8ecae6,.4));
+    const sun=new THREE.DirectionalLight(0xfff5e0,.8);sun.position.set(5,12,5);g.add(sun);
+    // Floor - warehouse concrete
+    const floor=mkGround(50,0x1a1f2e);g.add(floor);
+    const grid=mkGridLines(50,25,0x243044);g.add(grid);
+    // Warehouse back wall with label
+    const wall=mkBox(50,.1,12,0x16213e);wall.position.set(0,6,-22);wall.rotation.x=-Math.PI/2;g.add(wall);
+    const wallSc=mkScreen(14,2,'ACTIVE WAREHOUSE ENVIRONMENT\nROBOTICS SECTOR','#0d1b2a','#06b6d4');
+    wallSc.position.set(0,8,-21.9);g.add(wallSc);
+    // Ceiling beams
+    for(let x=-18;x<=18;x+=9){const b=mkBox(.3,.3,50,0x1e293b);b.position.set(x,7.5,0);g.add(b);}
+    // Ceiling lights
+    for(let x=-15;x<=15;x+=10){for(let z=-15;z<=15;z+=10){const l=new THREE.PointLight(0xe8f4f8,.6,10);l.position.set(x,7,z);g.add(l);}}
+    // ── SLAM Station (ORB/DROID) ──
+    const slamSt=new THREE.Group();slamSt.position.set(-8,0,-14);g.add(slamSt);
+    const desk1=mkBox(4,1,2,0x1e293b,{metalness:.5});desk1.position.set(0,.5,0);slamSt.add(desk1);
+    const sc1=mkScreen(3,.8,'SLAM PROJECTS DISPLAY\n(ORB/DROID-SLAM)','#050d1a','#06b6d4');
+    sc1.position.set(0,1.5,-.8);slamSt.add(sc1);
+    this.addProjectable(slamSt,'orbslam3');
+    this.addProjectable(slamSt,'droid');
+    const lbl1=mkLabelSmall('SLAM PROJECTS DISPLAY (ORB/DROID)','#06b6d4');lbl1.position.set(0,2.4,-.8);slamSt.add(lbl1);
+    // ── AGV Navigation Station (LaneMappingTool) ──
+    const laneSt=new THREE.Group();laneSt.position.set(8,0,-14);g.add(laneSt);
+    const desk2=mkBox(4,1,2,0x1e293b,{metalness:.5});desk2.position.set(0,.5,0);laneSt.add(desk2);
+    const sc2=mkScreen(3,.8,'AGV NAVIGATION\n(LANE GRAPH)','#050d1a','#06b6d4');
+    sc2.position.set(0,1.5,-.8);laneSt.add(sc2);
+    this.addProjectable(laneSt,'lanemapping');
+    const lbl2=mkLabelSmall('AGV NAVIGATION (LANE GRAPH)','#06b6d4');lbl2.position.set(0,2.4,-.8);laneSt.add(lbl2);
+    // ── CARLA Simulation Station ──
+    const carlaSt=new THREE.Group();carlaSt.position.set(0,0,-14);g.add(carlaSt);
+    const desk3=mkBox(4,1,2,0x1e293b,{metalness:.5});desk3.position.set(0,.5,0);carlaSt.add(desk3);
+    const sc3=mkScreen(3,.8,'CARLA SIMULATION STATION\n(AUTONOMOUS DRIVING)','#050d1a','#06b6d4');
+    sc3.position.set(0,1.5,-.8);carlaSt.add(sc3);
+    this.addProjectable(carlaSt,'carla');
+    const lbl3=mkLabelSmall('CARLA SIMULATION STATION','#06b6d4');lbl3.position.set(0,2.4,-.8);carlaSt.add(lbl3);
+    // ── RTAB Drone Zone ──
+    const rtabSt=new THREE.Group();rtabSt.position.set(-15,0,-8);g.add(rtabSt);
+    const rtSign=mkScreen(4,.6,'RTABMAP (ROS DRONE AREA)','#050d1a','#06b6d4');
+    rtSign.position.set(0,5,-1);rtabSt.add(rtSign);
+    // Drone (simple box cross)
+    const droneBody=mkBox(.5,.15,.5,0x2d3748,{metalness:.7});droneBody.position.set(0,4.5,0);rtabSt.add(droneBody);
+    const droneArmH=mkBox(1.4,.08,.08,0x374151);droneArmH.position.set(0,4.5,0);rtabSt.add(droneArmH);
+    const droneArmV=mkBox(.08,.08,1.4,0x374151);droneArmV.position.set(0,4.5,0);rtabSt.add(droneArmV);
+    let dAngle=0;this.addAnimator(dt=>{dAngle+=dt*.5;droneBody.position.y=4.5+Math.sin(dAngle)*.15;droneArmH.position.y=droneBody.position.y;droneArmV.position.y=droneBody.position.y;});
+    this.addProjectable(rtabSt,'rtab');
+    // ── ZED2i Camera Rig ──
+    const zedSt=new THREE.Group();zedSt.position.set(15,0,-8);g.add(zedSt);
+    const tripod=mkBox(.1,2.5,.1,0x4a5568);tripod.position.set(0,1.25,0);zedSt.add(tripod);
+    const camBody=mkBox(.8,.3,1.2,0x2d3748,{metalness:.7});camBody.position.set(0,2.7,0);zedSt.add(camBody);
+    const lensL=mkSphere(.12,0x111111,{metalness:.9});lensL.position.set(-.2,2.7,.6);zedSt.add(lensL);
+    const lensR=mkSphere(.12,0x111111,{metalness:.9});lensR.position.set(.2,2.7,.6);zedSt.add(lensR);
+    const zedLbl=mkLabelSmall('ZED2i STEREO CAMERA','#06b6d4');zedLbl.position.set(0,3.4,0);zedSt.add(zedLbl);
+    this.addProjectable(zedSt,'zed2i');
+    // ── Robotic Arm (SLAM/sdf_to_nav) ──
+    const armSt=new THREE.Group();armSt.position.set(-5,0,-2);g.add(armSt);
+    const armBase=mkBox(.8,.5,.8,0x374151,{metalness:.6});armBase.position.set(0,.25,0);armSt.add(armBase);
+    const armSeg1=mkBox(.2,2,.2,0x4a5568,{metalness:.6});armSeg1.position.set(0,1.5,0);armSt.add(armSeg1);
+    const armSeg2=mkBox(.18,1.6,.18,0x4a5568,{metalness:.6});armSeg2.position.set(.4,2.6,.4);armSt.add(armSeg2);
+    const armLbl=mkScreen(2.5,.5,'MOBILE ROBOTIC ARM\nSORTING (SLAM)','#050d1a','#06b6d4');
+    armLbl.position.set(0,4,-.5);armSt.add(armLbl);
+    let armAngle=0;this.addAnimator(dt=>{armAngle+=dt*.4;armSeg2.rotation.z=Math.sin(armAngle)*.3;});
+    this.addProjectable(armSt,'sdf2nav');
+    // ── Moving AGVs ──
+    const agvPaths=[
+      new THREE.CatmullRomCurve3([new THREE.Vector3(-12,0,-5),new THREE.Vector3(12,0,-5),new THREE.Vector3(12,0,5),new THREE.Vector3(-12,0,5)],true),
+      new THREE.CatmullRomCurve3([new THREE.Vector3(-6,0,4),new THREE.Vector3(6,0,4),new THREE.Vector3(6,0,8),new THREE.Vector3(-6,0,8)],true),
+    ];
+    const agvTs=[0,.5];
+    const agvSpeeds=[.04,.035];
+    const agvGroups=agvPaths.map((path,i)=>{
+      const ag=new THREE.Group();
+      const body=mkBox(1,.45,1.8,0x2b4a7a,{metalness:.6,roughness:.3});body.position.y=.225;ag.add(body);
+      const lidar=mkMesh(new THREE.TorusGeometry(.2,.03,6,16),new THREE.MeshStandardMaterial({color:0xff6600,emissive:0xff6600,emissiveIntensity:2}));
+      lidar.position.y=.55;lidar.rotation.x=Math.PI/2;ag.add(lidar);
+      const headlight=new THREE.PointLight(0x88ccff,.8,3);headlight.position.set(0,.3,.9);ag.add(headlight);
+      const agLbl=mkLabelSmall(`AGV-0${i+1} IN MOTION`,'#94a3b8');agLbl.position.set(0,1.2,0);ag.add(agLbl);
+      g.add(ag);
+      const t={v:agvTs[i]};
+      this.addAnimator(dt=>{
+        t.v=(t.v+agvSpeeds[i]*dt)%1;
+        const pos=path.getPoint(t.v); ag.position.copy(pos);
+        const tan=path.getTangent(t.v);
+        if(tan.length()>0){const look=pos.clone().add(tan);ag.lookAt(look.x,pos.y,look.z);}
+        lidar.rotation.z+=dt*3;
+      });
+      setProjectable(ag,'orbslam2');this.interactables.push(ag);
+      return ag;
+    });
+    // ── Human figures ──
+    const humanPositions=[[5,0,2],[10,0,-2],[-3,0,5]];
+    humanPositions.forEach((pos,i)=>{
+      const hg=new THREE.Group();hg.position.set(...pos);
+      const body=mkMesh(new THREE.CapsuleGeometry(.18,.55,4,8),new THREE.MeshStandardMaterial({color:i===0?0x3b5998:0x2d6a4f}));
+      body.position.y=.6;hg.add(body);
+      const head=mkSphere(.14,0xf4a261);head.position.y=1.15;hg.add(head);
+      const lAng={v:0};
+      this.addAnimator(dt=>{lAng.v+=dt*1.4;body.position.y=.6+Math.abs(Math.sin(lAng.v))*.06;});
+      hg.userData.noProject=true; g.add(hg);
+    });
+    // ── Shelving ──
+    for(let x=-15;x<=15;x+=10){
+      const shelf=mkBox(4,4,.5,0x1e293b,{metalness:.3});shelf.position.set(x,2,-19);g.add(shelf);
+      for(let y=0;y<3;y++){const crate=mkBox(.8,.6,.8,0x78350f,{roughness:.9});crate.position.set(x+(Math.random()-.5)*1.5,.5+y*1.2+.3,-18.6);g.add(crate);}
+    }
+    // Floor lane markings
+    const markMat=new THREE.MeshBasicMaterial({color:0xfbbf24});
+    const mark1=mkMesh(new THREE.PlaneGeometry(24,.08),markMat);mark1.rotation.x=-Math.PI/2;mark1.position.set(0,.01,-5);g.add(mark1);
+    const mark2=mkMesh(new THREE.PlaneGeometry(24,.08),markMat.clone());mark2.rotation.x=-Math.PI/2;mark2.position.set(0,.01,5);g.add(mark2);
+    // Fog
+    this.scene.fog=new THREE.Fog(0x060d1a,.1,50);
+  }
+}
+
+// ─── AI & CV WORLD ────────────────────────────────────────────────────────────
+class AICVWorld extends BaseWorld {
+  constructor(scene){super('ai',scene);}
+  build(){
+    super.build();
+    const g=this.group;
+    g.add(new THREE.AmbientLight(0x0a1628,.6));
+    // Dark floor with glow grid
+    const floor=mkGround(50,0x070d1a);g.add(floor);
+    const grid=mkGridLines(50,25,0x1e3a5f);g.add(grid);
+    // Title wall screen
+    const mainSc=mkScreen(18,2.5,'AI CONTROL & ANALYSIS ROOM\nCOMPUTER VISION SECTOR','#040a14','#3b82f6');
+    mainSc.position.set(0,7,-21);g.add(mainSc);
+    // Large video wall
+    const vwData=['AI SMART CITY SURVEILLANCE','PEDESTRIAN (YOLOv8)','VEHICLE TRACKING (SORT)','FACE ID: M043','DAILY TRAFFIC VOL +12%'];
+    const vwColors=['#3b82f6','#60a5fa','#93c5fd','#818cf8','#4ade80'];
+    vwData.forEach((txt,i)=>{
+      const sc=mkScreen(5,2.5,txt,'#040814',vwColors[i%vwColors.length]);
+      sc.position.set(-12+(i%3)*6,4+(i<3?0:-3),-18);g.add(sc);
+    });
+    // ADAS workstation
+    const adasSt=new THREE.Group();adasSt.position.set(-8,0,-10);g.add(adasSt);
+    const d1=mkBox(3,1,2,0x0f1f38,{metalness:.5});d1.position.set(0,.5,0);adasSt.add(d1);
+    const s1=mkScreen(2.5,.9,'ADAS DISPLAY\n(TRAFFIC SEGMENTATION)','#040814','#3b82f6');s1.position.set(0,1.5,-.8);adasSt.add(s1);
+    this.addProjectable(adasSt,'adas');
+    const l1=mkLabelSmall('ADAS DISPLAY (TRAFFIC SEGMENTATION)','#3b82f6');l1.position.set(0,2.5,-.8);adasSt.add(l1);
+    // AutoSegmentor workstation
+    const segSt=new THREE.Group();segSt.position.set(0,0,-10);g.add(segSt);
+    const d2=mkBox(3,1,2,0x0f1f38,{metalness:.5});d2.position.set(0,.5,0);segSt.add(d2);
+    const s2=mkScreen(2.5,.9,'SAM2 SEGMENTOR\n(MASK GENERATION)','#040814','#6366f1');s2.position.set(0,1.5,-.8);segSt.add(s2);
+    this.addProjectable(segSt,'autoseg');
+    const l2=mkLabelSmall('SAM2 SEGMENTOR (MASK GENERATION)','#818cf8');l2.position.set(0,2.5,-.8);segSt.add(l2);
+    // DL workstation
+    const dlSt=new THREE.Group();dlSt.position.set(8,0,-10);g.add(dlSt);
+    const d3=mkBox(3,1,2,0x0f1f38,{metalness:.5});d3.position.set(0,.5,0);dlSt.add(d3);
+    const s3=mkScreen(2.5,.9,'DEEP LEARNING AREA\n(TRAINING METRICS)','#040814','#818cf8');s3.position.set(0,1.5,-.8);dlSt.add(s3);
+    this.addProjectable(dlSt,'deeplearn');
+    const l3=mkLabelSmall('DEEP LEARNING AREA','#818cf8');l3.position.set(0,2.5,-.8);dlSt.add(l3);
+    // Face recognition station
+    const faceSt=new THREE.Group();faceSt.position.set(-8,0,-3);g.add(faceSt);
+    const d4=mkBox(3,1,2,0x0f1f38,{metalness:.5});d4.position.set(0,.5,0);faceSt.add(d4);
+    const s4=mkScreen(2.5,.9,'FACE RECOGNITION SYSTEM\n(DUAL ENGINE)','#040814','#3b82f6');s4.position.set(0,1.5,-.8);faceSt.add(s4);
+    this.addProjectable(faceSt,'facerec');
+    const l4=mkLabelSmall('FACE RECOGNITION SYSTEM','#3b82f6');l4.position.set(0,2.5,-.8);faceSt.add(l4);
+    // Neural network visualization
+    const nnG=new THREE.Group();nnG.position.set(8,3,-6);g.add(nnG);
+    const layers=[[0,-3],[2,-1],[4,0],[6,-1],[8,-3]];
+    const nodeCount=[2,4,4,4,2];
+    const nodeObjs=[];
+    layers.forEach(([lx],li)=>{
+      const nc=nodeCount[li];
+      for(let n=0;n<nc;n++){
+        const nd=mkSphere(.18,0x3b82f6,{emissive:0x1d4ed8,emissiveIntensity:.8});
+        nd.position.set(lx,-nc/2+n,0);nnG.add(nd);nodeObjs.push({mesh:nd,li,ni:n});
+      }
+    });
+    // Edges between layers
+    layers.forEach(([lx],li)=>{
+      if(li===layers.length-1)return;
+      const nc1=nodeCount[li],nc2=nodeCount[li+1];
+      for(let a=0;a<nc1;a++){for(let b=0;b<nc2;b++){
+        const pts=[new THREE.Vector3(lx,-nc1/2+a,0),new THREE.Vector3(layers[li+1][0],-nc2/2+b,0)];
+        const lg=new THREE.BufferGeometry().setFromPoints(pts);
+        const lm=new THREE.LineBasicMaterial({color:0x1e40af,opacity:.35,transparent:true});
+        nnG.add(new THREE.Line(lg,lm));
+      }}
+    });
+    nnG.scale.set(.6,.6,.6);
+    let nnT=0;this.addAnimator(dt=>{nnT+=dt;nodeObjs.forEach(n=>{n.mesh.material.emissiveIntensity=.4+Math.sin(nnT*2+n.li*.8+n.ni*.5)*.5;});});
+    // Operator figures
+    [[4,0,-5],[-4,0,-3]].forEach((pos,i)=>{
+      const hg=new THREE.Group();hg.position.set(...pos);
+      const body=mkMesh(new THREE.CapsuleGeometry(.18,.55,4,8),new THREE.MeshStandardMaterial({color:0x1e3a5f}));
+      body.position.y=.6;hg.add(body);
+      const head=mkSphere(.14,0xfbbf24);head.position.y=1.15;hg.add(head);
+      g.add(hg);
+    });
+    // Lighting
+    addLight(g,-8,4,-5,0x1e40af,1.2,10);
+    addLight(g,8,4,-5,0x312e81,1,10);
+    addLight(g,0,4,-15,0x0369a1,1.5,15);
+    this.scene.fog=new THREE.Fog(0x04080f,.1,45);
+  }
+}
+
+
+// ─── GAMES WORLD ─────────────────────────────────────────────────────────────
+class GamesWorld extends BaseWorld {
+  constructor(scene){super('games',scene);}
+  build(){
+    super.build();
+    const g=this.group;
+    g.add(new THREE.AmbientLight(0x1a0533,.8));
+    const floor=mkGround(40,0x0d0920);g.add(floor);
+    // Checkered floor overlay
+    for(let x=-8;x<8;x++){for(let z=-8;z<8;z++){if((x+z)%2===0){const t=mkBox(.9,.01,.9,(x+z)%4===0?0x1a0533:0x0d0920);t.position.set(x*.9,.01,z*.9);g.add(t);}}}
+    const backSc=mkScreen(16,2,'RETRO ARCADE HALL\nGAMES SECTOR','#0a0015','#a855f7');
+    backSc.position.set(0,6,-18);g.add(backSc);
+    // Neon ceiling strips
+    const neonColors=[0xff00ff,0x00ffff,0xffff00,0xff6600,0x00ff88];
+    for(let i=0;i<5;i++){
+      const nm=new THREE.MeshStandardMaterial({color:neonColors[i],emissive:neonColors[i],emissiveIntensity:2});
+      const neon=mkMesh(new THREE.BoxGeometry(16,.08,.08),nm);neon.position.set(0,7,-12+i*2.5);g.add(neon);
+      const nl=new THREE.PointLight(neonColors[i],.8,8);nl.position.set(0,6,-12+i*2.5);g.add(nl);
+    }
+    // Arcade cabinets - 2 rows of 4
+    const gameData=[
+      {id:'snake',label:'SNAKE GAME',color:0x22c55e},
+      {id:'tictacgui',label:'TIC TAC TOE AI',color:0x3b82f6},
+      {id:'maze',label:'MAZE ESCAPE',color:0xf97316},
+      {id:'flappy',label:'FLAPPY BIRD',color:0xfbbf24},
+      {id:'shooter',label:'DOWN SHOOTER',color:0xef4444},
+      {id:'chain',label:'CHAIN REACTION',color:0xa855f7},
+      {id:'carracer',label:'CAR RACING 3D',color:0x06b6d4},
+      {id:'puzzle',label:'PUZZLE GRID',color:0xec4899},
+    ];
+    gameData.forEach((gd,i)=>{
+      const row=Math.floor(i/4),col=i%4;
+      const cab=new THREE.Group();cab.position.set(-7.5+col*5,0,-14+row*6);g.add(cab);
+      const body=mkBox(1.4,2.8,.8,0x1a1a2e,{metalness:.3});body.position.y=1.4;cab.add(body);
+      const screen=mkScreen(1.2,1.2,gd.label,'#050020',`#${gd.color.toString(16).padStart(6,'0')}`);
+      screen.position.set(0,1.9,.41);cab.add(screen);
+      const top=mkBox(1.4,.2,.8,0x16213e,{metalness:.4});top.position.y=2.9;cab.add(top);
+      const pl=new THREE.PointLight(gd.color,.6,3);pl.position.set(0,2.5,.5);cab.add(pl);
+      this.addProjectable(cab,gd.id);
+    });
+    // Coin particles
+    const coinGeo=new THREE.BufferGeometry();
+    const coinPos=new Float32Array(90);
+    for(let i=0;i<90;i+=3){coinPos[i]=(Math.random()-.5)*14;coinPos[i+1]=Math.random()*5+1;coinPos[i+2]=(Math.random()-.5)*12;}
+    coinGeo.setAttribute('position',new THREE.BufferAttribute(coinPos,3));
+    const coins=new THREE.Points(coinGeo,new THREE.PointsMaterial({color:0xfbbf24,size:.12,transparent:true,opacity:.9}));g.add(coins);
+    let cT=0;this.addAnimator(dt=>{cT+=dt;coins.rotation.y+=dt*.1;const pos=coins.geometry.attributes.position;for(let i=0;i<90;i+=3){pos.array[i+1]-=dt*.3;if(pos.array[i+1]<0)pos.array[i+1]=5+Math.random()*2;}pos.needsUpdate=true;});
+    this.scene.fog=new THREE.Fog(0x080010,.1,35);
+  }
+}
+
+// ─── EMBEDDED WORLD ───────────────────────────────────────────────────────────
+class EmbeddedWorld extends BaseWorld {
+  constructor(scene){super('embedded',scene);}
+  build(){
+    super.build();
+    const g=this.group;
+    g.add(new THREE.AmbientLight(0x0a1f0a,.5));
+    // PCB green floor
+    const floor=mkGround(50,0x0a1f0a);g.add(floor);
+    const grid=mkGridLines(50,25,0x145214);g.add(grid);
+    const backSc=mkScreen(16,2,'DENSE ELECTRONICS LAB\nEMBEDDED SYSTEMS SECTOR','#040e04','#f97316');
+    backSc.position.set(0,7,-21);g.add(backSc);
+    // Circuit traces on floor
+    const traceMat=new THREE.MeshBasicMaterial({color:0xdaa520});
+    const makeTrace=(x1,z1,x2,z2)=>{const pts=[new THREE.Vector3(x1,.02,z1),new THREE.Vector3(x2,.02,z2)];const lg=new THREE.BufferGeometry().setFromPoints(pts);g.add(new THREE.Line(lg,traceMat));};
+    [[-10,0,10,0],[-5,-8,-5,8],[0,-10,0,10],[5,-6,5,6],[8,-5,8,5],[-8,-4,-8,4]].forEach(([x1,z1,x2,z2])=>makeTrace(x1,z1,x2,z2));
+    // Arduino Robot station
+    const arSt=new THREE.Group();arSt.position.set(-8,0,-12);g.add(arSt);
+    const arBoard=mkBox(3,1.5,2.5,0x1a3a1a,{metalness:.2});arBoard.position.y=.75;arSt.add(arBoard);
+    for(let i=0;i<6;i++){const pin=mkBox(.05,.4,.05,0xdaa520);pin.position.set(-.8+i*.3,1.45,.5);arSt.add(pin);}
+    const arSc=mkScreen(2.5,.6,'ARDUINO ROBOT\n(CAR-LIKE AV)','#040e04','#f97316');arSc.position.set(0,2.2,-.8);arSt.add(arSc);
+    this.addProjectable(arSt,'arduino');
+    const arLbl=mkLabelSmall('ARDUINO ROBOT (CAR-LIKE AV)','#f97316');arLbl.position.set(0,3,-.8);arSt.add(arLbl);
+    // MATLAB HIL station
+    const hilSt=new THREE.Group();hilSt.position.set(0,0,-12);g.add(hilSt);
+    const hilDesk=mkBox(4,1,2.5,0x1e293b,{metalness:.5});hilDesk.position.y=.5;hilSt.add(hilDesk);
+    const hilSc=mkScreen(3,.8,'MATLAB HIL TEST RIG\n(CAN BUS DATA)','#040e04','#f97316');hilSc.position.set(0,1.5,-.8);hilSt.add(hilSc);
+    this.addProjectable(hilSt,'matlab');
+    const hilLbl=mkLabelSmall('MATLAB HIL TEST RIG (CAN BUS DATA)','#f97316');hilLbl.position.set(0,2.4,-.8);hilSt.add(hilLbl);
+    // dSPACE rack (private)
+    const dsSt=new THREE.Group();dsSt.position.set(8,0,-12);g.add(dsSt);
+    const dsRack=mkBox(1.5,4,1,0x1e293b,{metalness:.7});dsRack.position.y=2;dsSt.add(dsRack);
+    for(let i=0;i<5;i++){const slot=mkBox(1.3,.25,.1,0x334155);slot.position.set(0,.5+i*.65,.51);dsSt.add(slot);}
+    const dsSc=mkScreen(2.5,.8,'dSPACE MBD-dSPACE\n(PRIVATE - HIL SETUP)','#040e04','#fb923c');dsSc.position.set(0,4.5,-.3);dsSt.add(dsSc);
+    this.addProjectable(dsSt,'dspace');
+    const dsLbl=mkLabelSmall('dSPACE MBD-dSPACE (PRIVATE - HIL SETUP)','#fb923c');dsLbl.position.set(0,5.2,-.3);dsSt.add(dsLbl);
+    // Workbench equipment
+    const bench=mkBox(8,1,2,0x2d3748,{metalness:.3});bench.position.set(0,.5,4);g.add(bench);
+    const osc=mkBox(1.5,1.2,1,0x1a1a2e,{metalness:.5});osc.position.set(-2,1.6,4);g.add(osc);
+    const oscSc=mkScreen(1.2,.7,'OSCILLOSCOPE','#040814','#00ff88');oscSc.position.set(-2,2.2,3.5);g.add(oscSc);
+    const oscLbl=mkLabelSmall('OSCILLOSCOPE','#00ff88');oscLbl.position.set(-2,3,3.5);g.add(oscLbl);
+    const solder=mkBox(.5,.4,.3,0x374151,{metalness:.6});solder.position.set(1,1.4,4);g.add(solder);
+    const solLbl=mkLabelSmall('SOLDERING STATION','#f97316');solLbl.position.set(1,2.2,4);g.add(solLbl);
+    const printer=mkBox(1.2,1.2,1.2,0x475569,{metalness:.4});printer.position.set(3,1.6,4);g.add(printer);
+    const prtLbl=mkLabelSmall('3D PRINTER','#94a3b8');prtLbl.position.set(3,2.6,4);g.add(prtLbl);
+    // LED blink animation on chips
+    const chips=[];
+    [[6,-14],[-6,-8],[4,-6],[-4,-16]].forEach(([cx,cz])=>{
+      const chip=mkBox(1.5,.3,1,0x1a3a1a,{metalness:.3});chip.position.set(cx,.15,cz);g.add(chip);
+      for(let i=0;i<4;i++){const pin2=mkBox(.04,.2,.04,0xdaa520);pin2.position.set(.4+i*-.25,.2,.6);chip.add(pin2);}
+      const led=mkSphere(.08,0x00ff00,{emissive:0x00ff00,emissiveIntensity:3});led.position.set(.5,.3,.3);chip.add(led);chips.push({led,t:Math.random()*3});
+    });
+    this.addAnimator(dt=>{chips.forEach(c=>{c.t+=dt;c.led.material.emissiveIntensity=Math.sin(c.t*3)>0?3:.2;});});
+    // Lights
+    addLight(g,-8,4,-10,0xf97316,1,10);addLight(g,8,4,-10,0xfb923c,.8,10);addLight(g,0,4,-6,0x4ade80,.5,8);
+    this.scene.fog=new THREE.Fog(0x050d05,.1,40);
+  }
+}
+
+// ─── APPS WORLD ───────────────────────────────────────────────────────────────
+class AppsWorld extends BaseWorld {
+  constructor(scene){super('apps',scene);}
+  build(){
+    super.build();
+    const g=this.group;
+    g.add(new THREE.AmbientLight(0x0a1a0d,.5));
+    const floor=mkGround(50,0x060f09);g.add(floor);
+    const grid=mkGridLines(50,20,0x1a3a1f);g.add(grid);
+    mkScreen(16,2,'FUTURISTIC DIGITAL CITY\nAPPS & SOFTWARE SECTOR','#040a06','#22c55e');
+    const titleSc=mkScreen(16,2,'FUTURISTIC DIGITAL CITY\nAPPS & SOFTWARE SECTOR','#040a06','#22c55e');titleSc.position.set(0,7,-21);g.add(titleSc);
+    // JARVIS central orb
+    const jarvisG=new THREE.Group();jarvisG.position.set(0,0,-8);g.add(jarvisG);
+    const orb=mkSphere(1.2,0x1a3a2a,{emissive:0x22c55e,emissiveIntensity:.8,metalness:.3,roughness:.2});jarvisG.add(orb);
+    const orbGlow=new THREE.PointLight(0x22c55e,2,6);jarvisG.add(orbGlow);
+    const orbRing=mkMesh(new THREE.TorusGeometry(1.8,.06,8,32),new THREE.MeshStandardMaterial({color:0x22c55e,emissive:0x22c55e,emissiveIntensity:1}));
+    orbRing.rotation.x=Math.PI/3;jarvisG.add(orbRing);
+    const orbLbl=mkLabelSmall('JARVIS CONTROL SYSTEM','#22c55e');orbLbl.position.set(0,2.5,0);jarvisG.add(orbLbl);
+    let orbT=0;this.addAnimator(dt=>{orbT+=dt;orb.material.emissiveIntensity=.5+Math.sin(orbT*1.5)*.4;orbRing.rotation.z+=dt*.3;orbGlow.intensity=1.5+Math.sin(orbT*1.5)*.5;});
+    this.addProjectable(jarvisG,'jarvis');
+    // City buildings
+    const buildings=[
+      {x:-10,z:-12,w:3,h:8,d:3,color:0x0f2f1a,id:'parking',label:'SMART PARKING'},
+      {x:10,z:-12,w:2.5,h:6,d:2.5,color:0x0a2a16,id:'speech',label:'SPEECH CALC'},
+      {x:-10,z:-4,w:2,h:10,d:2,color:0x112a15,id:'roadtag',label:'ROAD TAG GPS'},
+      {x:10,z:-4,w:2.5,h:7,d:2.5,color:0x0d2518,id:'jarvis2',label:'LOGIN SYSTEM'},
+    ];
+    buildings.forEach(bd=>{
+      const bldG=new THREE.Group();bldG.position.set(bd.x,0,bd.z);g.add(bldG);
+      const bldBody=mkBox(bd.w,bd.h,bd.d,bd.color,{metalness:.4,roughness:.5});bldBody.position.y=bd.h/2;bldG.add(bldBody);
+      // Windows
+      for(let fy=1;fy<Math.floor(bd.h/1.5);fy++){for(let fx=0;fx<2;fx++){
+        const win=mkBox(.4,.5,.02,0x22c55e,{emissive:0x22c55e,emissiveIntensity:.5});
+        win.position.set(-.35+fx*.7,fy*1.5-.2,bd.d/2+.01);bldG.add(win);
+      }}
+      const bSc=mkScreen(bd.w-.3,.6,bd.label,'#040a06','#22c55e');bSc.position.set(0,bd.h+.5,0);bldG.add(bSc);
+      const bLbl=mkLabelSmall(bd.label,'#4ade80');bLbl.position.set(0,bd.h+1.2,0);bldG.add(bLbl);
+      const bl=new THREE.PointLight(0x22c55e,.5,5);bl.position.set(0,bd.h,0);bldG.add(bl);
+      this.addProjectable(bldG,bd.id);
+    });
+    addLight(g,0,5,-8,0x22c55e,1.5,8);addLight(g,-10,5,-8,0x4ade80,.6,8);addLight(g,10,5,-8,0x16a34a,.6,8);
+    this.scene.fog=new THREE.Fog(0x030806,.1,40);
+  }
+}
+
+// ─── TOOLS WORLD ─────────────────────────────────────────────────────────────
+class ToolsWorld extends BaseWorld {
+  constructor(scene){super('tools',scene);}
+  build(){
+    super.build();
+    const g=this.group;
+    g.add(new THREE.AmbientLight(0x1a0822,.6));
+    const floor=mkGround(40,0x0d0518);g.add(floor);
+    const grid=mkGridLines(40,20,0x2d1048);g.add(grid);
+    const titleSc=mkScreen(16,2,'RESEARCH & DEV TOOLS LAB\nDEV TOOLS & UTILITIES','#0a040e','#ec4899');titleSc.position.set(0,7,-18);g.add(titleSc);
+    // Monitor array
+    const monitors=[
+      {id:'rosrec',x:-8,z:-10,label:'ROS DATA RECORDER\n(MULTI-SENSOR SYNC)'},
+      {id:'dataviz',x:0,z:-10,label:'DATA VISUALIZATION\n(EDITING TOOL)'},
+      {id:'lidar',x:8,z:-10,label:'LIDAR SCAN\n(SEGMENTATION)'},
+      {id:'mcp',x:-4,z:-4,label:'MCP PROJECT\n(LLM PROTOCOL)'},
+      {id:'neetcode',x:4,z:-4,label:'NEETCODE\n(ALGORITHMS)'},
+    ];
+    monitors.forEach((m,i)=>{
+      const monG=new THREE.Group();monG.position.set(m.x,0,m.z);g.add(monG);
+      const desk=mkBox(2.5,1,1.5,0x1e0a38,{metalness:.4});desk.position.y=.5;monG.add(desk);
+      const monBody=mkBox(2,.05,1.4,0x0f0520,{metalness:.7});monBody.position.y=1.45;monG.add(monBody);
+      const monSc=mkScreen(2,1.2,m.label,'#0a0418','#ec4899');monSc.position.set(0,2.1,-.2);monG.add(monSc);
+      const monStand=mkBox(.1,.5,.1,0x374151);monStand.position.y=1.2;monG.add(monStand);
+      const ml=new THREE.PointLight(0xec4899,.6,4);ml.position.set(0,2.5,0);monG.add(ml);
+      const mLbl=mkLabelSmall(m.label.split('\n')[0],'#f472b6');mLbl.position.set(0,3.2,-.2);monG.add(mLbl);
+      this.addProjectable(monG,m.id);
+    });
+    // Code stream particles
+    const codeGeo=new THREE.BufferGeometry();
+    const codePos=new Float32Array(120);
+    for(let i=0;i<120;i+=3){codePos[i]=(Math.random()-.5)*16;codePos[i+1]=Math.random()*8;codePos[i+2]=(Math.random()-.5)*10;}
+    codeGeo.setAttribute('position',new THREE.BufferAttribute(codePos,3));
+    const codePs=new THREE.Points(codeGeo,new THREE.PointsMaterial({color:0xec4899,size:.08,transparent:true,opacity:.7}));g.add(codePs);
+    this.addAnimator(dt=>{const p=codePs.geometry.attributes.position;for(let i=0;i<120;i+=3){p.array[i+1]-=dt*.8;if(p.array[i+1]<0){p.array[i+1]=8;p.array[i]=(Math.random()-.5)*16;}}p.needsUpdate=true;});
+    // ROS node graph visualization
+    const rosG=new THREE.Group();rosG.position.set(0,4,-7);g.add(rosG);
+    const rosNodes=[{x:0,y:0},{x:-2,y:1},{x:2,y:1},{x:-2,y:-1},{x:2,y:-1}];
+    rosNodes.forEach((n,i)=>{
+      const nd=mkSphere(.2,0xec4899,{emissive:0x9d174d,emissiveIntensity:.8});nd.position.set(n.x,n.y,0);rosG.add(nd);
+      if(i>0){const pts=[new THREE.Vector3(0,0,0),new THREE.Vector3(n.x,n.y,0)];rosG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0x7c3aed,opacity:.4,transparent:true})));}
+    });
+    let rosT=0;this.addAnimator(dt=>{rosT+=dt;rosG.rotation.z=Math.sin(rosT*.3)*.1;rosNodes.forEach((n,i)=>{if(i<rosG.children.length&&rosG.children[i].isMesh)rosG.children[i].material.emissiveIntensity=.4+Math.sin(rosT*2+i)*.5;});});
+    addLight(g,-8,4,-8,0x7c3aed,.8,8);addLight(g,8,4,-8,0xec4899,.8,8);
+    this.scene.fog=new THREE.Fog(0x060210,.1,35);
+  }
+}
+// ─── APP CONTROLLER ───────────────────────────────────────────────────────────
+class App {
+  constructor(){
+    this.renderer=null;this.scene=null;this.camera=null;this.controls=null;
+    this.clock=new THREE.Clock();this.raycaster=new THREE.Raycaster();
+    this.mouse=new THREE.Vector2();this.state='lobby';this.activeWorld=null;
+    this.lobby=null;this.worlds={};this.hoveredId=null;
+    this.$load=document.getElementById('load');
+    this.$fade=document.getElementById('fade');
+    this.$back=document.getElementById('back');
+    this.$clabel=document.getElementById('clabel');
+    this.$hint=document.getElementById('hint');
+    this.$panel=document.getElementById('panel');
+  }
+  init(){
+    // Renderer
+    const canvas=document.getElementById('c');
+    this.renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+    this.renderer.setSize(window.innerWidth,window.innerHeight);
+    this.renderer.toneMapping=THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure=1;
+    // Scene + Camera
+    this.scene=new THREE.Scene();
+    this.scene.background=new THREE.Color(0x06060f);
+    this.camera=new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,.1,200);
+    this.camera.position.set(0,5,16);
+    this.camera.lookAt(0,3,0);
+    // Orbit Controls
+    this.controls=new OrbitControls(this.camera,canvas);
+    this.controls.enableDamping=true;this.controls.dampingFactor=.05;
+    this.controls.maxPolarAngle=Math.PI*.6;this.controls.minDistance=4;this.controls.maxDistance=30;
+    this.controls.target.set(0,2,0);
+    // Stars background
+    this._addStars();
+    // Build lobby
+    this.lobby=new LobbyScene(this.scene);this.lobby.build();
+    // Build all worlds (hidden)
+    const worldClasses={robotics:RoboticsWorld,ai:AICVWorld,games:GamesWorld,embedded:EmbeddedWorld,apps:AppsWorld,tools:ToolsWorld};
+    Object.entries(worldClasses).forEach(([id,Cls])=>{const w=new Cls(this.scene);w.build();w.hide();this.worlds[id]=w;});
+    // Events
+    window.addEventListener('resize',()=>this._onResize());
+    canvas.addEventListener('mousemove',e=>this._onMouseMove(e));
+    canvas.addEventListener('click',e=>this._onClick(e));
+    this.$back.addEventListener('click',()=>this._goLobby());
+    document.querySelector('.p-close')?.addEventListener('click',()=>this._closePanel());
+    document.getElementById('p-footer').addEventListener('click',()=>{});
+    // Hide loading
+    setTimeout(()=>{this.$load.classList.add('out');this._loop();},2200);
+  }
+  _addStars(){
+    const geo=new THREE.BufferGeometry();const pos=new Float32Array(3000);
+    for(let i=0;i<3000;i+=3){pos[i]=(Math.random()-.5)*200;pos[i+1]=(Math.random()-.5)*200;pos[i+2]=(Math.random()-.5)*200;}
+    geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    this.scene.add(new THREE.Points(geo,new THREE.PointsMaterial({color:0x8899aa,size:.15,transparent:true,opacity:.7})));
+  }
+  _onResize(){
+    this.camera.aspect=window.innerWidth/window.innerHeight;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(window.innerWidth,window.innerHeight);
+  }
+  _onMouseMove(e){
+    this.mouse.x=(e.clientX/window.innerWidth)*2-1;
+    this.mouse.y=-(e.clientY/window.innerHeight)*2+1;
+  }
+  _onClick(e){
+    // Don't process click if panel is open and clicking outside
+    if(this.$panel.classList.contains('open')){this._closePanel();return;}
+    this.raycaster.setFromCamera(this.mouse,this.camera);
+    if(this.state==='lobby'){
+      const portals=this.lobby.getPortals();
+      const allMeshes=[];portals.forEach(p=>p.traverse(o=>{if(o.isMesh||o.isSprite)allMeshes.push(o);}));
+      const hits=this.raycaster.intersectObjects(allMeshes,false);
+      if(hits.length>0){
+        let obj=hits[0].object;
+        while(obj&&!obj.userData.clusterId)obj=obj.parent;
+        if(obj?.userData.clusterId)this._enterWorld(obj.userData.clusterId);
+      }
+    } else if(this.state==='world'&&this.activeWorld){
+      const allInt=[];this.activeWorld.interactables.forEach(g=>g.traverse(o=>{if(o.isMesh)allInt.push(o);}));
+      const hits=this.raycaster.intersectObjects(allInt,false);
+      if(hits.length>0){
+        let obj=hits[0].object;
+        while(obj&&!obj.userData.projectId)obj=obj.parent;
+        if(obj?.userData.projectId){const proj=PROJECTS.find(p=>p.id===obj.userData.projectId);if(proj)this._openPanel(proj);}
+      }
+    }
+  }
+  _enterWorld(clusterId){
+    const cl=CLUSTERS.find(c=>c.id===clusterId);if(!cl)return;
+    this.$fade.classList.add('on');
+    setTimeout(()=>{
+      this.lobby.hide();
+      Object.values(this.worlds).forEach(w=>w.hide());
+      const world=this.worlds[clusterId];world.show();this.activeWorld=world;
+      this.scene.fog=null;world.build&&!world.built?world.build():null;
+      // Reset camera into world
+      this.camera.position.set(0,6,14);this.camera.lookAt(0,2,0);
+      this.controls.target.set(0,2,0);this.controls.update();
+      this.scene.background=new THREE.Color(0x04040a);
+      this.$back.style.display='flex';
+      this.$clabel.style.display='block';
+      this.$clabel.textContent=`${cl.emoji} ${cl.full}`;
+      this.$clabel.style.color=cl.css;
+      this.$hint.style.opacity='0';
+      this.state='world';
+      this.$fade.classList.remove('on');
+    },450);
+  }
+  _goLobby(){
+    this._closePanel();
+    this.$fade.classList.add('on');
+    setTimeout(()=>{
+      Object.values(this.worlds).forEach(w=>w.hide());this.activeWorld=null;
+      this.lobby.show();
+      this.scene.fog=null;
+      this.scene.background=new THREE.Color(0x06060f);
+      this.camera.position.set(0,5,16);this.camera.lookAt(0,3,0);
+      this.controls.target.set(0,2,0);this.controls.update();
+      this.$back.style.display='none';
+      this.$clabel.style.display='none';
+      this.$hint.style.opacity='1';
+      this.state='lobby';
+      this.$fade.classList.remove('on');
+    },450);
+  }
+  _openPanel(proj){
+    const cl=CLUSTERS.find(c=>c.id===proj.cluster);
+    const accentCss=cl?cl.css:'#6366f1';
+    document.getElementById('p-badge').textContent=`${cl?.emoji||''} ${cl?.full||''}`;
+    document.getElementById('p-badge').style.color=accentCss;
+    document.getElementById('p-title').textContent=proj.name;
+    document.getElementById('p-title').style.color=accentCss;
+    document.getElementById('p-tagline').textContent=proj.tagline||'';
+    document.getElementById('p-summary').textContent=proj.summary||'';
+    // Highlights
+    const ul=document.getElementById('p-bullets');ul.innerHTML='';
+    (proj.highlights||[]).forEach(h=>{const li=document.createElement('li');li.textContent=h;li.style.setProperty('--accent',accentCss);ul.appendChild(li);});
+    // Tech tags
+    const tagsCont=document.getElementById('p-tags');tagsCont.innerHTML='';
+    (proj.tech||[]).forEach(t=>{const span=document.createElement('span');span.className='p-tag';span.textContent=t;span.style.color=accentCss;span.style.borderColor=accentCss+'55';tagsCont.appendChild(span);});
+    // Footer
+    const footer=document.getElementById('p-footer');footer.innerHTML='';
+    if(proj.isPrivate){
+      const priv=document.createElement('div');priv.className='p-private';priv.innerHTML=`🔒 <span>Private Repository</span>`;footer.appendChild(priv);
+    } else if(proj.github){
+      const btn=document.createElement('a');btn.href=proj.github;btn.target='_blank';btn.className='p-gh-btn';
+      btn.style.color=accentCss;btn.style.borderColor=accentCss+'55';
+      btn.innerHTML=`<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> View on GitHub`;
+      footer.appendChild(btn);
+    }
+    // Add close button to footer
+    const closeBtn=document.createElement('button');closeBtn.className='p-close';closeBtn.innerHTML='✕';closeBtn.onclick=()=>this._closePanel();footer.appendChild(closeBtn);
+    this.$panel.classList.add('open');
+  }
+  _closePanel(){this.$panel.classList.remove('open');}
+  _loop(){
+    requestAnimationFrame(()=>this._loop());
+    const dt=Math.min(this.clock.getDelta(),.05);
+    this.controls.update();
+    if(this.state==='lobby')this.lobby.update(dt);
+    else if(this.activeWorld)this.activeWorld.update(dt);
+    // Hover highlight in world
+    if(this.state==='world'&&this.activeWorld){
+      this.raycaster.setFromCamera(this.mouse,this.camera);
+      const allInt=[];this.activeWorld.interactables.forEach(g=>g.traverse(o=>{if(o.isMesh)allInt.push(o);}));
+      const hits=this.raycaster.intersectObjects(allInt,false);
+      document.body.style.cursor=hits.length>0?'pointer':'default';
+    } else if(this.state==='lobby'){
+      this.raycaster.setFromCamera(this.mouse,this.camera);
+      const portals=this.lobby.getPortals();
+      const allMeshes=[];portals.forEach(p=>p.traverse(o=>{if(o.isMesh)allMeshes.push(o);}));
+      const hits=this.raycaster.intersectObjects(allMeshes,false);
+      document.body.style.cursor=hits.length>0?'pointer':'default';
+    }
+    this.renderer.render(this.scene,this.camera);
+  }
+}
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
+const app=new App();app.init();
+</script>
+</body>
+</html>
