@@ -252,14 +252,16 @@
     /* Grid & Cards */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
       gap: 30px;
       max-width: 1400px;
       margin: 0 auto;
+      align-items: stretch;
       justify-content: center;
-      justify-items: center;
     }
     .card {
+      max-width: 450px;
+      width: 100%;
       background: var(--bg-light);
       border: 1px solid var(--border);
       border-radius: 24px;
@@ -829,15 +831,17 @@
           scrollTrigger: {
             trigger: section.querySelector('.grid'),
             start: "top 95%",
-            end: "bottom bottom",
             toggleActions: "play none none reverse",
           },
           opacity: 0,
-          y: 60,
-          rotateX: -10,
-          duration: 1,
+          y: 40,
+          rotateX: -8,
+          duration: 0.8,
           stagger: 0.1,
-          ease: "expo.out"
+          ease: "power2.out",
+          onComplete: function() {
+            gsap.set(this.targets(), { clearProps: "transform" });
+          }
         });
       });
     }
