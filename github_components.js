@@ -13,14 +13,14 @@ function initYearLinks() {
   yearLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
-      
+
       // Update active class
       yearLinks.forEach(l => l.classList.remove('active'));
       link.classList.add('active');
-      
+
       const year = link.textContent.trim();
       const url = link.getAttribute('href');
-      
+
       const calendarContainer = document.querySelector('.calendar');
       if (calendarContainer) {
         if (year === '2026') {
@@ -54,17 +54,17 @@ function initGitHubCalendar() {
     }).then(() => {
       // Force dark mode colors on the generated SVG if needed
       const svg = calendarContainer.querySelector('svg');
-      if(svg) {
+      if (svg) {
         svg.style.backgroundColor = 'transparent';
       }
-      
+
       // Attempt to hide "Skip to contributions year list"
       const skipText = calendarContainer.querySelector('h2.sr-only');
       if (skipText) skipText.style.display = 'none';
 
       // Setup custom native tooltips
       setupCustomTooltips(calendarContainer);
-      
+
     }).catch(e => {
       calendarContainer.innerHTML = '<p>Error loading GitHub contributions.</p>';
       console.error(e);
@@ -86,16 +86,16 @@ function setupCustomTooltips(calendarContainer) {
     if (dayEl) {
       const date = dayEl.getAttribute('data-date');
       const level = dayEl.getAttribute('data-level');
-      
+
       let text = '';
       const id = dayEl.id;
-      
+
       // Attempt to find the sibling <tool-tip> created by GitHub/github-calendar
       if (id) {
         const tooltipEl = document.querySelector(`tool-tip[for="${id}"]`);
         if (tooltipEl) text = tooltipEl.textContent;
       }
-      
+
       // Fallback formatting if <tool-tip> is missing
       if (!text && date) {
         if (!level || level === "0") {
@@ -108,10 +108,10 @@ function setupCustomTooltips(calendarContainer) {
       if (text) {
         tooltip.textContent = text;
         tooltip.style.display = 'block';
-        
+
         const rect = dayEl.getBoundingClientRect();
         const tooltipRect = tooltip.getBoundingClientRect();
-        
+
         // Position centered above the element
         tooltip.style.left = `${rect.left + window.scrollX + (rect.width / 2) - (tooltipRect.width / 2)}px`;
         tooltip.style.top = `${rect.top + window.scrollY - tooltipRect.height - 8}px`;
@@ -130,19 +130,8 @@ function setupCustomTooltips(calendarContainer) {
 let pinnedProjectIds = [];
 
 function initPinnedProjects() {
-  // Load from localStorage or set defaults
-  const saved = localStorage.getItem('github_pinned_projects');
-  if (saved) {
-    try {
-      pinnedProjectIds = JSON.parse(saved);
-    } catch(e) {
-      pinnedProjectIds = getDefaultPinned();
-    }
-  } else {
-    pinnedProjectIds = getDefaultPinned();
-    savePinnedProjects();
-  }
-
+  // Use hard-coded defaults from the project root (getDefaultPinned)
+  pinnedProjectIds = getDefaultPinned();
   renderPinnedProjects();
 
   // Initialize Sortable for drag and drop
@@ -163,12 +152,13 @@ function initPinnedProjects() {
 }
 
 function getDefaultPinned() {
-  // Pin the first 6 projects by default
-  return window.PROJECTS.slice(0, 6).map(p => p.id);
+  return window.PINNED_PROJECTS || [];
 }
 
 function savePinnedProjects() {
-  localStorage.setItem('github_pinned_projects', JSON.stringify(pinnedProjectIds));
+  // In a static site, we don't save back to disk from the browser.
+  // The state is now hard-coded in getDefaultPinned() in the project root.
+  console.log("New pin order (save this to getDefaultPinned if you want it permanent):", pinnedProjectIds);
 }
 
 function getProjectById(id) {
@@ -180,7 +170,7 @@ function renderPinnedProjects() {
   if (!container) return;
 
   container.innerHTML = '';
-  
+
   if (pinnedProjectIds.length === 0) {
     container.innerHTML = '<p style="color:var(--text-muted)">No pinned projects yet. Click "Customize your pins" to add some!</p>';
     return;
@@ -192,17 +182,17 @@ function renderPinnedProjects() {
 
     // Determine language color dot (simple mapping)
     let langColor = '#8b949e';
-    if(proj.lang === 'C++') langColor = '#f34b7d';
-    else if(proj.lang === 'Python') langColor = '#3572A5';
-    else if(proj.lang === 'Java') langColor = '#b07219';
-    else if(proj.lang === 'C#') langColor = '#178600';
-    else if(proj.lang === 'MATLAB') langColor = '#e16737';
+    if (proj.lang === 'C++') langColor = '#f34b7d';
+    else if (proj.lang === 'Python') langColor = '#3572A5';
+    else if (proj.lang === 'Java') langColor = '#b07219';
+    else if (proj.lang === 'C#') langColor = '#178600';
+    else if (proj.lang === 'MATLAB') langColor = '#e16737';
 
     // Build the GitHub-style card
     const card = document.createElement('div');
     card.className = 'pinned-item';
     card.dataset.id = proj.id;
-    
+
     card.innerHTML = `
       <div class="pinned-item-header">
         <div class="pinned-item-title-wrapper">
@@ -227,19 +217,19 @@ function renderPinnedProjects() {
 
 let temporaryModalPins = [];
 
-window.openPinModal = function() {
+window.openPinModal = function () {
   const modal = document.getElementById('pin-modal');
   const listContainer = document.getElementById('pin-modal-list');
-  if(!modal || !listContainer) return;
-  
+  if (!modal || !listContainer) return;
+
   // Clone current pins for editing
   temporaryModalPins = [...pinnedProjectIds];
-  
+
   // Generate list
   listContainer.innerHTML = '';
   window.PROJECTS.forEach(proj => {
     const isPinned = temporaryModalPins.includes(proj.id);
-    
+
     const item = document.createElement('div');
     item.className = 'pin-checkbox-item';
     item.innerHTML = `
@@ -251,38 +241,38 @@ window.openPinModal = function() {
     `;
     listContainer.appendChild(item);
   });
-  
+
   if (window.updateModalPinCount) window.updateModalPinCount();
   modal.classList.add('active');
   document.body.classList.add('modal-open');
   if (window.lenis) window.lenis.stop();
 };
 
-window.closePinModal = function() {
+window.closePinModal = function () {
   const modal = document.getElementById('pin-modal');
-  if(modal) modal.classList.remove('active');
+  if (modal) modal.classList.remove('active');
   document.body.classList.remove('modal-open');
   if (window.lenis) window.lenis.start();
 };
 
-window.toggleModalPin = function(checkbox) {
+window.toggleModalPin = function (checkbox) {
   const val = checkbox.value;
-  if(checkbox.checked) {
-    if(!temporaryModalPins.includes(val)) temporaryModalPins.push(val);
+  if (checkbox.checked) {
+    if (!temporaryModalPins.includes(val)) temporaryModalPins.push(val);
   } else {
     temporaryModalPins = temporaryModalPins.filter(id => id !== val);
   }
   if (window.updateModalPinCount) window.updateModalPinCount();
 };
 
-window.updateModalPinCount = function() {
+window.updateModalPinCount = function () {
   const countText = document.getElementById('pin-count-text');
-  if(countText) {
+  if (countText) {
     countText.textContent = `${temporaryModalPins.length} selected`;
   }
 };
 
-window.saveModalPins = function() {
+window.saveModalPins = function () {
   pinnedProjectIds = [...temporaryModalPins];
   savePinnedProjects();
   renderPinnedProjects();

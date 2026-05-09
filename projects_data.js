@@ -11,6 +11,18 @@ window.CLUSTERS = [
   { id:'tools',    label:'DEV TOOLS',     full:'Dev Tools & Research',            color:0xec4899, css:'#ec4899', emoji:'' },
 ];
 
+window.PINNED_PROJECTS = [
+  'autoseg',
+  'lanemapping',
+  'adas',
+  'facerec',
+  'jarvis',
+  'dspace',
+  'parking',
+  'ece',
+  'droid'
+];
+
 window.PROJECTS = [
   // ── ROBOTICS ────────────────────────────────────────────────────────────────
   { id:'orbslam2', cluster:'robotics', name:'ORB_SLAM2', lang:'C++',
