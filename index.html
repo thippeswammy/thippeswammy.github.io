@@ -402,84 +402,89 @@
 
     /* Search & Filter Controls */
     .controls-container {
-      max-width: 1200px;
-      margin: -40px auto 60px;
+      max-width: 1100px;
+      margin: -40px auto 40px;
       padding: 0 5%;
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
       position: relative;
       z-index: 10;
     }
+    .search-bar-row {
+      display: flex;
+      gap: 12px;
+      align-items: stretch;
+      flex-wrap: wrap;
+      background: var(--glass);
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+    }
     .search-wrapper {
+      flex: 1;
+      min-width: 280px;
       position: relative;
-      width: 100%;
-      max-width: 600px;
-      margin: 0 auto;
     }
     .search-input {
       width: 100%;
-      padding: 18px 25px 18px 55px;
-      background: var(--glass);
+      height: 100%;
+      padding: 12px 15px 12px 45px;
+      background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border);
-      border-radius: 50px;
+      border-radius: 10px;
       color: var(--text-main);
       font-family: var(--font-b);
-      font-size: 1rem;
-      backdrop-filter: blur(15px);
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      font-size: 0.95rem;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       outline: none;
     }
     .search-input:focus {
       border-color: #6366f1;
-      box-shadow: 0 0 30px rgba(99, 102, 241, 0.15);
-      background: var(--glass-hover);
-      transform: scale(1.02);
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.1);
     }
     .search-icon {
       position: absolute;
-      left: 22px;
+      left: 15px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 1.2rem;
-      opacity: 0.5;
+      font-size: 1.1rem;
+      opacity: 0.4;
       pointer-events: none;
     }
-    .filter-chips {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-    }
-    .filter-chip {
-      padding: 10px 22px;
+    .filter-select {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border);
-      border-radius: 30px;
-      color: var(--text-muted);
+      border-radius: 10px;
+      color: var(--text-main);
+      padding: 0 35px 0 15px;
       font-family: var(--font-h);
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      outline: none;
+      transition: all 0.3s;
+      appearance: none;
+      min-width: 160px;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 14px;
     }
-    .filter-chip:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text-main);
-      transform: translateY(-2px);
+    .filter-select:hover {
+      background-color: rgba(255, 255, 255, 0.06);
+      border-color: var(--text-muted);
     }
-    .filter-chip.active {
-      background: linear-gradient(135deg, #6366f1, #06b6d4);
+    .filter-select option {
+      background: #0f1120;
       color: white;
-      border-color: transparent;
-      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
     }
     .results-count {
-      text-align: center;
+      text-align: left;
       color: var(--text-muted);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 500;
-      letter-spacing: 0.5px;
+      margin-top: 12px;
+      padding-left: 15px;
     }
 
     /* Back to Top Button */
@@ -571,13 +576,17 @@
   </section>
 
   <div class="controls-container">
-    <div class="search-wrapper">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="project-search" class="search-input" placeholder="Search by name, tech, or keyword...">
-    </div>
-    <div class="filter-chips" id="filter-chips">
-      <button class="filter-chip active" data-filter="all">All Projects</button>
-      <!-- Dynamic chips will be injected here -->
+    <div class="search-bar-row">
+      <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="project-search" class="search-input" placeholder="Find a project...">
+      </div>
+      <select id="tech-filter" class="filter-select">
+        <option value="all">Language / Tech</option>
+      </select>
+      <select id="cluster-filter" class="filter-select">
+        <option value="all">Category</option>
+      </select>
     </div>
     <div id="results-count" class="results-count"></div>
   </div>
@@ -652,23 +661,30 @@
     const navContainer = document.getElementById('nav-links');
     const mainContainer = document.getElementById('portfolio-main');
     const searchInput = document.getElementById('project-search');
-    const filterChipsContainer = document.getElementById('filter-chips');
+    const techFilterSelect = document.getElementById('tech-filter');
+    const clusterFilterSelect = document.getElementById('cluster-filter');
     const resultsCount = document.getElementById('results-count');
     const bttButton = document.getElementById('back-to-top');
 
     let activeTechFilter = 'all';
+    let activeClusterFilter = 'all';
     let searchQuery = '';
 
-    // Extract all unique technologies for filter chips
+    // Populate Technology Dropdown
     const allTech = [...new Set(window.PROJECTS.flatMap(p => p.tech || []))].sort();
-    
-    // Create filter chips
     allTech.forEach(tech => {
-      const btn = document.createElement('button');
-      btn.className = 'filter-chip';
-      btn.dataset.filter = tech;
-      btn.textContent = tech;
-      filterChipsContainer.appendChild(btn);
+      const opt = document.createElement('option');
+      opt.value = tech;
+      opt.textContent = tech;
+      techFilterSelect.appendChild(opt);
+    });
+
+    // Populate Category Dropdown
+    window.CLUSTERS.forEach(cluster => {
+      const opt = document.createElement('option');
+      opt.value = cluster.id;
+      opt.textContent = cluster.label;
+      clusterFilterSelect.appendChild(opt);
     });
 
     // Main Rendering Function
@@ -679,6 +695,9 @@
       let totalVisible = 0;
 
       window.CLUSTERS.forEach((cluster) => {
+        // Skip cluster if cluster filter is active and doesn't match
+        if (activeClusterFilter !== 'all' && activeClusterFilter !== cluster.id) return;
+
         // Filter projects for this cluster based on search and tech filter
         const filteredProjects = window.PROJECTS.filter(p => {
           if (p.cluster !== cluster.id) return false;
@@ -756,9 +775,9 @@
         : '';
 
       // Auto-scroll to results if searching/filtering
-      if (searchQuery !== '' || activeTechFilter !== 'all') {
+      if (searchQuery !== '' || activeTechFilter !== 'all' || activeClusterFilter !== 'all') {
         const rect = document.querySelector('.controls-container').getBoundingClientRect();
-        if (rect.top > 100) { // Only scroll if the results aren't already well in view
+        if (rect.top > 100) { 
           lenis.scrollTo('.controls-container', { offset: -100, duration: 1.5 });
         }
       }
@@ -768,7 +787,7 @@
         mainContainer.innerHTML = `
           <div class="empty-state">
             <h3>No results found</h3>
-            <p>We couldn't find any projects matching "${searchQuery || activeTechFilter}". Try a different keyword or filter.</p>
+            <p>We couldn't find any projects matching your current filters. Try adjusting your search or category.</p>
           </div>
         `;
       }
@@ -815,13 +834,14 @@
       renderPortfolio();
     });
 
-    filterChipsContainer.addEventListener('click', (e) => {
-      if (e.target.classList.contains('filter-chip')) {
-        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-        e.target.classList.add('active');
-        activeTechFilter = e.target.dataset.filter;
-        renderPortfolio();
-      }
+    techFilterSelect.addEventListener('change', (e) => {
+      activeTechFilter = e.target.value;
+      renderPortfolio();
+    });
+
+    clusterFilterSelect.addEventListener('change', (e) => {
+      activeClusterFilter = e.target.value;
+      renderPortfolio();
     });
 
     // Handle all internal navigation smoothly
