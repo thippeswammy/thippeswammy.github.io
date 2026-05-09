@@ -22,6 +22,7 @@
   gap: 16px;
   margin-bottom: 30px;
 }
+
 @media (max-width: 768px) {
   .github-pinned-grid {
     grid-template-columns: 1fr;
@@ -45,10 +46,12 @@
   transform: translateY(-5px);
   background: var(--glass-hover, rgba(26, 31, 60, 0.85));
   border-color: rgba(99, 102, 241, 0.4);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2), 0 0 20px rgba(99, 102, 241, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 20px rgba(99, 102, 241, 0.1);
 }
 
-.pinned-item:active { cursor: grabbing; }
+.pinned-item:active {
+  cursor: grabbing;
+}
 
 .pinned-item-top {
   display: flex;
@@ -69,6 +72,7 @@
   text-decoration: none;
   word-break: break-all;
 }
+
 .pinned-item-title:hover {
   text-decoration: underline;
   color: #3b82f6;
@@ -90,6 +94,7 @@
   color: var(--text-muted, #94a3b8);
   font-family: var(--font-b, 'Inter', sans-serif);
 }
+
 .repo-language-color {
   width: 12px;
   height: 12px;
@@ -101,7 +106,7 @@
 /* ── PIN CUSTOMIZATION BUTTON ───────────────────────── */
 .customize-pins-btn {
   background: transparent;
-  border: 1px solid var(--border, rgba(255,255,255,0.08));
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
   color: var(--text-muted, #94a3b8);
   font-family: var(--font-b, 'Inter', sans-serif);
   font-size: 13px;
@@ -112,6 +117,7 @@
   display: flex;
   align-items: center;
 }
+
 .customize-pins-btn:hover {
   background: var(--glass-hover, rgba(26, 31, 60, 0.85));
   color: var(--text-main, #f1f5f9);
@@ -124,14 +130,27 @@
   gap: 24px;
   margin-bottom: 40px;
 }
+
 @media (max-width: 768px) {
-  .contributions-layout { flex-direction: column; }
+  .contributions-layout {
+    flex-direction: column;
+  }
 }
 
-.contributions-main { flex: 1; overflow-x: auto; }
-.contributions-sidebar { width: 100px; flex-shrink: 0; }
+.contributions-main {
+  flex: 1;
+  overflow-x: auto;
+}
+
+.contributions-sidebar {
+  width: 100px;
+  flex-shrink: 0;
+}
+
 @media (max-width: 768px) {
-  .contributions-sidebar { width: 100%; }
+  .contributions-sidebar {
+    width: 100%;
+  }
 }
 
 .year-list {
@@ -139,8 +158,13 @@
   flex-direction: column;
   gap: 8px;
 }
+
 @media (max-width: 768px) {
-  .year-list { flex-direction: row; overflow-x: auto; padding-bottom: 10px; }
+  .year-list {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
 }
 
 .year-list a {
@@ -155,11 +179,13 @@
   border: 1px solid transparent;
   text-align: center;
 }
+
 .year-list a:hover {
   background: var(--glass, rgba(18, 22, 45, 0.65));
   color: var(--text-main, #f1f5f9);
   border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
 }
+
 .year-list a.active {
   background: linear-gradient(90deg, #6366f1, #06b6d4);
   color: #ffffff;
@@ -177,7 +203,7 @@
   border-radius: 16px !important;
   padding: 24px !important;
   min-height: 150px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
 }
 
 /* Ensure the title matches dark mode UI */
@@ -197,14 +223,16 @@
   font-family: var(--font-b, 'Inter', sans-serif) !important;
   font-size: 12px !important;
   padding-top: 16px !important;
-  border-top: 1px solid var(--border, rgba(255,255,255,0.05)) !important;
+  border-top: 1px solid var(--border, rgba(255, 255, 255, 0.05)) !important;
   margin-top: 16px !important;
 }
+
 .calendar .contrib-legend {
   display: flex !important;
   align-items: center !important;
   justify-content: flex-end !important;
 }
+
 .calendar .contrib-legend .legend {
   display: inline-flex !important;
   align-items: center !important;
@@ -213,6 +241,7 @@
   list-style: none !important;
   padding: 0 !important;
 }
+
 .calendar .contrib-legend .legend li {
   width: 12px !important;
   height: 12px !important;
@@ -234,16 +263,58 @@
 }
 
 /* ── UI-MATCHING CONTRIBUTION COLORS (Cyan -> Purple) ── */
-.js-calendar-graph-svg .ContributionCalendar-day, .calendar .ContributionCalendar-day {
-  rx: 3px; /* rounded corners on svg rects */
+.js-calendar-graph-svg .ContributionCalendar-day,
+.calendar .ContributionCalendar-day {
+  rx: 3px;
+  /* rounded corners on svg rects */
   ry: 3px;
 }
 
-.js-calendar-graph-svg .ContributionCalendar-day[data-level="0"], .calendar .ContributionCalendar-day[data-level="0"], .calendar .contrib-legend .legend li[data-level="0"], .calendar .contrib-legend .legend li:nth-child(1) { fill: rgba(255,255,255,0.03) !important; background-color: rgba(255,255,255,0.03) !important; outline: 1px solid rgba(255,255,255,0.03) !important; outline-offset: -1px !important; }
-.js-calendar-graph-svg .ContributionCalendar-day[data-level="1"], .calendar .ContributionCalendar-day[data-level="1"], .calendar .contrib-legend .legend li[data-level="1"], .calendar .contrib-legend .legend li:nth-child(2) { fill: #1d4ed8 !important; background-color: #1d4ed8 !important; outline: none !important; }
-.js-calendar-graph-svg .ContributionCalendar-day[data-level="2"], .calendar .ContributionCalendar-day[data-level="2"], .calendar .contrib-legend .legend li[data-level="2"], .calendar .contrib-legend .legend li:nth-child(3) { fill: #3b82f6 !important; background-color: #3b82f6 !important; outline: none !important; }
-.js-calendar-graph-svg .ContributionCalendar-day[data-level="3"], .calendar .ContributionCalendar-day[data-level="3"], .calendar .contrib-legend .legend li[data-level="3"], .calendar .contrib-legend .legend li:nth-child(4) { fill: #8b5cf6 !important; background-color: #8b5cf6 !important; outline: none !important; }
-.js-calendar-graph-svg .ContributionCalendar-day[data-level="4"], .calendar .ContributionCalendar-day[data-level="4"], .calendar .contrib-legend .legend li[data-level="4"], .calendar .contrib-legend .legend li:nth-child(5) { fill: #a855f7 !important; background-color: #a855f7 !important; outline: none !important; }
+.js-calendar-graph-svg .ContributionCalendar-day[data-level="0"],
+.calendar .ContributionCalendar-day[data-level="0"],
+.calendar .contrib-legend .legend li[data-level="0"],
+.calendar .contrib-legend .legend li:nth-child(1) {
+  fill: rgba(255, 255, 255, 0.03) !important;
+  background-color: rgba(255, 255, 255, 0.03) !important;
+  outline: 1px solid rgba(255, 255, 255, 0.03) !important;
+  outline-offset: -1px !important;
+}
+
+.js-calendar-graph-svg .ContributionCalendar-day[data-level="1"],
+.calendar .ContributionCalendar-day[data-level="1"],
+.calendar .contrib-legend .legend li[data-level="1"],
+.calendar .contrib-legend .legend li:nth-child(2) {
+  fill: #1d4ed8 !important;
+  background-color: #1d4ed8 !important;
+  outline: none !important;
+}
+
+.js-calendar-graph-svg .ContributionCalendar-day[data-level="2"],
+.calendar .ContributionCalendar-day[data-level="2"],
+.calendar .contrib-legend .legend li[data-level="2"],
+.calendar .contrib-legend .legend li:nth-child(3) {
+  fill: #3b82f6 !important;
+  background-color: #3b82f6 !important;
+  outline: none !important;
+}
+
+.js-calendar-graph-svg .ContributionCalendar-day[data-level="3"],
+.calendar .ContributionCalendar-day[data-level="3"],
+.calendar .contrib-legend .legend li[data-level="3"],
+.calendar .contrib-legend .legend li:nth-child(4) {
+  fill: #8b5cf6 !important;
+  background-color: #8b5cf6 !important;
+  outline: none !important;
+}
+
+.js-calendar-graph-svg .ContributionCalendar-day[data-level="4"],
+.calendar .ContributionCalendar-day[data-level="4"],
+.calendar .contrib-legend .legend li[data-level="4"],
+.calendar .contrib-legend .legend li:nth-child(5) {
+  fill: #a855f7 !important;
+  background-color: #a855f7 !important;
+  outline: none !important;
+}
 
 /* ── CUSTOM NATIVE HOVER TOOLTIP ────────────────────── */
 #github-native-tooltip {
@@ -252,7 +323,7 @@
   background: var(--bg-light, #0a0c1a);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  border: 1px solid var(--border, rgba(255,255,255,0.1));
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
   color: var(--text-main, #f1f5f9);
   padding: 8px 12px;
   border-radius: 8px;
@@ -262,8 +333,9 @@
   pointer-events: none;
   z-index: 10000;
   white-space: nowrap;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(99, 102, 241, 0.2);
 }
+
 #github-native-tooltip::after {
   content: " ";
   position: absolute;
@@ -272,7 +344,7 @@
   margin-left: -5px;
   border-width: 5px;
   border-style: solid;
-  border-color: var(--border, rgba(255,255,255,0.1)) transparent transparent transparent;
+  border-color: var(--border, rgba(255, 255, 255, 0.1)) transparent transparent transparent;
 }
 
 /* Hide annoying sr-only stuff, raw links, and skip link */
@@ -286,8 +358,11 @@
 /* ── PIN CUSTOMIZATION MODAL ────────────────────────── */
 .pin-modal-overlay {
   position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.6);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   z-index: 10000;
@@ -298,6 +373,7 @@
   pointer-events: none;
   transition: opacity 0.3s ease;
 }
+
 .pin-modal-overlay.active {
   opacity: 1;
   pointer-events: all;
@@ -305,34 +381,37 @@
 
 .pin-modal-content {
   background: var(--bg-light, #0a0c1a);
-  border: 1px solid var(--border, rgba(255,255,255,0.1));
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
   border-radius: 20px;
   width: 90%;
   max-width: 500px;
   max-height: 80vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(99, 102, 241, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(99, 102, 241, 0.1);
   transform: scale(0.95) translateY(20px);
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 .pin-modal-overlay.active .pin-modal-content {
   transform: scale(1) translateY(0);
 }
 
 .pin-modal-header {
   padding: 20px 24px;
-  border-bottom: 1px solid var(--border, rgba(255,255,255,0.08));
+  border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.08));
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .pin-modal-header h3 {
   margin: 0;
   font-family: var(--font-h, 'Outfit', sans-serif);
   font-size: 18px;
   color: var(--text-main, #f1f5f9);
 }
+
 .pin-modal-close {
   background: transparent;
   border: none;
@@ -340,13 +419,17 @@
   cursor: pointer;
   padding: 4px;
 }
-.pin-modal-close:hover { color: var(--text-main, #f1f5f9); }
+
+.pin-modal-close:hover {
+  color: var(--text-main, #f1f5f9);
+}
 
 .pin-modal-body {
   padding: 16px 24px;
   overflow-y: auto;
   flex-grow: 1;
 }
+
 .pin-modal-body .pin-info {
   font-family: var(--font-b, 'Inter', sans-serif);
   font-size: 13px;
@@ -359,27 +442,32 @@
   flex-direction: column;
   gap: 12px;
 }
+
 .pin-checkbox-item {
   display: flex;
   align-items: flex-start;
   gap: 12px;
 }
+
 .pin-checkbox-item input[type="checkbox"] {
   margin-top: 3px;
   cursor: pointer;
   accent-color: #6366f1;
 }
+
 .pin-checkbox-label {
   display: flex;
   flex-direction: column;
   cursor: pointer;
 }
+
 .pin-checkbox-title {
   font-family: var(--font-b, 'Inter', sans-serif);
   font-weight: 600;
   font-size: 14px;
   color: var(--text-main, #f1f5f9);
 }
+
 .pin-checkbox-desc {
   font-family: var(--font-b, 'Inter', sans-serif);
   font-size: 12px;
@@ -388,10 +476,11 @@
 
 .pin-modal-footer {
   padding: 16px 24px;
-  border-top: 1px solid var(--border, rgba(255,255,255,0.08));
+  border-top: 1px solid var(--border, rgba(255, 255, 255, 0.08));
   display: flex;
   justify-content: flex-end;
 }
+
 .pin-save-btn {
   background: linear-gradient(90deg, #6366f1, #06b6d4);
   color: #fff;
@@ -403,6 +492,7 @@
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
 }
+
 .pin-save-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
