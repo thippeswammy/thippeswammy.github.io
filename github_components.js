@@ -13,7 +13,7 @@ function initGitHubCalendar() {
     // Replace 'thippeswammy' with your actual GitHub username
     GitHubCalendar(calendarContainer, 'thippeswammy', {
       responsive: true,
-      global_stats: false, // Set to true if you want total stats shown below
+      global_stats: false, // Hide default text at bottom
       tooltips: true
     }).then(() => {
       // Force dark mode colors on the generated SVG if needed
@@ -21,6 +21,11 @@ function initGitHubCalendar() {
       if(svg) {
         svg.style.backgroundColor = 'transparent';
       }
+      
+      // Attempt to hide "Skip to contributions year list"
+      const skipText = calendarContainer.querySelector('h2.sr-only');
+      if (skipText) skipText.style.display = 'none';
+      
     }).catch(e => {
       calendarContainer.innerHTML = '<p>Error loading GitHub contributions.</p>';
       console.error(e);
@@ -59,8 +64,6 @@ function initPinnedProjects() {
         const newOrder = Array.from(itemEls).map(el => el.dataset.id);
         pinnedProjectIds = newOrder;
         savePinnedProjects();
-        // Update main grid buttons if needed
-        updateAllPinButtons();
       },
     });
   }
@@ -86,7 +89,7 @@ function renderPinnedProjects() {
   container.innerHTML = '';
   
   if (pinnedProjectIds.length === 0) {
-    container.innerHTML = '<p style="color:var(--text-muted)">No pinned projects yet. Pin some from the main grid below!</p>';
+    container.innerHTML = '<p style="color:var(--text-muted)">No pinned projects yet. Click "Customize your pins" to add some!</p>';
     return;
   }
 
@@ -114,9 +117,6 @@ function renderPinnedProjects() {
           <a href="${proj.github}" target="_blank" class="pinned-item-title">${proj.name}</a>
           <span class="pinned-item-badge">${proj.isPrivate ? 'Private' : 'Public'}</span>
         </div>
-        <button class="unpin-btn" title="Unpin from profile" onclick="togglePin('${proj.id}')">
-          <svg viewBox="0 0 16 16" width="16" height="16" class="octicon"><path fill-rule="evenodd" d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path></svg>
-        </button>
       </div>
       <p class="pinned-item-desc">${proj.summary}</p>
       <div class="pinned-item-meta">
@@ -130,37 +130,69 @@ function renderPinnedProjects() {
   });
 }
 
-// Global function callable from index.html card buttons
-window.togglePin = function(projectId) {
-  const index = pinnedProjectIds.indexOf(projectId);
-  if (index > -1) {
-    // Remove
-    pinnedProjectIds.splice(index, 1);
-  } else {
-    // Add
-    pinnedProjectIds.push(projectId);
-  }
+// --- Modal Logic ---
+
+let temporaryModalPins = [];
+
+window.openPinModal = function() {
+  const modal = document.getElementById('pin-modal');
+  const listContainer = document.getElementById('pin-modal-list');
+  if(!modal || !listContainer) return;
   
+  // Clone current pins for editing
+  temporaryModalPins = [...pinnedProjectIds];
+  
+  // Generate list
+  listContainer.innerHTML = '';
+  window.PROJECTS.forEach(proj => {
+    const isPinned = temporaryModalPins.includes(proj.id);
+    
+    const item = document.createElement('label');
+    item.className = 'pin-modal-item';
+    item.innerHTML = `
+      <input type="checkbox" value="${proj.id}" ${isPinned ? 'checked' : ''} onchange="toggleModalPin(this)">
+      <span class="pin-modal-item-name">${proj.name}</span>
+    `;
+    listContainer.appendChild(item);
+  });
+  
+  updateModalPinCount();
+  modal.style.display = 'flex';
+};
+
+window.closePinModal = function() {
+  const modal = document.getElementById('pin-modal');
+  if(modal) modal.style.display = 'none';
+};
+
+window.toggleModalPin = function(checkbox) {
+  const val = checkbox.value;
+  if(checkbox.checked) {
+    if(!temporaryModalPins.includes(val)) temporaryModalPins.push(val);
+  } else {
+    temporaryModalPins = temporaryModalPins.filter(id => id !== val);
+  }
+  updateModalPinCount();
+};
+
+window.updateModalPinCount = function() {
+  const countText = document.getElementById('pin-count-text');
+  if(countText) {
+    countText.textContent = `${temporaryModalPins.length} selected`;
+  }
+};
+
+window.saveModalPins = function() {
+  pinnedProjectIds = [...temporaryModalPins];
   savePinnedProjects();
   renderPinnedProjects();
-  updateAllPinButtons();
+  closePinModal();
 };
 
-window.isProjectPinned = function(projectId) {
-  return pinnedProjectIds.includes(projectId);
-};
-
-// Function to update the UI state of pin buttons on the main grid
-window.updateAllPinButtons = function() {
-  const buttons = document.querySelectorAll('.card-pin-btn');
-  buttons.forEach(btn => {
-    const pid = btn.dataset.id;
-    if (window.isProjectPinned(pid)) {
-      btn.innerHTML = '<svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path></svg> Unpin';
-      btn.classList.add('is-pinned');
-    } else {
-      btn.innerHTML = '<svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg> Pin';
-      btn.classList.remove('is-pinned');
-    }
-  });
+// Close modal when clicking outside
+window.onclick = function(event) {
+  const modal = document.getElementById('pin-modal');
+  if (event.target == modal) {
+    closePinModal();
+  }
 };

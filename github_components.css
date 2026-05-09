@@ -2,6 +2,12 @@
    github_components.css - Styles for GitHub Pinned & Contributions
    ═══════════════════════════════════════════════════════════════════ */
 
+/* Global text/fonts for GitHub sections */
+#github-activity-section {
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+}
+
+/* Pinned Projects Grid */
 .github-pinned-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -9,8 +15,22 @@
   margin-bottom: 20px;
 }
 
+.customize-pins-btn {
+  background: transparent;
+  border: none;
+  color: #8b949e;
+  font-size: 12px;
+  cursor: pointer;
+  transition: color 0.2s;
+  font-family: inherit;
+}
+.customize-pins-btn:hover {
+  color: #58a6ff;
+  text-decoration: underline;
+}
+
 .pinned-item {
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #30363d;
   border-radius: 6px;
   padding: 16px;
   background-color: transparent;
@@ -20,11 +40,9 @@
   transition: border-color 0.2s;
   cursor: grab;
 }
-
 .pinned-item:active {
   cursor: grabbing;
 }
-
 .pinned-item:hover {
   border-color: #8b949e;
 }
@@ -47,16 +65,14 @@
   font-weight: 600;
   font-size: 14px;
   text-decoration: none;
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
 }
-
 .pinned-item-title:hover {
   text-decoration: underline;
 }
 
 .pinned-item-badge {
   font-size: 12px;
-  color: var(--text-muted, #8b949e);
+  color: #8b949e;
   border: 1px solid rgba(240, 246, 252, 0.2);
   border-radius: 2em;
   padding: 0 7px;
@@ -65,10 +81,9 @@
 
 .pinned-item-desc {
   font-size: 12px;
-  color: var(--text-muted, #8b949e);
+  color: #8b949e;
   margin-bottom: 16px;
   flex-grow: 1;
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
 }
 
 .pinned-item-meta {
@@ -76,8 +91,7 @@
   align-items: center;
   gap: 16px;
   font-size: 12px;
-  color: var(--text-muted, #8b949e);
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  color: #8b949e;
 }
 
 .pinned-item-lang {
@@ -95,74 +109,218 @@
 
 .octicon {
   fill: currentColor;
+  color: #8b949e;
 }
 
-.unpin-btn {
+/* Contributions Section Layout */
+.contributions-layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.contributions-main {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.contributions-sidebar {
+  width: 150px;
+  flex-shrink: 0;
+  padding-top: 40px;
+}
+
+/* Year List styling */
+.year-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.year-list li {
+  margin-bottom: 8px;
+}
+.year-list a {
+  display: block;
+  padding: 8px 16px;
+  color: #8b949e;
+  text-decoration: none;
+  font-size: 12px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+.year-list a:hover {
+  background-color: rgba(177, 186, 196, 0.12);
+  color: #c9d1d9;
+}
+.year-list a.active {
+  background-color: #1f6feb;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Calendar Widget Override for Dark Theme */
+.calendar {
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 16px;
+  background-color: transparent;
+  min-height: 150px;
+}
+
+/* Hide annoying components from github-calendar */
+.calendar .position-relative h2,
+.calendar .contrib-footer {
+  display: none !important; /* Hides "Skip to..." and default headers if any */
+}
+
+.calendar-graph {
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+}
+
+.calendar-graph text.wday,
+.calendar-graph text.month {
+  fill: #8b949e;
+  font-size: 9px;
+}
+
+/* Standard GitHub contribution colors for dark mode */
+.js-calendar-graph-svg .ContributionCalendar-day[data-level="0"] { fill: #161b22; outline: 1px solid rgba(255,255,255,0.05); outline-offset: -1px; }
+.js-calendar-graph-svg .ContributionCalendar-day[data-level="1"] { fill: #0e4429; outline: 1px solid rgba(255,255,255,0.05); outline-offset: -1px; }
+.js-calendar-graph-svg .ContributionCalendar-day[data-level="2"] { fill: #006d32; outline: 1px solid rgba(255,255,255,0.05); outline-offset: -1px; }
+.js-calendar-graph-svg .ContributionCalendar-day[data-level="3"] { fill: #26a641; outline: 1px solid rgba(255,255,255,0.05); outline-offset: -1px; }
+.js-calendar-graph-svg .ContributionCalendar-day[data-level="4"] { fill: #39d353; outline: 1px solid rgba(255,255,255,0.05); outline-offset: -1px; }
+
+/* Pin Customization Modal */
+.pin-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(1, 4, 9, 0.8);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+}
+
+.pin-modal-content {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+
+.pin-modal-header {
+  padding: 16px;
+  border-bottom: 1px solid #30363d;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pin-modal-title {
+  color: #c9d1d9;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.pin-modal-close {
   background: none;
   border: none;
   color: #8b949e;
   cursor: pointer;
   padding: 4px;
-  opacity: 0;
-  transition: opacity 0.2s;
+}
+.pin-modal-close:hover {
+  color: #c9d1d9;
 }
 
-.pinned-item:hover .unpin-btn {
-  opacity: 1;
-}
-
-.unpin-btn:hover {
-  color: #f85149;
-}
-
-/* Calendar widget override for dark theme compatibility */
-.calendar {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 6px;
+.pin-modal-body {
   padding: 16px;
-  min-height: 150px;
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  overflow-y: auto;
+  flex-grow: 1;
 }
 
-/* github-calendar specific dark overrides */
-.calendar-graph text.wday,
-.calendar-graph text.month {
-  fill: var(--text-muted, #8b949e);
+.pin-modal-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  overflow: hidden;
 }
 
-.contrib-legend .legend {
-  color: var(--text-muted, #8b949e);
-}
-
-.contrib-column-first, .contrib-column, .contrib-column-table {
-  border-color: rgba(255,255,255,0.1);
-}
-
-/* Standard GitHub contribution colors for dark mode */
-.js-calendar-graph-svg .ContributionCalendar-day[data-level="0"] { fill: #161b22; }
-.js-calendar-graph-svg .ContributionCalendar-day[data-level="1"] { fill: #0e4429; }
-.js-calendar-graph-svg .ContributionCalendar-day[data-level="2"] { fill: #006d32; }
-.js-calendar-graph-svg .ContributionCalendar-day[data-level="3"] { fill: #26a641; }
-.js-calendar-graph-svg .ContributionCalendar-day[data-level="4"] { fill: #39d353; }
-
-/* Existing card pin button */
-.card-pin-btn {
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
-  color: #fff;
-  border-radius: 4px;
-  padding: 4px 8px;
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: all 0.2s;
+.pin-modal-item {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #30363d;
+  cursor: pointer;
 }
-.card-pin-btn:hover {
-  background: rgba(255,255,255,0.2);
+.pin-modal-item:last-child {
+  border-bottom: none;
 }
-.card-pin-btn.is-pinned {
-  color: #f85149;
-  border-color: rgba(248, 81, 73, 0.4);
+.pin-modal-item:hover {
+  background-color: rgba(177, 186, 196, 0.04);
+}
+
+.pin-modal-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #1f6feb;
+}
+
+.pin-modal-item-name {
+  color: #c9d1d9;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.pin-modal-footer {
+  padding: 16px;
+  border-top: 1px solid #30363d;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pin-save-btn {
+  background-color: #238636;
+  color: #ffffff;
+  border: 1px solid rgba(240, 246, 252, 0.1);
+  border-radius: 6px;
+  padding: 5px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.pin-save-btn:hover {
+  background-color: #2ea043;
+}
+
+@media (max-width: 768px) {
+  .contributions-layout {
+    flex-direction: column;
+  }
+  .contributions-sidebar {
+    width: 100%;
+    padding-top: 0;
+  }
+  .year-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .year-list li {
+    margin-bottom: 0;
+  }
 }
