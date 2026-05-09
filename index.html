@@ -391,11 +391,149 @@
       font-size: 0.9rem;
     }
 
+    /* Search & Filter Controls */
+    .controls-container {
+      max-width: 1200px;
+      margin: -40px auto 60px;
+      padding: 0 5%;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      position: relative;
+      z-index: 10;
+    }
+    .search-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .search-input {
+      width: 100%;
+      padding: 18px 25px 18px 55px;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      color: var(--text-main);
+      font-family: var(--font-b);
+      font-size: 1rem;
+      backdrop-filter: blur(15px);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 30px rgba(99, 102, 241, 0.15);
+      background: var(--glass-hover);
+      transform: scale(1.02);
+    }
+    .search-icon {
+      position: absolute;
+      left: 22px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+    .filter-chip {
+      padding: 10px 22px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      color: var(--text-muted);
+      font-family: var(--font-h);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .filter-chip:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      transform: translateY(-2px);
+    }
+    .filter-chip.active {
+      background: linear-gradient(135deg, #6366f1, #06b6d4);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+    }
+    .results-count {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    /* Back to Top Button */
+    .back-to-top {
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+      width: 54px;
+      height: 54px;
+      background: linear-gradient(135deg, #6366f1, #06b6d4);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      font-size: 1.5rem;
+    }
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .back-to-top:hover {
+      transform: translateY(-5px) scale(1.1);
+      box-shadow: 0 15px 35px rgba(99, 102, 241, 0.5);
+    }
+
+    /* Empty Results State */
+    .empty-state {
+      text-align: center;
+      padding: 120px 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .empty-state h3 {
+      font-family: var(--font-h);
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .empty-state p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
     @media (max-width: 768px) {
       header { flex-direction: column; gap: 15px; padding: 15px; }
       .hero h2 { font-size: 2.5rem; }
       .grid { grid-template-columns: 1fr; }
       section.cluster { padding: 80px 20px; }
+      .controls-container { margin-top: -20px; }
+      .back-to-top { bottom: 20px; right: 20px; width: 44px; height: 44px; font-size: 1.2rem; }
     }
   </style>
 </head>
@@ -423,11 +561,25 @@
     </div>
   </section>
 
+  <div class="controls-container">
+    <div class="search-wrapper">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="project-search" class="search-input" placeholder="Search by name, tech, or keyword...">
+    </div>
+    <div class="filter-chips" id="filter-chips">
+      <button class="filter-chip active" data-filter="all">All Projects</button>
+      <!-- Dynamic chips will be injected here -->
+    </div>
+    <div id="results-count" class="results-count"></div>
+  </div>
+
   <main id="portfolio-main"></main>
 
   <footer>
     <p>© 2026 Thippeswamy K.S. — Designed & Built with precision.</p>
   </footer>
+
+  <button id="back-to-top" class="back-to-top" title="Go to top">↑</button>
 
   <script>
     // Initialize GSAP ScrollTrigger
@@ -490,68 +642,179 @@
 
     const navContainer = document.getElementById('nav-links');
     const mainContainer = document.getElementById('portfolio-main');
+    const searchInput = document.getElementById('project-search');
+    const filterChipsContainer = document.getElementById('filter-chips');
+    const resultsCount = document.getElementById('results-count');
+    const bttButton = document.getElementById('back-to-top');
 
-    // Generate Nav and Sections
-    window.CLUSTERS.forEach((cluster) => {
-      // Create Nav Link
-      const navLink = document.createElement('a');
-      navLink.href = `#${cluster.id}`;
-      navLink.textContent = cluster.label;
-      navContainer.appendChild(navLink);
+    let activeTechFilter = 'all';
+    let searchQuery = '';
 
-      // Create Section
-      const section = document.createElement('section');
-      section.className = 'cluster';
-      section.id = cluster.id;
-      
-      const header = document.createElement('div');
-      header.className = 'cluster-header';
-      header.innerHTML = `
-        <div class="cluster-emoji">${cluster.emoji}</div>
-        <h3 class="cluster-title" style="color: ${cluster.css}">${cluster.full}</h3>
-      `;
-      section.appendChild(header);
-
-      const grid = document.createElement('div');
-      grid.className = 'grid';
-
-      // Filter projects for this cluster
-      const clusterProjects = window.PROJECTS.filter(p => p.cluster === cluster.id);
-      
-      clusterProjects.forEach(proj => {
-        const card = document.createElement('div');
-        card.className = 'card proj-card';
-        card.style.setProperty('--accent', cluster.css);
-
-        const highlightList = (proj.highlights || []).map(h => `<li>${h}</li>`).join('');
-        const techList = (proj.tech || []).map(t => `<span class="tech-tag">${t}</span>`).join('');
-        
-        let linkHtml = '';
-        if (proj.isPrivate) {
-          linkHtml = `<div class="card-private">🔒 Private Repository</div>`;
-        } else {
-          linkHtml = `<a href="${proj.github}" target="_blank" class="card-link">View Project ↗</a>`;
-        }
-
-        card.innerHTML = `
-          <div class="card-top">
-            <span class="card-lang">${proj.lang}</span>
-          </div>
-          <h4 class="card-title">${proj.name}</h4>
-          <div class="card-tagline" style="color: ${cluster.css}">${proj.tagline}</div>
-          <p class="card-summary">${proj.summary}</p>
-          <ul class="card-highlights">${highlightList}</ul>
-          <div class="card-tech">${techList}</div>
-          ${linkHtml}
-        `;
-        grid.appendChild(card);
-      });
-
-      section.appendChild(grid);
-      mainContainer.appendChild(section);
+    // Extract all unique technologies for filter chips
+    const allTech = [...new Set(window.PROJECTS.flatMap(p => p.tech || []))].sort();
+    
+    // Create filter chips
+    allTech.forEach(tech => {
+      const btn = document.createElement('button');
+      btn.className = 'filter-chip';
+      btn.dataset.filter = tech;
+      btn.textContent = tech;
+      filterChipsContainer.appendChild(btn);
     });
 
-    // Animations setup after DOM generation
+    // Main Rendering Function
+    function renderPortfolio() {
+      mainContainer.innerHTML = '';
+      navContainer.innerHTML = '';
+      
+      let totalVisible = 0;
+
+      window.CLUSTERS.forEach((cluster) => {
+        // Filter projects for this cluster based on search and tech filter
+        const filteredProjects = window.PROJECTS.filter(p => {
+          if (p.cluster !== cluster.id) return false;
+          
+          const matchesSearch = searchQuery === '' || 
+            p.name.toLowerCase().includes(searchQuery) || 
+            p.summary.toLowerCase().includes(searchQuery) ||
+            (p.tech && p.tech.some(t => t.toLowerCase().includes(searchQuery)));
+          
+          const matchesTech = activeTechFilter === 'all' || 
+            (p.tech && p.tech.includes(activeTechFilter));
+            
+          return matchesSearch && matchesTech;
+        });
+
+        if (filteredProjects.length > 0) {
+          totalVisible += filteredProjects.length;
+
+          // Create Nav Link
+          const navLink = document.createElement('a');
+          navLink.href = `#${cluster.id}`;
+          navLink.textContent = cluster.label;
+          navContainer.appendChild(navLink);
+
+          // Create Section
+          const section = document.createElement('section');
+          section.className = 'cluster';
+          section.id = cluster.id;
+          
+          const header = document.createElement('div');
+          header.className = 'cluster-header';
+          header.innerHTML = `
+            <div class="cluster-emoji">${cluster.emoji}</div>
+            <h3 class="cluster-title" style="color: ${cluster.css}">${cluster.full}</h3>
+          `;
+          section.appendChild(header);
+
+          const grid = document.createElement('div');
+          grid.className = 'grid';
+
+          filteredProjects.forEach(proj => {
+            const card = document.createElement('div');
+            card.className = 'card proj-card';
+            card.style.setProperty('--accent', cluster.css);
+
+            const highlightList = (proj.highlights || []).map(h => `<li>${h}</li>`).join('');
+            const techList = (proj.tech || []).map(t => `<span class="tech-tag">${t}</span>`).join('');
+            
+            let linkHtml = proj.isPrivate 
+              ? `<div class="card-private">🔒 Private Repository</div>`
+              : `<a href="${proj.github}" target="_blank" class="card-link">View Project ↗</a>`;
+
+            card.innerHTML = `
+              <div class="card-top">
+                <span class="card-lang">${proj.lang}</span>
+              </div>
+              <h4 class="card-title">${proj.name}</h4>
+              <div class="card-tagline" style="color: ${cluster.css}">${proj.tagline}</div>
+              <p class="card-summary">${proj.summary}</p>
+              <ul class="card-highlights">${highlightList}</ul>
+              <div class="card-tech">${techList}</div>
+              ${linkHtml}
+            `;
+            grid.appendChild(card);
+          });
+
+          section.appendChild(grid);
+          mainContainer.appendChild(section);
+        }
+      });
+
+      // Update results count
+      resultsCount.textContent = totalVisible > 0 
+        ? `Showing ${totalVisible} project${totalVisible === 1 ? '' : 's'}`
+        : '';
+
+      // Handle Empty State
+      if (totalVisible === 0) {
+        mainContainer.innerHTML = `
+          <div class="empty-state">
+            <h3>No results found</h3>
+            <p>We couldn't find any projects matching "${searchQuery || activeTechFilter}". Try a different keyword or filter.</p>
+          </div>
+        `;
+      }
+
+      // Re-initialize animations for new elements
+      initScrollAnimations();
+      ScrollTrigger.refresh();
+    }
+
+    function initScrollAnimations() {
+      // Scroll animations for sections
+      gsap.utils.toArray('.cluster').forEach(section => {
+        gsap.from(section.querySelector('.cluster-header'), {
+          scrollTrigger: {
+            trigger: section,
+            start: "top 85%",
+            toggleActions: "play none none reverse"
+          },
+          opacity: 0,
+          y: 40,
+          duration: 0.8
+        });
+
+        gsap.from(section.querySelectorAll('.card'), {
+          scrollTrigger: {
+            trigger: section.querySelector('.grid'),
+            start: "top 95%",
+            end: "bottom bottom",
+            toggleActions: "play none none reverse",
+          },
+          opacity: 0,
+          y: 60,
+          rotateX: -10,
+          duration: 1,
+          stagger: 0.1,
+          ease: "expo.out"
+        });
+      });
+    }
+
+    // Event Listeners
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value.toLowerCase();
+      renderPortfolio();
+    });
+
+    filterChipsContainer.addEventListener('click', (e) => {
+      if (e.target.classList.contains('filter-chip')) {
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        e.target.classList.add('active');
+        activeTechFilter = e.target.dataset.filter;
+        renderPortfolio();
+      }
+    });
+
+    bttButton.addEventListener('click', () => {
+      lenis.scrollTo(0);
+    });
+
+    // Initial render
+    renderPortfolio();
+
+    // Animations setup
     setTimeout(() => {
       // Hero Animation
       gsap.from(".hero-subtitle", { opacity: 0, y: -20, duration: 1, delay: 0.2 });
@@ -572,58 +835,34 @@
       });
 
       // Mouse tracking for card glow effect
-      document.getElementById('portfolio-main').addEventListener('mousemove', e => {
-        for(const card of document.querySelectorAll('.card')) {
+      document.body.addEventListener('mousemove', e => {
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
           const rect = card.getBoundingClientRect();
           const x = e.clientX - rect.left;
           const y = e.clientY - rect.top;
           card.style.setProperty('--mouse-x', `${x}px`);
           card.style.setProperty('--mouse-y', `${y}px`);
-        }
-      });
-
-      // Smart Header Effect handled globally
-
-      // Scroll animations for sections
-      gsap.utils.toArray('.cluster').forEach(section => {
-        // Animate section header
-        gsap.from(section.querySelector('.cluster-header'), {
-          scrollTrigger: {
-            trigger: section,
-            start: "top 80%",
-            toggleActions: "play none none reverse"
-          },
-          opacity: 0,
-          y: 40,
-          duration: 0.8
-        });
-
-        // 4. Enhanced Project Card Reveal
-        gsap.from(section.querySelectorAll('.card'), {
-          scrollTrigger: {
-            trigger: section.querySelector('.grid'),
-            start: "top 95%",
-            end: "bottom bottom",
-            toggleActions: "play none none reverse",
-          },
-          opacity: 0,
-          y: 100,
-          rotateX: -10, // Adds a slight premium 3D tilt
-          duration: 1,
-          stagger: 0.1,
-          ease: "expo.out"
         });
       });
-      
-      // Update active nav link
-      const sections = document.querySelectorAll('section.cluster');
-      const navLinks = document.querySelectorAll('#nav-links a');
-      
+
+      // Scroll related updates
       window.addEventListener('scroll', () => {
+        // Back to top visibility
+        if (window.scrollY > 500) {
+          bttButton.classList.add('visible');
+        } else {
+          bttButton.classList.remove('visible');
+        }
+
+        // Update active nav link
+        const sections = document.querySelectorAll('section.cluster');
+        const navLinks = document.querySelectorAll('#nav-links a');
         let current = '';
+        
         sections.forEach(section => {
           const sectionTop = section.offsetTop;
-          if (scrollY >= sectionTop - 150) {
+          if (window.scrollY >= sectionTop - 200) {
             current = section.getAttribute('id');
           }
         });
