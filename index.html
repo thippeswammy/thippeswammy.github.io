@@ -279,24 +279,12 @@
     }
     .card:hover::before { transform: scaleX(1); }
 
-    .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-    .card-lang {
-      font-family: var(--font-h);
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 4px 12px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.05);
-      color: var(--text-main);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
     .card-title {
       font-family: var(--font-h);
       font-size: 1.5rem;
-      font-weight: 700;
+      font-weight: 800;
       margin-bottom: 8px;
-      line-height: 1.2;
+      color: var(--text-main);
     }
     .card-tagline {
       font-size: 0.95rem;
@@ -329,7 +317,7 @@
       font-size: 1.1rem;
       line-height: 1.2;
     }
-    .card-tech {
+    .card-tech-list {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
@@ -751,27 +739,25 @@
           const grid = document.createElement('div');
           grid.className = 'grid';
 
-          filteredProjects.forEach(proj => {
+          filteredProjects.forEach(p => {
             const card = document.createElement('div');
             card.className = 'card proj-card';
             card.style.setProperty('--accent', cluster.css);
 
-            const highlightList = (proj.highlights || []).map(h => `<li>${h}</li>`).join('');
-            const techList = (proj.tech || []).map(t => `<span class="tech-tag">${t}</span>`).join('');
-            
-            let linkHtml = proj.isPrivate 
+            let linkHtml = p.isPrivate 
               ? `<div class="card-private">🔒 Private Repository</div>`
-              : `<a href="${proj.github}" target="_blank" class="card-link">View Project ↗</a>`;
+              : `<a href="${p.github}" target="_blank" class="card-link">View Project ↗</a>`;
 
             card.innerHTML = `
-              <div class="card-top">
-                <span class="card-lang">${proj.lang}</span>
+              <h4 class="card-title">${p.name}</h4>
+              <div class="card-tagline">${p.summary}</div>
+              <p class="card-summary">${p.description || ''}</p>
+              <ul class="card-highlights">
+                ${(p.highlights || []).map(h => `<li>${h}</li>`).join('')}
+              </ul>
+              <div class="card-tech-list">
+                ${(p.tech || []).map(t => `<span class="tech-tag">${t}</span>`).join('')}
               </div>
-              <h4 class="card-title">${proj.name}</h4>
-              <div class="card-tagline" style="color: ${cluster.css}">${proj.tagline}</div>
-              <p class="card-summary">${proj.summary}</p>
-              <ul class="card-highlights">${highlightList}</ul>
-              <div class="card-tech">${techList}</div>
               ${linkHtml}
             `;
             grid.appendChild(card);
