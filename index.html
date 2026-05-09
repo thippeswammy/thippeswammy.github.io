@@ -597,14 +597,14 @@
   <!-- GitHub Activity Section -->
   <section id="github-activity-section" style="max-width: 1200px; margin: 0 auto 60px auto; padding: 0 20px;">
     <!-- Pinned Projects Container -->
-    <div class="github-pinned-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+    <div id="pinned-section" class="github-pinned-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
       <h3 style="font-family: var(--font-h); font-size: 1rem; font-weight: 400; margin: 0; color: #c9d1d9;">Pinned</h3>
       <button class="customize-pins-btn" onclick="openPinModal()">Customize your pins</button>
     </div>
     <div id="github-pinned-container" class="github-pinned-grid"></div>
 
     <!-- GitHub Contributions Container -->
-    <div class="contributions-layout">
+    <div id="contributions-section" class="contributions-layout">
       <div class="contributions-main">
         <h3 style="font-family: var(--font-h); font-size: 1rem; font-weight: 400; margin-top: 20px; margin-bottom: 10px; color: #c9d1d9;">1,204 contributions in the last year</h3>
         <div class="calendar">
@@ -751,6 +751,17 @@
     function renderPortfolio() {
       mainContainer.innerHTML = '';
       navContainer.innerHTML = '';
+      
+      // Add Pinned and Contributions links first
+      const pinnedLink = document.createElement('a');
+      pinnedLink.href = '#pinned-section';
+      pinnedLink.textContent = 'Pinned';
+      navContainer.appendChild(pinnedLink);
+
+      const contribLink = document.createElement('a');
+      contribLink.href = '#contributions-section';
+      contribLink.textContent = 'Contributions';
+      navContainer.appendChild(contribLink);
       
       let totalVisible = 0;
 
@@ -978,13 +989,13 @@
         }
 
         // Update active nav link
-        const sections = document.querySelectorAll('section.cluster');
+        const sections = document.querySelectorAll('section.cluster, #pinned-section, #contributions-section');
         const navLinks = document.querySelectorAll('#nav-links a');
         let current = '';
         
         sections.forEach(section => {
           const sectionTop = section.offsetTop;
-          if (window.scrollY >= sectionTop - 200) {
+          if (window.scrollY >= sectionTop - 250) {
             current = section.getAttribute('id');
           }
         });
