@@ -427,6 +427,7 @@ function initYearLinks() {
   yearLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
+      e.stopPropagation();
 
       const year = link.textContent.trim();
 
