@@ -4,7 +4,7 @@
 
 const GITHUB_USERNAME = 'thippeswammy';
 const CONTRIBUTIONS_API = `https://github-contributions-api.deno.dev/${GITHUB_USERNAME}.json`;
-const START_YEAR = 2019; // The year the user started on GitHub
+const START_YEAR = 2020; // Changed from 2019
 
 document.addEventListener('DOMContentLoaded', () => {
   generateYearList(); 
@@ -134,26 +134,27 @@ function renderCalendar(container, data) {
   const footerContainer = document.getElementById('gh-footer-container');
   if (footerContainer) {
     footerContainer.innerHTML = `
-      <div class="gh-profile-card" style="display:flex; justify-content:space-between; align-items:center; background:rgba(15, 20, 45, 0.4); border:1px solid rgba(255,255,255,0.03); border-radius:24px; padding:24px; margin-top:20px;">
+      <div class="gh-footer-row" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255, 255, 255, 0.02); border:1px solid rgba(255,255,255,0.05); border-radius:24px; padding:20px 32px; margin-top:30px; width:100%; box-sizing:border-box;">
         <div style="display:flex; align-items:center; gap:16px;">
-          <img src="https://avatars.githubusercontent.com/u/73697198?v=4" style="width:48px; height:48px; border-radius:50%; border:2px solid rgba(255,255,255,0.1);">
+          <img src="https://avatars.githubusercontent.com/u/73697198?v=4" style="width:42px; height:42px; border-radius:50%; border:2px solid rgba(255,255,255,0.1); box-shadow: 0 0 15px rgba(99, 102, 241, 0.1);">
           <div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <a href="https://github.com/${GITHUB_USERNAME}" target="_blank" style="color:#fff; text-decoration:none; font-weight:700; font-size:16px;">GitHub Profile ↗</a>
+              <a href="https://github.com/${GITHUB_USERNAME}" target="_blank" style="color:#fff; text-decoration:none; font-weight:700; font-size:15px; letter-spacing:0.5px; font-family:var(--font-h);">GitHub Profile ↗</a>
             </div>
-            <div style="color:var(--text-muted); font-size:13px; margin-top:2px;">View your full profile and repositories</div>
+            <div style="color:var(--text-muted); font-size:12px; font-family:var(--font-b); opacity:0.7;">View full profile and repositories</div>
           </div>
         </div>
-        <div class="contrib-legend" style="display:flex; align-items:center; gap:8px;">
-          <span style="font-size:12px; color:var(--text-muted);">Less</span>
-          <ul style="display:flex; gap:4px; list-style:none; padding:0; margin:0;">
-            <li class="ContributionCalendar-day" data-level="0" style="width:12px; height:12px; border-radius:2px; background:rgba(255,255,255,0.05);"></li>
-            <li class="ContributionCalendar-day" data-level="1" style="width:12px; height:12px; border-radius:2px; background:#1d4ed8;"></li>
-            <li class="ContributionCalendar-day" data-level="2" style="width:12px; height:12px; border-radius:2px; background:#3b82f6;"></li>
-            <li class="ContributionCalendar-day" data-level="3" style="width:12px; height:12px; border-radius:2px; background:#8b5cf6;"></li>
-            <li class="ContributionCalendar-day" data-level="4" style="width:12px; height:12px; border-radius:2px; background:#d946ef;"></li>
+        
+        <div class="contrib-legend" style="display:flex; align-items:center; gap:12px;">
+          <span style="font-size:10px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-family:var(--font-b);">Less</span>
+          <ul style="display:flex; gap:6px; list-style:none; padding:0; margin:0;">
+            <li class="ContributionCalendar-day" data-level="0" style="width:11px; height:11px; border-radius:2px; background:rgba(255,255,255,0.05);"></li>
+            <li class="ContributionCalendar-day" data-level="1" style="width:11px; height:11px; border-radius:2px; background:#1d4ed8;"></li>
+            <li class="ContributionCalendar-day" data-level="2" style="width:11px; height:11px; border-radius:2px; background:#3b82f6;"></li>
+            <li class="ContributionCalendar-day" data-level="3" style="width:11px; height:11px; border-radius:2px; background:#8b5cf6;"></li>
+            <li class="ContributionCalendar-day" data-level="4" style="width:11px; height:11px; border-radius:2px; background:#d946ef;"></li>
           </ul>
-          <span style="font-size:12px; color:var(--text-muted);">More</span>
+          <span style="font-size:10px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-family:var(--font-b);">More</span>
         </div>
       </div>
     `;
