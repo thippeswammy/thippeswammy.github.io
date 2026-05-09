@@ -53,6 +53,29 @@
   cursor: grabbing;
 }
 
+.pinned-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.pinned-item-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pinned-item-badge {
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  border-radius: 20px;
+  padding: 1px 8px;
+  font-size: 11px;
+  color: var(--text-muted, #8b949e);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
 .pinned-item-top {
   display: flex;
   align-items: center;
@@ -437,6 +460,12 @@
   margin-bottom: 16px;
 }
 
+.pin-modal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .pin-checkbox-list {
   display: flex;
   flex-direction: column;
@@ -447,6 +476,14 @@
   display: flex;
   align-items: flex-start;
   gap: 12px;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.pin-checkbox-item:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .pin-checkbox-item input[type="checkbox"] {
