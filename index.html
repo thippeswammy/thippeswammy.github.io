@@ -480,6 +480,10 @@
       color: #fff;
       border-color: rgba(255, 255, 255, 0.1);
     }
+    .header-search-bar .filter-select option {
+      background-color: var(--bg-light);
+      color: var(--text-main);
+    }
     .clear-filters-btn {
       background: rgba(239, 68, 68, 0.05);
       border: 1px solid rgba(239, 68, 68, 0.1);
@@ -950,10 +954,18 @@
       }, 50);
     }
 
+    let portfolioScrollTriggers = [];
+
     function initScrollAnimations() {
-      // Scroll animations for sections
+      if (portfolioScrollTriggers && portfolioScrollTriggers.length > 0) {
+        portfolioScrollTriggers.forEach(st => {
+          if (st) st.kill();
+        });
+      }
+      portfolioScrollTriggers = [];
+
       gsap.utils.toArray('.cluster').forEach(section => {
-        gsap.from(section.querySelector('.cluster-header'), {
+        let t1 = gsap.from(section.querySelector('.cluster-header'), {
           scrollTrigger: {
             trigger: section,
             start: "top 85%",
@@ -963,8 +975,9 @@
           y: 40,
           duration: 0.8
         });
+        if (t1.scrollTrigger) portfolioScrollTriggers.push(t1.scrollTrigger);
 
-        gsap.from(section.querySelectorAll('.card'), {
+        let t2 = gsap.from(section.querySelectorAll('.card'), {
           scrollTrigger: {
             trigger: section.querySelector('.grid'),
             start: "top 95%",
@@ -978,6 +991,7 @@
           ease: "power2.out",
           clearProps: "opacity,y,rotateX,transform"
         });
+        if (t2.scrollTrigger) portfolioScrollTriggers.push(t2.scrollTrigger);
       });
     }
 
