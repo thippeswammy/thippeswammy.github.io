@@ -550,6 +550,11 @@
       .back-to-top { bottom: 20px; right: 20px; width: 44px; height: 44px; font-size: 1.2rem; }
     }
   </style>
+
+  <!-- GitHub Calendar CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/github-calendar@latest/dist/github-calendar-responsive.css" />
+  <!-- GitHub Components CSS -->
+  <link rel="stylesheet" href="github_components.css">
 </head>
 <body>
 
@@ -587,6 +592,22 @@
     <div class="hero-subtitle">Software Engineer & Researcher</div>
     <h2>Bridging Hardware, AI, and Autonomous Systems</h2>
     <p>A continuous exploration of Computer Vision, Deep Learning, Robotics, Embedded Systems, and Game Development.</p>
+  </section>
+
+  <!-- GitHub Activity Section -->
+  <section id="github-activity-section" style="max-width: 1200px; margin: 0 auto 60px auto; padding: 0 20px;">
+    <!-- Pinned Projects Container -->
+    <div class="github-pinned-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+      <h3 style="font-family: var(--font-h); font-size: 1.5rem; font-weight: 600;">Pinned</h3>
+    </div>
+    <div id="github-pinned-container" class="github-pinned-grid"></div>
+
+    <!-- GitHub Contributions Container -->
+    <h3 style="font-family: var(--font-h); font-size: 1.5rem; font-weight: 600; margin-top: 40px; margin-bottom: 15px;">Contributions in the last year</h3>
+    <div class="calendar">
+      <!-- Loading stuff -->
+      Loading GitHub data...
+    </div>
   </section>
 
   <div id="results-count" style="display:none"></div>
@@ -749,7 +770,12 @@
               : `<a href="${p.github}" target="_blank" class="card-link">View Project ↗</a>`;
 
             card.innerHTML = `
-              <h4 class="card-title">${p.name}</h4>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <h4 class="card-title" style="margin-top:0;">${p.name}</h4>
+                <button class="card-pin-btn" data-id="${p.id}" onclick="window.togglePin('${p.id}')">
+                  <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg> Pin
+                </button>
+              </div>
               <div class="card-tagline">${p.summary}</div>
               <p class="card-summary">${p.description || ''}</p>
               <ul class="card-highlights">
@@ -786,10 +812,16 @@
       if (totalVisible === 0) {
         mainContainer.innerHTML = `
           <div class="empty-state">
-            <h3>No results found</h3>
-            <p>We couldn't find any projects matching your current filters. Try adjusting your search or category.</p>
+            <h3>No Projects Found</h3>
+            <p>Try adjusting your search query or filters.</p>
+            <button class="clear-filters-btn" onclick="document.getElementById('clear-filters').click()" style="margin-top:20px;">Clear All Filters</button>
           </div>
         `;
+      }
+
+      // Initialize pin buttons states after rendering cards
+      if (window.updateAllPinButtons) {
+        window.updateAllPinButtons();
       }
 
       // Re-initialize animations after render
@@ -937,7 +969,13 @@
         });
       });
     }, 100);
-
   </script>
+
+  <!-- External Libraries for GitHub Features -->
+  <script src="https://unpkg.com/github-calendar@latest/dist/github-calendar.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+  
+  <!-- Custom GitHub Components Logic -->
+  <script src="github_components.js"></script>
 </body>
 </html>

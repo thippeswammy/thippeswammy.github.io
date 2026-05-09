@@ -1,0 +1,168 @@
+/* ═══════════════════════════════════════════════════════════════════
+   github_components.css - Styles for GitHub Pinned & Contributions
+   ═══════════════════════════════════════════════════════════════════ */
+
+.github-pinned-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.pinned-item {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  padding: 16px;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: border-color 0.2s;
+  cursor: grab;
+}
+
+.pinned-item:active {
+  cursor: grabbing;
+}
+
+.pinned-item:hover {
+  border-color: #8b949e;
+}
+
+.pinned-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.pinned-item-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pinned-item-title {
+  color: #58a6ff;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+}
+
+.pinned-item-title:hover {
+  text-decoration: underline;
+}
+
+.pinned-item-badge {
+  font-size: 12px;
+  color: var(--text-muted, #8b949e);
+  border: 1px solid rgba(240, 246, 252, 0.2);
+  border-radius: 2em;
+  padding: 0 7px;
+  line-height: 18px;
+}
+
+.pinned-item-desc {
+  font-size: 12px;
+  color: var(--text-muted, #8b949e);
+  margin-bottom: 16px;
+  flex-grow: 1;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+}
+
+.pinned-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-muted, #8b949e);
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+}
+
+.pinned-item-lang {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lang-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.octicon {
+  fill: currentColor;
+}
+
+.unpin-btn {
+  background: none;
+  border: none;
+  color: #8b949e;
+  cursor: pointer;
+  padding: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.pinned-item:hover .unpin-btn {
+  opacity: 1;
+}
+
+.unpin-btn:hover {
+  color: #f85149;
+}
+
+/* Calendar widget override for dark theme compatibility */
+.calendar {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  padding: 16px;
+  min-height: 150px;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+}
+
+/* github-calendar specific dark overrides */
+.calendar-graph text.wday,
+.calendar-graph text.month {
+  fill: var(--text-muted, #8b949e);
+}
+
+.contrib-legend .legend {
+  color: var(--text-muted, #8b949e);
+}
+
+.contrib-column-first, .contrib-column, .contrib-column-table {
+  border-color: rgba(255,255,255,0.1);
+}
+
+/* Standard GitHub contribution colors for dark mode */
+.js-calendar-graph-svg .ContributionCalendar-day[data-level="0"] { fill: #161b22; }
+.js-calendar-graph-svg .ContributionCalendar-day[data-level="1"] { fill: #0e4429; }
+.js-calendar-graph-svg .ContributionCalendar-day[data-level="2"] { fill: #006d32; }
+.js-calendar-graph-svg .ContributionCalendar-day[data-level="3"] { fill: #26a641; }
+.js-calendar-graph-svg .ContributionCalendar-day[data-level="4"] { fill: #39d353; }
+
+/* Existing card pin button */
+.card-pin-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.card-pin-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+.card-pin-btn.is-pinned {
+  color: #f85149;
+  border-color: rgba(248, 81, 73, 0.4);
+}
