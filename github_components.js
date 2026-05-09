@@ -7,6 +7,7 @@ const CONTRIBUTIONS_API = `https://github-contributions-api.deno.dev/${GITHUB_US
 const START_YEAR = 2019; // The year the user started on GitHub
 
 document.addEventListener('DOMContentLoaded', () => {
+  generateYearList(); 
   initGitHubCalendar();
   initPinnedProjects();
 });
@@ -15,9 +16,6 @@ function initGitHubCalendar() {
   const calendarContainer = document.querySelector('.calendar');
   const contributionHeader = document.querySelector('.gh-stat-number');
   if (!calendarContainer) return;
-
-  // Dynamically create the year navigation
-  generateYearList();
 
   calendarContainer.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted); font-family: var(--font-b);">Initializing neural grid...</div>';
 
@@ -168,66 +166,91 @@ function renderCalendar(container, data) {
 
 
 function loadYearlyFallback(container, year, header) {
-  const fileName = `contributions_${year}.html`;
+  const fromDate = `${year}-01-01`;
+  const toDate = `${year}-12-31`;
+  const apiURL = `https://github-contributions-api.deno.dev/${GITHUB_USERNAME}.json?from=${fromDate}&to=${toDate}`;
   
-  fetch(fileName).then(r => {
-    if (!r.ok) throw new Error(`File ${fileName} not found`);
-    return r.text();
-  }).then(html => {
-    container.innerHTML = `
-      <div class="calendar-wrapper" style="display:flex; flex-direction:column; align-items:center; width:100%;">
-        <div class="scroll-container" style="overflow-x:auto; width:100%; display:flex; justify-content:center;">
-          <div class="inner-content" style="padding: 10px;">
-            ${html}
-          </div>
-        </div>
-      </div>
-    `;
-    
-    const svg = container.querySelector('svg');
-    if (svg) {
-      svg.style.cssText = 'background:transparent; width:100%; height:auto; min-width: 700px;';
-    }
+  // Attempt 1: Fetch via API (Automated & CORS-friendly)
+  fetch(apiURL)
+    .then(r => {
+      if (!r.ok) throw new Error('API Range failed');
+      return r.json();
+    })
+    .then(data => {
+      // If the API returns 0 contributions, it might be a year with no data or a limitation
+      // But we check if there's actual contribution data
+      if (!data.contributions || data.contributions.length === 0 || data.totalContributions === 0) {
+          throw new Error('No data in API for this range');
+      }
+      
+      renderCalendar(container, data);
+      if (header) {
+        animateCountUp(header, data.totalContributions);
+      }
+      updateAnalytics(data);
+    })
+    .catch(apiErr => {
+      console.warn(`API range fetch failed for ${year}, trying local fallback:`, apiErr);
+      
+      // Attempt 2: Local HTML Fallback (Existing files)
+      const fileName = `contributions_${year}.html`;
+      fetch(`./${fileName}`)
+        .then(r => {
+          if (!r.ok) throw new Error(`Local file not found and API failed`);
+          return r.text();
+        })
+        .then(html => {
+          container.innerHTML = `
+            <div class="calendar-wrapper" style="display:flex; flex-direction:column; align-items:center; width:100%;">
+              <div class="scroll-container" style="overflow-x:auto; width:100%; display:flex; justify-content:center;">
+                <div class="inner-content" style="padding: 10px;">
+                  ${html}
+                </div>
+              </div>
+            </div>
+          `;
+          
+          const svg = container.querySelector('svg');
+          if (svg) svg.style.cssText = 'background:transparent; width:100%; height:auto; min-width: 700px;';
 
-    // Extract stats and update analytics
-    const stats = extractStatsFromHTML(html);
-    
-    if (header) {
-      animateCountUp(header, stats.totalContributions);
-    }
-
-    updateAnalytics(stats);
-    setupCustomTooltips(container);
-  }).catch(err => {
-    console.error(`Failed to load ${fileName}:`, err);
-    container.innerHTML = `
-      <div style="text-align: center; padding: 60px 20px; background: rgba(255,255,255,0.02); border-radius: 20px; border: 1px dashed rgba(255,255,255,0.1);">
-        <div style="font-size: 24px; margin-bottom: 10px;">📡</div>
-        <p style="color:var(--text-muted); margin-bottom: 20px;">Data for ${year} is currently unavailable in the neural cache.</p>
-        <a href="https://github.com/${GITHUB_USERNAME}" target="_blank" class="gh-btn" style="display: inline-block; padding: 10px 20px; background: var(--accent); color: #fff; text-decoration: none; border-radius: 30px; font-weight: 600; font-size: 13px;">View on GitHub ↗</a>
-      </div>
-    `;
-    
-    // Clear analytics if data is missing
-    const analyticsContainer = document.getElementById('gh-analytics');
-    if (analyticsContainer) analyticsContainer.innerHTML = '<div style="color:var(--text-muted); font-size:12px; opacity:0.5;">Awaiting sync...</div>';
-    if (header) header.textContent = '0';
-  });
+          const stats = extractStatsFromHTML(html);
+          if (header) animateCountUp(header, stats.totalContributions);
+          updateAnalytics(stats);
+          setupCustomTooltips(container);
+        })
+        .catch(err => {
+          console.error(`Full failure for ${year}:`, err);
+          container.innerHTML = `
+            <div style="text-align: center; padding: 60px 20px; background: rgba(255,255,255,0.02); border-radius: 20px; border: 1px dashed rgba(255,255,255,0.1);">
+              <div style="font-size: 24px; margin-bottom: 10px;">📡</div>
+              <p style="color:var(--text-muted); margin-bottom: 10px;">Data for ${year} is currently unavailable.</p>
+              <p style="color:var(--accent); font-size: 11px; margin-bottom: 20px; font-family: monospace; opacity: 0.7;">Sync Error: ${apiErr.message} / ${err.message}</p>
+              <div style="display:flex; gap:10px; justify-content:center;">
+                <a href="https://github.com/${GITHUB_USERNAME}" target="_blank" class="gh-btn" style="padding: 8px 16px; background: var(--accent); color: #fff; text-decoration: none; border-radius: 20px; font-size: 12px;">View on GitHub ↗</a>
+                <button onclick="location.reload()" style="padding: 8px 16px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--border); border-radius: 20px; font-size: 12px; cursor:pointer;">Retry Sync</button>
+              </div>
+            </div>
+          `;
+          if (header) header.textContent = '0';
+          const analyticsContainer = document.getElementById('gh-analytics');
+          if (analyticsContainer) analyticsContainer.innerHTML = '<div style="color:var(--text-muted); font-size:12px; opacity:0.5;">Awaiting sync...</div>';
+        });
+    });
 }
 
 function extractStatsFromHTML(html) {
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = html;
   
-  // Total count from H2
+  // 1. Extract Total Contributions from the H2 header
   let total = 0;
   const h2 = tempDiv.querySelector('h2');
   if (h2) {
-    const totalMatch = h2.textContent.match(/(\d+)/);
+    const totalMatch = h2.textContent.replace(/,/g, '').match(/(\d+)/);
     if (totalMatch) total = parseInt(totalMatch[1]);
   }
 
-  // Parse days for streak and max day
+  // 2. Extract Individual Days
   const dayEls = tempDiv.querySelectorAll('.ContributionCalendar-day');
   const contributions = [];
   
@@ -235,23 +258,26 @@ function extractStatsFromHTML(html) {
     const date = el.getAttribute('data-date');
     if (!date) return;
     
-    // GitHub tooltips are often separate, so we try to find the count from the tooltip
-    // or fallback to data-level if needed (though count is better)
-    const id = el.getAttribute('id');
     let count = 0;
+    const id = el.getAttribute('id');
+    
+    // Attempt 1: Look for associated tool-tip by ID
     if (id) {
-      const tooltip = tempDiv.querySelector(`tool-tip[for="${id}"]`);
+      const tooltip = tempDiv.querySelector(`tool-tip[for="${id}"], [for="${id}"]`);
       if (tooltip) {
-        const text = tooltip.textContent.trim();
-        const match = text.match(/^(\d+) contribution/);
+        const text = tooltip.textContent.trim().replace(/,/g, '');
+        const match = text.match(/^(\d+) contribution/i);
         if (match) count = parseInt(match[1]);
-      } else {
-        // Fallback: estimate from data-level
-        const level = parseInt(el.getAttribute('data-level') || '0');
-        if (level === 1) count = 2;
-        else if (level === 2) count = 5;
-        else if (level === 3) count = 15;
-        else if (level === 4) count = 30;
+      }
+    }
+    
+    // Attempt 2: Fallback to data-level estimation if count is still 0 but level > 0
+    if (count === 0) {
+      const level = parseInt(el.getAttribute('data-level') || '0');
+      if (level > 0) {
+        // Conservative estimates for GitHub levels
+        const levelMap = { 1: 1, 2: 5, 3: 15, 4: 30 };
+        count = levelMap[level] || 0;
       }
     }
     
@@ -260,7 +286,7 @@ function extractStatsFromHTML(html) {
 
   return {
     totalContributions: total,
-    contributions: contributions // This is a flat array
+    contributions: contributions
   };
 }
 
