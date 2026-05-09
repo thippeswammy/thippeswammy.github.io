@@ -133,14 +133,28 @@
       border-radius: 50%;
       border: 2px solid #6366f1;
     }
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
     .brand h1 {
       font-family: var(--font-h);
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: 700;
       letter-spacing: 1px;
       background: linear-gradient(135deg, #fff, #94a3b8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      line-height: 1;
+    }
+    .header-badge {
+      font-size: 0.7rem;
+      color: #6366f1;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+      opacity: 0.8;
     }
 
     nav { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
@@ -169,59 +183,15 @@
 
     /* Hero Section */
     .hero {
-      min-height: 100vh;
+      min-height: 65vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
       padding: 0 20px;
-      margin-top: 60px;
+      margin-top: 100px;
     }
-    .hero-subtitle {
-      font-family: var(--font-h);
-      color: #6366f1;
-      font-weight: 600;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      margin-bottom: 20px;
-      font-size: 0.9rem;
-    }
-    .hero h2 {
-      font-family: var(--font-h);
-      font-size: clamp(3rem, 6vw, 5.5rem);
-      font-weight: 800;
-      line-height: 1.1;
-      max-width: 900px;
-      margin-bottom: 30px;
-      background: linear-gradient(135deg, #ffffff, #818cf8, #06b6d4);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .hero p {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      max-width: 600px;
-      margin-bottom: 50px;
-    }
-    .scroll-indicator {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      opacity: 0.7;
-      animation: bounce 2s infinite;
-    }
-    .scroll-indicator .line {
-      width: 2px;
-      height: 40px;
-      background: linear-gradient(to bottom, currentColor, transparent);
-    }
-    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(10px); } }
 
     /* Sections */
     section.cluster {
@@ -493,11 +463,40 @@
       color: #ef4444;
       border-color: rgba(239, 68, 68, 0.3);
     }
-    .results-count {
-      text-align: center;
+    .header-badge {
+      font-size: 0.7rem;
+      color: #6366f1;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+      opacity: 0.8;
+    }
+    .hero-subtitle {
+      font-family: var(--font-h);
+      color: #6366f1;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+    }
+    .hero h2 {
+      font-family: var(--font-h);
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      max-width: 900px;
+      margin-bottom: 30px;
+      background: linear-gradient(135deg, #ffffff, #818cf8, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 1.1rem;
       color: var(--text-muted);
-      font-size: 0.8rem;
-      margin: 10px 0 30px;
+      max-width: 600px;
+      margin-bottom: 50px;
     }
 
     /* Back to Top Button */
@@ -574,7 +573,10 @@
     <div class="header-main">
       <a href="#" class="brand">
         <img src="https://avatars.githubusercontent.com/u/73697198?v=4" alt="Thippeswamy K.S.">
-        <h1>THIPPESWAMY K.S.</h1>
+        <div class="brand-text">
+          <h1>THIPPESWAMY K.S.</h1>
+          <span id="header-results-count" class="header-badge"></span>
+        </div>
       </a>
       <nav id="nav-links"></nav>
     </div>
@@ -597,13 +599,9 @@
     <div class="hero-subtitle">Software Engineer & Researcher</div>
     <h2>Bridging Hardware, AI, and Autonomous Systems</h2>
     <p>A continuous exploration of Computer Vision, Deep Learning, Robotics, Embedded Systems, and Game Development.</p>
-    <div class="scroll-indicator">
-      <span>Scroll to Explore</span>
-      <div class="line"></div>
-    </div>
   </section>
 
-  <div id="results-count" class="results-count"></div>
+  <div id="results-count" style="display:none"></div>
 
   <main id="portfolio-main"></main>
 
@@ -678,7 +676,7 @@
     const techFilterSelect = document.getElementById('tech-filter');
     const clusterFilterSelect = document.getElementById('cluster-filter');
     const clearFiltersBtn = document.getElementById('clear-filters');
-    const resultsCount = document.getElementById('results-count');
+    const headerResultsCount = document.getElementById('header-results-count');
     const bttButton = document.getElementById('back-to-top');
 
     let activeTechFilter = 'all';
@@ -784,9 +782,9 @@
         }
       });
 
-      // Update results count
-      resultsCount.textContent = totalVisible > 0 
-        ? `Showing ${totalVisible} project${totalVisible === 1 ? '' : 's'}`
+      // Update results count in header
+      headerResultsCount.textContent = totalVisible > 0 
+        ? `${totalVisible} project${totalVisible === 1 ? '' : 's'} found`
         : '';
 
       // Auto-scroll to results if searching/filtering
@@ -808,9 +806,11 @@
         `;
       }
 
-      // Re-initialize animations for new elements
-      initScrollAnimations();
-      ScrollTrigger.refresh();
+      // Re-initialize animations after render
+      setTimeout(() => {
+        initScrollAnimations();
+        ScrollTrigger.refresh();
+      }, 50);
     }
 
     function initScrollAnimations() {
@@ -831,17 +831,15 @@
           scrollTrigger: {
             trigger: section.querySelector('.grid'),
             start: "top 95%",
-            toggleActions: "play none none reverse",
+            once: true, // Only play once for better stability
           },
           opacity: 0,
           y: 40,
           rotateX: -8,
           duration: 0.8,
-          stagger: 0.1,
+          stagger: 0.05,
           ease: "power2.out",
-          onComplete: function() {
-            gsap.set(this.targets(), { clearProps: "transform" });
-          }
+          clearProps: "all"
         });
       });
     }
@@ -899,7 +897,6 @@
       gsap.from(".hero-subtitle", { opacity: 0, y: -20, duration: 1, delay: 0.2 });
       gsap.from(".hero h2", { opacity: 0, y: 30, duration: 1, delay: 0.4, ease: "power3.out" });
       gsap.from(".hero p", { opacity: 0, y: 20, duration: 1, delay: 0.6 });
-      gsap.from(".scroll-indicator", { opacity: 0, duration: 1, delay: 1 });
 
       // Parallax Background Blobs
       gsap.to(".blob-1", {
