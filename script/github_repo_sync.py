@@ -30,7 +30,13 @@ def download_md_files_recursive(username, repo_name):
         return 0
 
     tree = response.json().get('tree', [])
-    md_files = [item for item in tree if item['type'] == 'blob' and item['path'].endswith('.md')]
+    ignored_files = {'setup.md', 'contribution.md', 'contributing.md'}
+    md_files = [
+        item for item in tree 
+        if item['type'] == 'blob' 
+        and item['path'].endswith('.md')
+        and item['path'].split('/')[-1].lower() not in ignored_files
+    ]
     
     count = 0
     for item in md_files:
