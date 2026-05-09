@@ -30,23 +30,49 @@
 }
 
 .pinned-item {
-  background: var(--glass, rgba(18, 22, 45, 0.65));
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
-  border-radius: 16px;
-  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 24px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: grab;
+  position: relative;
+  overflow: hidden;
+}
+
+.pinned-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+  transition: none;
+  pointer-events: none;
+}
+
+.pinned-item:hover::before {
+  left: 200%;
+  transition: all 0.8s ease;
 }
 
 .pinned-item:hover {
-  transform: translateY(-5px);
-  background: var(--glass-hover, rgba(26, 31, 60, 0.85));
+  transform: translateY(-8px) scale(1.02);
+  background: rgba(255, 255, 255, 0.04);
   border-color: rgba(99, 102, 241, 0.4);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 20px rgba(99, 102, 241, 0.1);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(99, 102, 241, 0.1);
 }
 
 .pinned-item:active {
@@ -89,16 +115,16 @@
 
 .pinned-item-title {
   font-family: var(--font-h, 'Outfit', sans-serif);
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
   color: var(--text-main, #f1f5f9);
   text-decoration: none;
   word-break: break-all;
+  letter-spacing: 0.5px;
 }
 
 .pinned-item-title:hover {
-  text-decoration: underline;
-  color: #3b82f6;
+  color: #6366f1;
 }
 
 .pinned-item-desc {
@@ -148,227 +174,248 @@
 }
 
 /* ── CONTRIBUTIONS LAYOUT ───────────────────────────── */
+#github-activity-section {
+  max-width: 1400px !important;
+  margin: 100px auto !important;
+  padding: 40px !important;
+  background: rgba(8, 10, 24, 0.8) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 32px;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+  position: relative;
+  overflow: hidden;
+}
+
 .contributions-layout {
-  display: flex;
-  gap: 24px;
-  margin-bottom: 40px;
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  gap: 30px;
+  position: relative;
+  z-index: 1;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .contributions-layout {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 }
 
-.contributions-main {
-  flex: 1;
-  overflow-x: auto;
+/* ── HERO STATS SECTION ────────────────────────────── */
+.gh-hero-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
 }
 
+.gh-hero-stats {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.gh-stat-number {
+  font-family: var(--font-h);
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+.gh-stat-label {
+  font-family: var(--font-h);
+  font-size: 18px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* ── YEAR NAVIGATOR (VERTICAL) ──────────────────────── */
 .contributions-sidebar {
-  width: 100px;
-  flex-shrink: 0;
-}
-
-@media (max-width: 768px) {
-  .contributions-sidebar {
-    width: 100%;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .year-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
+  position: relative;
 }
 
-@media (max-width: 768px) {
-  .year-list {
-    flex-direction: row;
-    overflow-x: auto;
-    padding-bottom: 10px;
-  }
+.year-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  justify-content: flex-end;
+}
+
+.year-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s;
+}
+
+.year-item.active .year-dot {
+  background: #3b82f6;
+  box-shadow: 0 0 10px #3b82f6;
+  transform: scale(1.4);
 }
 
 .year-list a {
-  padding: 10px 16px;
-  color: var(--text-muted, #94a3b8);
-  font-family: var(--font-b, 'Inter', sans-serif);
+  padding: 8px 16px;
+  color: var(--text-muted);
+  font-family: var(--font-h);
   text-decoration: none;
-  font-size: 13px;
+  font-size: 15px;
+  font-weight: 500;
   border-radius: 12px;
   transition: all 0.3s;
-  background: transparent;
-  border: 1px solid transparent;
+  min-width: 70px;
   text-align: center;
 }
 
-.year-list a:hover {
-  background: var(--glass, rgba(18, 22, 45, 0.65));
-  color: var(--text-main, #f1f5f9);
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
-}
-
 .year-list a.active {
-  background: linear-gradient(90deg, #6366f1, #06b6d4);
-  color: #ffffff;
-  font-weight: 600;
-  border: none;
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+  background: #3b82f6;
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
 }
 
-/* ── CALENDAR WIDGET OVERRIDE FOR GLASSMORPHISM ─────── */
+
+
+/* ── CALENDAR WIDGET OVERRIDE ────────────────────────── */
 .calendar {
-  background: var(--glass, rgba(18, 22, 45, 0.65)) !important;
-  backdrop-filter: blur(25px) !important;
-  -webkit-backdrop-filter: blur(25px) !important;
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.08)) !important;
-  border-radius: 16px !important;
+  background: rgba(10, 15, 30, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.03) !important;
+  border-radius: 20px !important;
   padding: 24px !important;
-  min-height: 150px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+  margin-bottom: 20px !important;
 }
 
-/* Ensure the title matches dark mode UI */
-.calendar .position-relative h2,
-.calendar h2.f4 {
-  color: var(--text-main, #f1f5f9) !important;
-  font-family: var(--font-h, 'Outfit', sans-serif) !important;
-  font-size: 16px !important;
-  font-weight: 500 !important;
-  margin-bottom: 16px !important;
-  text-align: left !important;
+.ContributionCalendar-day {
+  rx: 2px;
+  ry: 2px;
+  transition: all 0.2s ease;
 }
 
-/* Fix the bottom legend "Less / More" */
-.calendar .contrib-footer {
-  color: var(--text-muted, #94a3b8) !important;
-  font-family: var(--font-b, 'Inter', sans-serif) !important;
-  font-size: 12px !important;
-  padding-top: 16px !important;
-  border-top: 1px solid var(--border, rgba(255, 255, 255, 0.05)) !important;
-  margin-top: 16px !important;
-}
-
-.calendar .contrib-legend {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: flex-end !important;
-}
-
-.calendar .contrib-legend .legend {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 4px !important;
-  margin: 0 6px !important;
-  list-style: none !important;
-  padding: 0 !important;
-}
-
-.calendar .contrib-legend .legend li {
-  width: 12px !important;
-  height: 12px !important;
-  border-radius: 3px !important;
-  display: inline-block !important;
-}
-
-.calendar-graph {
-  padding: 0 !important;
-  margin: 0 !important;
-  border: none !important;
-}
-
-.calendar-graph text.wday,
-.calendar-graph text.month {
-  fill: var(--text-muted, #94a3b8) !important;
-  font-family: var(--font-b, 'Inter', sans-serif) !important;
-  font-size: 10px !important;
-}
-
-/* ── UI-MATCHING CONTRIBUTION COLORS (Cyan -> Purple) ── */
-.js-calendar-graph-svg .ContributionCalendar-day,
-.calendar .ContributionCalendar-day {
-  rx: 3px;
-  /* rounded corners on svg rects */
-  ry: 3px;
-}
-
+/* Strict Color Palette (Blue -> Purple -> Magenta) */
 .js-calendar-graph-svg .ContributionCalendar-day[data-level="0"],
-.calendar .ContributionCalendar-day[data-level="0"],
-.calendar .contrib-legend .legend li[data-level="0"],
-.calendar .contrib-legend .legend li:nth-child(1) {
-  fill: rgba(255, 255, 255, 0.03) !important;
-  background-color: rgba(255, 255, 255, 0.03) !important;
-  outline: 1px solid rgba(255, 255, 255, 0.03) !important;
-  outline-offset: -1px !important;
+.calendar .ContributionCalendar-day[data-level="0"] {
+  fill: rgba(255, 255, 255, 0.05) !important;
+  background-color: rgba(255, 255, 255, 0.05) !important;
 }
 
 .js-calendar-graph-svg .ContributionCalendar-day[data-level="1"],
-.calendar .ContributionCalendar-day[data-level="1"],
-.calendar .contrib-legend .legend li[data-level="1"],
-.calendar .contrib-legend .legend li:nth-child(2) {
-  fill: #1d4ed8 !important;
+.calendar .ContributionCalendar-day[data-level="1"] {
+  fill: #1d4ed8 !important; 
   background-color: #1d4ed8 !important;
-  outline: none !important;
 }
 
 .js-calendar-graph-svg .ContributionCalendar-day[data-level="2"],
-.calendar .ContributionCalendar-day[data-level="2"],
-.calendar .contrib-legend .legend li[data-level="2"],
-.calendar .contrib-legend .legend li:nth-child(3) {
+.calendar .ContributionCalendar-day[data-level="2"] {
   fill: #3b82f6 !important;
   background-color: #3b82f6 !important;
-  outline: none !important;
 }
 
 .js-calendar-graph-svg .ContributionCalendar-day[data-level="3"],
-.calendar .ContributionCalendar-day[data-level="3"],
-.calendar .contrib-legend .legend li[data-level="3"],
-.calendar .contrib-legend .legend li:nth-child(4) {
+.calendar .ContributionCalendar-day[data-level="3"] {
   fill: #8b5cf6 !important;
   background-color: #8b5cf6 !important;
-  outline: none !important;
 }
 
 .js-calendar-graph-svg .ContributionCalendar-day[data-level="4"],
-.calendar .ContributionCalendar-day[data-level="4"],
-.calendar .contrib-legend .legend li[data-level="4"],
-.calendar .contrib-legend .legend li:nth-child(5) {
-  fill: #a855f7 !important;
-  background-color: #a855f7 !important;
-  outline: none !important;
+.calendar .ContributionCalendar-day[data-level="4"] {
+  fill: #d946ef !important;
+  background-color: #d946ef !important;
+}
+
+
+
+/* ── ANALYTICS & REPLAY ────────────────────────────── */
+.gh-analytics-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+  gap: 20px;
+}
+
+#gh-analytics {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+}
+
+.gh-analytic-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 12px 20px;
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+}
+
+.gh-analytic-card .label {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
+
+.gh-analytic-card .value {
+  font-family: var(--font-h);
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.gh-replay-btn {
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-family: var(--font-h);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.gh-replay-btn:hover {
+  background: rgba(99, 102, 241, 0.2);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+  transform: translateY(-2px);
 }
 
 /* ── CUSTOM NATIVE HOVER TOOLTIP ────────────────────── */
 #github-native-tooltip {
   position: absolute;
   display: none;
-  background: var(--bg-light, #0a0c1a);
+  background: rgba(10, 15, 35, 0.85);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-main, #f1f5f9);
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 12px 16px;
+  border-radius: 12px;
   font-size: 12px;
   font-family: var(--font-b, 'Inter', sans-serif);
-  font-weight: 500;
   pointer-events: none;
   z-index: 10000;
   white-space: nowrap;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.1);
 }
 
-#github-native-tooltip::after {
-  content: " ";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: var(--border, rgba(255, 255, 255, 0.1)) transparent transparent transparent;
-}
 
 /* Hide annoying sr-only stuff, raw links, and skip link */
 .calendar .sr-only,
