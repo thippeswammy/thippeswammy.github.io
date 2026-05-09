@@ -208,11 +208,29 @@
       transform: scaleX(0);
       transform-origin: left;
       transition: transform 0.4s ease;
+      z-index: 2;
     }
+    .card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(
+        600px circle at var(--mouse-x, 0) var(--mouse-y, 0),
+        rgba(255, 255, 255, 0.06),
+        transparent 40%
+      );
+      opacity: 0;
+      transition: opacity 0.4s;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .card:hover::after { opacity: 1; }
+    .card > * { position: relative; z-index: 1; }
+
     .card:hover {
-      transform: translateY(-8px);
+      transform: translateY(-8px) scale(1.01);
       background: var(--glass-hover);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 40px var(--accent) inset;
       border-color: rgba(255,255,255,0.15);
     }
     .card:hover::before { transform: scaleX(1); }
@@ -282,6 +300,13 @@
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.06);
       color: var(--text-muted);
+      transition: all 0.3s ease;
+    }
+    .tech-tag:hover {
+      background: var(--accent);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
     .card-link {
       display: inline-flex;
@@ -439,6 +464,29 @@
       gsap.from(".hero h2", { opacity: 0, y: 30, duration: 1, delay: 0.4, ease: "power3.out" });
       gsap.from(".hero p", { opacity: 0, y: 20, duration: 1, delay: 0.6 });
       gsap.from(".scroll-indicator", { opacity: 0, duration: 1, delay: 1 });
+
+      // Parallax Background Blobs
+      gsap.to(".blob-1", {
+        yPercent: 40,
+        ease: "none",
+        scrollTrigger: { trigger: "body", start: "top top", end: "bottom top", scrub: true }
+      });
+      gsap.to(".blob-2", {
+        yPercent: -40,
+        ease: "none",
+        scrollTrigger: { trigger: "body", start: "top top", end: "bottom top", scrub: true }
+      });
+
+      // Mouse tracking for card glow effect
+      document.getElementById('portfolio-main').addEventListener('mousemove', e => {
+        for(const card of document.querySelectorAll('.card')) {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          card.style.setProperty('--mouse-x', `${x}px`);
+          card.style.setProperty('--mouse-y', `${y}px`);
+        }
+      });
 
       // Header Scroll Effect
       const header = document.getElementById('header');
