@@ -3,12 +3,12 @@
 // ═══════════════════════════════════════════════════════════════════
 
 window.CLUSTERS = [
-  { id:'robotics', label:'Robotics &',     full:'Robotics & Autonomous Systems', color:0x06b6d4, css:'#06b6d4', emoji:'🤖' },
-  { id:'ai',       label:'AI & Computer Vision', full:'AI & Computer Vision',   color:0x3b82f6, css:'#3b82f6', emoji:'🧠' },
-  { id:'games',    label:'Games',           full:'Games',                         color:0xa855f7, css:'#a855f7', emoji:'🎮' },
-  { id:'embedded', label:'Embedded & Hardware', full:'Embedded & Hardware',       color:0xf97316, css:'#f97316', emoji:'⚡' },
-  { id:'apps',     label:'Apps & Software', full:'Apps & Software',               color:0x22c55e, css:'#22c55e', emoji:'📱' },
-  { id:'tools',    label:'Dev Tools & Research', full:'Dev Tools & Research',     color:0xec4899, css:'#ec4899', emoji:'🔧' },
+  { id:'robotics', label:'ROBOTICS',     full:'Robotics & Autonomous Systems', color:0x06b6d4, css:'#06b6d4', emoji:'🤖' },
+  { id:'ai',       label:'AI & CV',       full:'AI & Computer Vision',           color:0x3b82f6, css:'#3b82f6', emoji:'🧠' },
+  { id:'games',    label:'GAMES',         full:'Games',                           color:0xa855f7, css:'#a855f7', emoji:'🎮' },
+  { id:'embedded', label:'EMBEDDED',      full:'Embedded & Hardware',             color:0xf97316, css:'#f97316', emoji:'⚡' },
+  { id:'apps',     label:'APPS',          full:'Apps & Software',                 color:0x22c55e, css:'#22c55e', emoji:'📱' },
+  { id:'tools',    label:'DEV TOOLS',     full:'Dev Tools & Research',            color:0xec4899, css:'#ec4899', emoji:'🔧' },
 ];
 
 window.PROJECTS = [
