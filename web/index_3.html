@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thippeswamy K.S. — Portfolio</title>
+  <meta name="description" content="Thippeswamy K.S. Portfolio | AI, Robotics, Games, Embedded Systems">
+  <link rel="icon" href="https://avatars.githubusercontent.com/u/73697198?v=4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.13/dist/lenis.css">
+  <script src="projects_data.js"></script>
+
+  <style>
+    :root {
+      --bg: #06060f;
+      --bg-light: #0a0c1a;
+      --glass: rgba(18, 22, 45, 0.65);
+      --glass-hover: rgba(26, 31, 60, 0.85);
+      --border: rgba(255, 255, 255, 0.08);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --font-h: 'Outfit', sans-serif;
+      --font-b: 'Inter', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    /* 1. Smooth Scroll Base */
+    html.lenis, html.lenis body { height: auto; }
+    .lenis.lenis-smooth { scroll-behavior: auto !important; }
+    .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+
+    /* 2. Reading Progress Bar */
+    .progress-container {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 3px;
+      z-index: 2001;
+      pointer-events: none;
+    }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #06b6d4);
+      width: 0%;
+    }
+
+    body {
+      font-family: var(--font-b);
+      background-color: var(--bg);
+      color: var(--text-main);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    
+    /* Background animated elements */
+    .bg-blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      z-index: -1;
+      opacity: 0.15;
+      animation: drift 20s infinite alternate;
+    }
+    .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #3b82f6; }
+    .blob-2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: #a855f7; animation-delay: -5s; }
+    @keyframes drift {
+      from { transform: translate(0, 0) scale(1); }
+      to { transform: translate(5%, 10%) scale(1.1); }
+    }
+
+    /* Header & Navigation */
+    header {
+      position: fixed;
+      display: flex;
+      flex-direction: column;
+      background: rgba(10, 15, 30, 0.7);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      z-index: 2000;
+      padding: 10px 24px;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 95%;
+      max-width: 1300px;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 
+        0 20px 50px rgba(0, 0, 0, 0.5),
+        inset 0 0 20px rgba(255, 255, 255, 0.02);
+      overflow: hidden;
+    }
+    
+    /* HUD Scanline Effect */
+    header::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(to bottom, transparent 50%, rgba(99, 102, 241, 0.03) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .header-main {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .header-search-bar {
+      width: 100%;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      position: relative;
+      z-index: 2;
+    }
+
+    header.nav-hidden {
+      transform: translateX(-50%) translateY(-150%);
+      opacity: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      text-decoration: none;
+      color: var(--text-main);
+      position: relative;
+    }
+
+    .brand img {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      border: 2px solid #6366f1;
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .brand:hover img {
+      transform: scale(1.1);
+      box-shadow: 0 0 25px rgba(99, 102, 241, 0.6);
+    }
+
+    .brand h1 {
+      font-family: var(--font-h);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+    }
+
+    nav { display: flex; gap: 4px; }
+    nav a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-family: var(--font-h);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      padding: 8px 16px;
+      border-radius: 12px;
+      transition: all 0.3s;
+      border: 1px solid transparent;
+    }
+
+    nav a:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    nav a.active {
+      color: #fff;
+      background: rgba(99, 102, 241, 0.1);
+      border-color: rgba(99, 102, 241, 0.2);
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.1);
+    }
+
+
+    /* Hero Section */
+    .hero {
+      min-height: 65vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 20px;
+      margin-top: 100px;
+    }
+
+    /* Sections */
+    section.cluster {
+      padding: 60px 5%;
+      position: relative;
+    }
+    .cluster:not(:last-of-type)::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+    }
+    .cluster-header {
+      margin-bottom: 80px;
+      text-align: left;
+      position: relative;
+    }
+    .cluster-header::before {
+      content: '';
+      position: absolute;
+      left: 0; top: -20px;
+      width: 40px; height: 2px;
+      background: #6366f1;
+      box-shadow: 0 0 10px #6366f1;
+    }
+    .cluster-emoji { font-size: 3rem; margin-bottom: 10px; display: none; }
+    .cluster-title {
+      font-family: var(--font-h);
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #fff 40%, rgba(255,255,255,0.4));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .cluster-subtitle {
+      font-family: var(--font-h);
+      font-size: 0.8rem;
+      color: #6366f1;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-top: 10px;
+      opacity: 0.8;
+    }
+
+
+    /* Grid & Cards */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 30px;
+      max-width: 1400px;
+      margin: 0 auto;
+      align-items: stretch;
+      justify-content: center;
+    }
+    .card {
+      max-width: 450px;
+      width: 100%;
+      background: var(--bg-light);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+      cursor: default;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 4px;
+      background: var(--accent);
+      opacity: 0.8;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+      z-index: 2;
+    }
+    .card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(
+        600px circle at var(--mouse-x, 0) var(--mouse-y, 0),
+        rgba(255, 255, 255, 0.06),
+        transparent 40%
+      );
+      opacity: 0;
+      transition: opacity 0.4s;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .card:hover::after { opacity: 1; }
+    .card > * { position: relative; z-index: 1; }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.01);
+      background: var(--glass-hover);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 40px var(--accent) inset;
+      border-color: rgba(255,255,255,0.15);
+    }
+    .card:hover::before { transform: scaleX(1); }
+
+    .card-title {
+      font-family: var(--font-h);
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+    .card-tagline {
+      font-size: 0.95rem;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+    .card-summary {
+      color: var(--accent);
+      font-size: 0.95rem;
+      margin-bottom: 24px;
+      flex-grow: 1;
+    }
+    .card-highlights {
+      list-style: none;
+      margin-bottom: 30px;
+    }
+    .card-highlights li {
+      position: relative;
+      padding-left: 20px;
+      font-size: 0.85rem;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+    .card-highlights li::before {
+      content: '▹';
+      position: absolute;
+      left: 0; top: 0;
+      color: var(--accent);
+      font-size: 1.1rem;
+      line-height: 1.2;
+    }
+    .card-tech-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .tech-tag {
+      font-family: var(--font-h);
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: var(--text-muted);
+      transition: all 0.3s ease;
+    }
+    .tech-tag:hover {
+      background: var(--accent);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-h);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-decoration: none;
+      color: var(--text-main);
+      padding: 12px 24px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+      align-self: flex-start;
+      margin-top: auto;
+    }
+    .card-link:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      transform: scale(1.05);
+    }
+    .card-private {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-top: auto;
+      align-self: flex-start;
+    }
+
+    footer {
+      text-align: center;
+      padding: 60px 20px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: var(--font-h);
+      font-size: 0.9rem;
+    }
+
+    /* Search & Filter Controls (Header Integrated) */
+    .header-search-bar .search-wrapper {
+      flex: 1;
+      position: relative;
+    }
+    .header-search-bar .search-input {
+      width: 100%;
+      padding: 10px 15px 10px 40px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      color: #fff;
+      font-family: var(--font-b);
+      font-size: 0.85rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      outline: none;
+    }
+    .header-search-bar .search-input:focus {
+      background: rgba(99, 102, 241, 0.05);
+      border-color: rgba(99, 102, 241, 0.5);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+    }
+    .header-search-bar .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.9rem;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .header-search-bar .filter-select {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      color: var(--text-muted);
+      padding: 0 30px 0 15px;
+      font-family: var(--font-h);
+      font-size: 0.8rem;
+      font-weight: 600;
+      height: 40px;
+      cursor: pointer;
+      outline: none;
+      min-width: 140px;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 14px;
+      transition: all 0.3s;
+    }
+    .header-search-bar .filter-select:hover {
+      background-color: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    .clear-filters-btn {
+      background: rgba(239, 68, 68, 0.05);
+      border: 1px solid rgba(239, 68, 68, 0.1);
+      border-radius: 12px;
+      color: rgba(239, 68, 68, 0.7);
+      padding: 0 15px;
+      height: 40px;
+      font-family: var(--font-h);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+    .clear-filters-btn:hover {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fff;
+      border-color: rgba(239, 68, 68, 0.4);
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+    }
+
+    .header-badge {
+      font-size: 0.7rem;
+      color: #6366f1;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+      opacity: 0.8;
+    }
+    .hero-subtitle {
+      font-family: var(--font-h);
+      color: #6366f1;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+    }
+    .hero h2 {
+      font-family: var(--font-h);
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      max-width: 900px;
+      margin-bottom: 30px;
+      background: linear-gradient(135deg, #ffffff, #818cf8, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin-bottom: 50px;
+    }
+
+    /* Back to Top Button */
+    .back-to-top {
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+      width: 54px;
+      height: 54px;
+      background: linear-gradient(135deg, #6366f1, #06b6d4);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      font-size: 1.5rem;
+    }
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .back-to-top:hover {
+      transform: translateY(-5px) scale(1.1);
+      box-shadow: 0 15px 35px rgba(99, 102, 241, 0.5);
+    }
+
+    /* Empty Results State */
+    .empty-state {
+      text-align: center;
+      padding: 120px 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .empty-state h3 {
+      font-family: var(--font-h);
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .empty-state p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    @media (max-width: 768px) {
+      header { flex-direction: column; gap: 15px; padding: 15px; }
+      .hero h2 { font-size: 2.5rem; }
+      .grid { grid-template-columns: 1fr; }
+      section.cluster { padding: 80px 20px; }
+      .controls-container { margin-top: -20px; }
+      .back-to-top { bottom: 20px; right: 20px; width: 44px; height: 44px; font-size: 1.2rem; }
+    }
+  </style>
+
+  <!-- GitHub Calendar CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/github-calendar@latest/dist/github-calendar-responsive.css" />
+  <!-- GitHub Components CSS -->
+  <link rel="stylesheet" href="github_components.css">
+</head>
+<body>
+
+  <!-- Animated Background Blobs -->
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+
+  <header id="header">
+    <div class="header-main">
+      <a href="#" class="brand">
+        <img src="https://avatars.githubusercontent.com/u/73697198?v=4" alt="Thippeswamy K.S.">
+        <div class="brand-text">
+          <h1>THIPPESWAMY K.S.</h1>
+          <span id="header-results-count" class="header-badge"></span>
+        </div>
+      </a>
+      <nav id="nav-links"></nav>
+    </div>
+    <div class="header-search-bar">
+      <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="project-search" class="search-input" placeholder="Find a project...">
+      </div>
+      <select id="tech-filter" class="filter-select">
+        <option value="all">Technology</option>
+      </select>
+      <select id="cluster-filter" class="filter-select">
+        <option value="all">Category</option>
+      </select>
+      <button id="clear-filters" class="clear-filters-btn">Clear</button>
+    </div>
+  </header>
+
+  <section class="hero" id="hero">
+    <div class="hero-subtitle">Software Engineer & Researcher</div>
+    <h2>Bridging Hardware, AI, and Autonomous Systems</h2>
+    <p>A continuous exploration of Computer Vision, Deep Learning, Robotics, Embedded Systems, and Game Development.</p>
+  </section>
+
+  <!-- GitHub Activity Section -->
+  <section id="github-activity-section">
+    <!-- Large Hero Header -->
+    <div class="gh-hero-header">
+      <div class="gh-hero-stats">
+        <div class="gh-stat-number">0</div>
+        <div class="gh-stat-label">contributions in the last year</div>
+      </div>
+      <div style="font-size: 14px; color: var(--text-muted); margin-top: 5px;">Your activity across time • Keep up the great work!</div>
+    </div>
+
+
+
+    <!-- Contributions Layout -->
+    <div id="contributions-section" class="contributions-layout">
+      <div class="contributions-main">
+        <div class="calendar">
+          Initializing neural grid...
+        </div>
+        
+        <!-- Bottom Section: Profile Card & Legend -->
+        <div id="gh-footer-container"></div>
+        
+        <!-- Analytics & Replay -->
+        <div class="gh-analytics-row">
+          <div id="gh-analytics">
+            <!-- Widgets injected by JS -->
+          </div>
+          <button class="gh-replay-btn" onclick="startReplay()">
+            <span>▶</span> Replay Activity
+          </button>
+        </div>
+      </div>
+
+      <div class="contributions-sidebar">
+        <ul class="year-list">
+          <!-- Dynamically generated by github_components.js -->
+        </ul>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Pinned Projects (Separated) -->
+  <section id="pinned-section" style="max-width: 1200px; margin: 80px auto; padding: 0 40px;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px;">
+      <h3 style="font-family: var(--font-h); font-size: 2rem; font-weight: 700; color: #fff; line-height: 1;">Premium Repositories</h3>
+      <button class="customize-pins-btn" onclick="openPinModal()">
+        <span style="margin-right: 8px;">⚙</span> Customize
+      </button>
+    </div>
+    <div id="github-pinned-container" class="github-pinned-grid"></div>
+  </section>
+
+
+
+
+
+  <!-- Customize Pins Modal -->
+  <div id="pin-modal" class="pin-modal-overlay">
+    <div class="pin-modal-content">
+      <div class="pin-modal-header">
+        <h3 class="pin-modal-title">Customize your pinned items</h3>
+        <button class="pin-modal-close" onclick="closePinModal()">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path></svg>
+        </button>
+      </div>
+      <div class="pin-modal-body">
+        <p style="color: #8b949e; font-size: 13px; margin-bottom: 15px;">Select projects to feature on your profile.</p>
+        <div id="pin-modal-list" class="pin-modal-list" data-lenis-prevent>
+          <!-- Checkboxes generated by JS -->
+        </div>
+      </div>
+      <div class="pin-modal-footer">
+        <span id="pin-count-text" style="color: #8b949e; font-size: 13px;"></span>
+        <button class="pin-save-btn" onclick="saveModalPins()">Save pins</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="results-count" style="display:none"></div>
+
+  <main id="portfolio-main"></main>
+
+  <footer>
+    <p>© 2026 Thippeswamy K.S. — Designed & Built with precision.</p>
+  </footer>
+
+  <button id="back-to-top" class="back-to-top" title="Go to top">↑</button>
+
+  <script>
+    // Initialize GSAP ScrollTrigger
+    gsap.registerPlugin(ScrollTrigger);
+
+    // 1. Initialize Smooth Scroll (Lenis)
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true
+    });
+    window.lenis = lenis;
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    // 3. Connect GSAP ScrollTrigger to Lenis
+    lenis.on('scroll', ScrollTrigger.update);
+
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
+
+    gsap.ticker.lagSmoothing(0);
+
+    // 2. Smart Header Logic
+    let lastScrollY = window.scrollY;
+    const headerEl = document.getElementById('header');
+    document.body.insertAdjacentHTML('afterbegin', '<div class="progress-container"><div id="scroll-progress" class="progress-bar"></div></div>');
+    const progressIndicator = document.getElementById('scroll-progress');
+
+    window.addEventListener('scroll', () => {
+      const currentScrollY = window.scrollY;
+      
+      // Progress Bar update
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (currentScrollY / totalHeight) * 100;
+      progressIndicator.style.width = `${progress}%`;
+
+      // Hide/Show Header on scroll direction
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        headerEl.classList.add('nav-hidden');
+      } else {
+        headerEl.classList.remove('nav-hidden');
+      }
+      
+      // Header background blur intensity
+      if (currentScrollY > 50) {
+        headerEl.style.background = 'rgba(10, 12, 26, 0.95)';
+        headerEl.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
+      } else {
+        headerEl.style.background = 'var(--glass)';
+        headerEl.style.boxShadow = 'none';
+      }
+      
+      lastScrollY = currentScrollY;
+    });
+
+    const navContainer = document.getElementById('nav-links');
+    const mainContainer = document.getElementById('portfolio-main');
+    const searchInput = document.getElementById('project-search');
+    const techFilterSelect = document.getElementById('tech-filter');
+    const clusterFilterSelect = document.getElementById('cluster-filter');
+    const clearFiltersBtn = document.getElementById('clear-filters');
+    const headerResultsCount = document.getElementById('header-results-count');
+    const bttButton = document.getElementById('back-to-top');
+
+    let activeTechFilter = 'all';
+    let activeClusterFilter = 'all';
+    let searchQuery = '';
+
+    // Populate Technology Dropdown
+    const allTech = [...new Set(window.PROJECTS.flatMap(p => p.tech || []))].sort();
+    allTech.forEach(tech => {
+      const opt = document.createElement('option');
+      opt.value = tech;
+      opt.textContent = tech;
+      techFilterSelect.appendChild(opt);
+    });
+
+    // Populate Category Dropdown
+    window.CLUSTERS.forEach(cluster => {
+      const opt = document.createElement('option');
+      opt.value = cluster.id;
+      opt.textContent = cluster.label;
+      clusterFilterSelect.appendChild(opt);
+    });
+
+    // Main Rendering Function
+    function renderPortfolio() {
+      mainContainer.innerHTML = '';
+      navContainer.innerHTML = '';
+      
+      // Add Contributions and Pinned links first
+      const contribLink = document.createElement('a');
+      contribLink.href = '#contributions-section';
+      contribLink.textContent = 'Contributions';
+      navContainer.appendChild(contribLink);
+
+      const pinnedLink = document.createElement('a');
+      pinnedLink.href = '#pinned-section';
+      pinnedLink.textContent = 'Pinned';
+      navContainer.appendChild(pinnedLink);
+
+      
+      let totalVisible = 0;
+
+      window.CLUSTERS.forEach((cluster) => {
+        // Skip cluster if cluster filter is active and doesn't match
+        if (activeClusterFilter !== 'all' && activeClusterFilter !== cluster.id) return;
+
+        // Filter projects for this cluster based on search and tech filter
+        const filteredProjects = window.PROJECTS.filter(p => {
+          if (p.cluster !== cluster.id) return false;
+          
+          const matchesSearch = searchQuery === '' || 
+            p.name.toLowerCase().includes(searchQuery) || 
+            p.summary.toLowerCase().includes(searchQuery) ||
+            (p.tech && p.tech.some(t => t.toLowerCase().includes(searchQuery)));
+          
+          const matchesTech = activeTechFilter === 'all' || 
+            (p.tech && p.tech.includes(activeTechFilter));
+            
+          return matchesSearch && matchesTech;
+        });
+
+        if (filteredProjects.length > 0) {
+          totalVisible += filteredProjects.length;
+          const clusterIndex = window.CLUSTERS.indexOf(cluster);
+
+          // Create Nav Link
+          const navLink = document.createElement('a');
+          navLink.href = `#${cluster.id}`;
+          navLink.textContent = cluster.label;
+          navContainer.appendChild(navLink);
+
+          // Create Section
+          const section = document.createElement('section');
+          section.className = 'cluster';
+          section.id = cluster.id;
+          
+          const header = document.createElement('div');
+          header.className = 'cluster-header';
+          header.innerHTML = `
+            <h3 class="cluster-title" style="color: ${cluster.css}">${cluster.full}</h3>
+          `;
+          section.appendChild(header);
+
+
+
+          const grid = document.createElement('div');
+          grid.className = 'grid';
+
+          filteredProjects.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'card proj-card';
+            card.style.setProperty('--accent', cluster.css);
+
+            let linkHtml = p.isPrivate 
+              ? `<div class="card-private">🔒 Private Repository</div>`
+              : `<a href="${p.github}" target="_blank" class="card-link">View Project ↗</a>`;
+
+            card.innerHTML = `
+              <h4 class="card-title">${p.name}</h4>
+              <div class="card-tagline">${p.summary}</div>
+              <p class="card-summary">${p.description || ''}</p>
+              <ul class="card-highlights">
+                ${(p.highlights || []).map(h => `<li>${h}</li>`).join('')}
+              </ul>
+              <div class="card-tech-list">
+                ${(p.tech || []).map(t => `<span class="tech-tag">${t}</span>`).join('')}
+              </div>
+              ${linkHtml}
+            `;
+            grid.appendChild(card);
+          });
+
+          section.appendChild(grid);
+          mainContainer.appendChild(section);
+        }
+      });
+
+      // Update results count in header
+      headerResultsCount.textContent = totalVisible > 0 
+        ? `${totalVisible} project${totalVisible === 1 ? '' : 's'} found`
+        : '';
+
+      // Auto-scroll to results if searching/filtering
+      if (searchQuery !== '' || activeTechFilter !== 'all' || activeClusterFilter !== 'all') {
+        const resultsArea = document.getElementById('portfolio-main');
+        const rect = resultsArea.getBoundingClientRect();
+        if (rect.top > 250) { 
+          lenis.scrollTo('#portfolio-main', { offset: -250, duration: 1.5 });
+        }
+      }
+
+      // Handle Empty State
+      if (totalVisible === 0) {
+        mainContainer.innerHTML = `
+          <div class="empty-state">
+            <h3>No Projects Found</h3>
+            <p>Try adjusting your search query or filters.</p>
+            <button class="clear-filters-btn" onclick="document.getElementById('clear-filters').click()" style="margin-top:20px;">Clear All Filters</button>
+          </div>
+        `;
+      }
+
+      // Re-initialize animations after render
+      setTimeout(() => {
+        initScrollAnimations();
+        ScrollTrigger.refresh();
+      }, 50);
+    }
+
+    function initScrollAnimations() {
+      // Scroll animations for sections
+      gsap.utils.toArray('.cluster').forEach(section => {
+        gsap.from(section.querySelector('.cluster-header'), {
+          scrollTrigger: {
+            trigger: section,
+            start: "top 85%",
+            toggleActions: "play none none reverse"
+          },
+          opacity: 0,
+          y: 40,
+          duration: 0.8
+        });
+
+        gsap.from(section.querySelectorAll('.card'), {
+          scrollTrigger: {
+            trigger: section.querySelector('.grid'),
+            start: "top 95%",
+            once: true, // Only play once for better stability
+          },
+          opacity: 0,
+          y: 40,
+          rotateX: -8,
+          duration: 0.8,
+          stagger: 0.05,
+          ease: "power2.out",
+          clearProps: "opacity,y,rotateX,transform"
+        });
+      });
+    }
+
+    // Event Listeners
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value.toLowerCase();
+      renderPortfolio();
+    });
+
+    techFilterSelect.addEventListener('change', (e) => {
+      activeTechFilter = e.target.value;
+      renderPortfolio();
+    });
+
+    clusterFilterSelect.addEventListener('change', (e) => {
+      activeClusterFilter = e.target.value;
+      renderPortfolio();
+    });
+
+    clearFiltersBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      searchQuery = '';
+      activeTechFilter = 'all';
+      activeClusterFilter = 'all';
+      techFilterSelect.value = 'all';
+      clusterFilterSelect.value = 'all';
+      renderPortfolio();
+    });
+
+    // Handle all internal navigation smoothly
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a');
+      if (link && link.getAttribute('href') && link.getAttribute('href').startsWith('#')) {
+        e.preventDefault();
+        const target = link.getAttribute('href');
+        if (target === '#') {
+          lenis.scrollTo(0);
+        } else {
+          lenis.scrollTo(target, { offset: -100 });
+        }
+      }
+    });
+
+    bttButton.addEventListener('click', () => {
+      lenis.scrollTo(0);
+    });
+
+    // Initial render
+    renderPortfolio();
+
+    // Animations setup
+    setTimeout(() => {
+      // Hero Animation
+      gsap.from(".hero-subtitle", { opacity: 0, y: -20, duration: 1, delay: 0.2 });
+      gsap.from(".hero h2", { opacity: 0, y: 30, duration: 1, delay: 0.4, ease: "power3.out" });
+      gsap.from(".hero p", { opacity: 0, y: 20, duration: 1, delay: 0.6 });
+
+      // Parallax Background Blobs
+      gsap.to(".blob-1", {
+        yPercent: 40,
+        ease: "none",
+        scrollTrigger: { trigger: "body", start: "top top", end: "bottom top", scrub: true }
+      });
+      gsap.to(".blob-2", {
+        yPercent: -40,
+        ease: "none",
+        scrollTrigger: { trigger: "body", start: "top top", end: "bottom top", scrub: true }
+      });
+
+      // Mouse tracking for card glow effect
+      document.body.addEventListener('mousemove', e => {
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          card.style.setProperty('--mouse-x', `${x}px`);
+          card.style.setProperty('--mouse-y', `${y}px`);
+        });
+      });
+
+      // Scroll related updates
+      window.addEventListener('scroll', () => {
+        // Back to top visibility
+        if (window.scrollY > 500) {
+          bttButton.classList.add('visible');
+        } else {
+          bttButton.classList.remove('visible');
+        }
+
+        // Update active nav link
+        const sections = document.querySelectorAll('section.cluster, #pinned-section, #contributions-section');
+        const navLinks = document.querySelectorAll('#nav-links a');
+        let current = '';
+        
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop;
+          if (window.scrollY >= sectionTop - 250) {
+            current = section.getAttribute('id');
+          }
+        });
+
+        navLinks.forEach(a => {
+          a.classList.remove('active');
+          if (a.getAttribute('href').substring(1) === current) {
+            a.classList.add('active');
+          }
+        });
+      });
+    }, 100);
+  </script>
+
+  <!-- External Libraries for GitHub Features -->
+  <script src="https://unpkg.com/github-calendar@latest/dist/github-calendar.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+  
+  <!-- Custom GitHub Components Logic -->
+  <script src="github_components.js"></script>
+</body>
+</html>
