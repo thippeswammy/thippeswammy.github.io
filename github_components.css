@@ -153,8 +153,8 @@
   color: #c9d1d9;
 }
 .year-list a.active {
-  background-color: #1f6feb;
-  color: #ffffff;
+  background-color: rgba(31, 111, 235, 0.1);
+  color: #58a6ff;
   font-weight: 600;
 }
 
@@ -168,9 +168,11 @@
 }
 
 /* Hide annoying components from github-calendar */
+.calendar header,
+.calendar .sr-only,
 .calendar .position-relative h2,
 .calendar .contrib-footer {
-  display: none !important; /* Hides "Skip to..." and default headers if any */
+  display: none !important;
 }
 
 .calendar-graph {
@@ -181,16 +183,16 @@
 
 .calendar-graph text.wday,
 .calendar-graph text.month {
-  fill: #8b949e;
-  font-size: 9px;
+  fill: #8b949e !important;
+  font-size: 9px !important;
 }
 
 /* Standard GitHub contribution colors for dark mode (High Contrast) */
-.js-calendar-graph-svg .ContributionCalendar-day[data-level="0"] { fill: #161b22; outline: 1px solid rgba(255,255,255,0.05); outline-offset: -1px; }
-.js-calendar-graph-svg .ContributionCalendar-day[data-level="1"] { fill: #0e4429; outline: 1px solid rgba(255,255,255,0.05); outline-offset: -1px; }
-.js-calendar-graph-svg .ContributionCalendar-day[data-level="2"] { fill: #006d32; outline: 1px solid rgba(255,255,255,0.05); outline-offset: -1px; }
-.js-calendar-graph-svg .ContributionCalendar-day[data-level="3"] { fill: #26a641; outline: 1px solid rgba(255,255,255,0.05); outline-offset: -1px; }
-.js-calendar-graph-svg .ContributionCalendar-day[data-level="4"] { fill: #39d353; outline: 1px solid rgba(255,255,255,0.05); outline-offset: -1px; }
+.js-calendar-graph-svg .ContributionCalendar-day[data-level="0"], .calendar .ContributionCalendar-day[data-level="0"] { fill: #161b22 !important; outline: 1px solid rgba(255,255,255,0.05) !important; outline-offset: -1px !important; }
+.js-calendar-graph-svg .ContributionCalendar-day[data-level="1"], .calendar .ContributionCalendar-day[data-level="1"] { fill: #0e4429 !important; outline: 1px solid rgba(255,255,255,0.05) !important; outline-offset: -1px !important; }
+.js-calendar-graph-svg .ContributionCalendar-day[data-level="2"], .calendar .ContributionCalendar-day[data-level="2"] { fill: #006d32 !important; outline: 1px solid rgba(255,255,255,0.05) !important; outline-offset: -1px !important; }
+.js-calendar-graph-svg .ContributionCalendar-day[data-level="3"], .calendar .ContributionCalendar-day[data-level="3"] { fill: #26a641 !important; outline: 1px solid rgba(255,255,255,0.05) !important; outline-offset: -1px !important; }
+.js-calendar-graph-svg .ContributionCalendar-day[data-level="4"], .calendar .ContributionCalendar-day[data-level="4"] { fill: #39d353 !important; outline: 1px solid rgba(255,255,255,0.05) !important; outline-offset: -1px !important; }
 
 /* Custom Native Hover Tooltip */
 #github-native-tooltip {
