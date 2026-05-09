@@ -1,3 +1,5 @@
+import os
+import urllib.parse
 import requests
 import tkinter as tk
 from tkinter import messagebox, ttk
@@ -12,17 +14,38 @@ def fetch_repos(username):
         print(f"Error fetching repos: {response.status_code}")
         return []
 
-def download_readme(username, repo_name):
-    """Downloads the README.md from the main or master branch."""
-    branches = ['main', 'master']
-    for branch in branches:
-        url = f"https://raw.githubusercontent.com/{username}/{repo_name}/{branch}/README.md"
-        res = requests.get(url)
+def download_md_files_recursive(username, repo_name):
+    """Downloads all .md files from the repository recursively."""
+    # Get default branch
+    url = f"https://api.github.com/repos/{username}/{repo_name}"
+    response = requests.get(url)
+    branch = 'main'
+    if response.status_code == 200:
+        branch = response.json().get('default_branch', 'main')
+        
+    tree_url = f"https://api.github.com/repos/{username}/{repo_name}/git/trees/{branch}?recursive=1"
+    response = requests.get(tree_url)
+    if response.status_code != 200:
+        print(f"Error fetching tree for {repo_name}: {response.status_code}")
+        return 0
+
+    tree = response.json().get('tree', [])
+    md_files = [item for item in tree if item['type'] == 'blob' and item['path'].endswith('.md')]
+    
+    count = 0
+    for item in md_files:
+        path = item['path']
+        encoded_path = urllib.parse.quote(path)
+        raw_url = f"https://raw.githubusercontent.com/{username}/{repo_name}/{branch}/{encoded_path}"
+        res = requests.get(raw_url)
         if res.status_code == 200:
-            with open(f"{repo_name}.md", "w", encoding="utf-8") as f:
+            local_path = os.path.join(repo_name, path)
+            os.makedirs(os.path.dirname(local_path), exist_ok=True)
+            with open(local_path, "w", encoding="utf-8") as f:
                 f.write(res.text)
-            return True
-    return False
+            count += 1
+            
+    return count
 
 class RepoSelectorApp:
     def __init__(self, root, username):
@@ -64,7 +87,7 @@ class RepoSelectorApp:
             cb.pack(anchor="w")
 
         # Download Button
-        self.btn = tk.Button(root, text="Download Selected READMEs", command=self.start_download, bg="#28a745", fg="white", font=("Arial", 10, "bold"))
+        self.btn = tk.Button(root, text="Download Selected .md Files", command=self.start_download, bg="#28a745", fg="white", font=("Arial", 10, "bold"))
         self.btn.pack(pady=20)
 
     def start_download(self):
@@ -75,10 +98,9 @@ class RepoSelectorApp:
 
         success_count = 0
         for repo in selected:
-            if download_readme(self.username, repo):
-                success_count += 1
+            success_count += download_md_files_recursive(self.username, repo)
         
-        messagebox.showinfo("Done", f"Successfully downloaded {success_count} README(s).")
+        messagebox.showinfo("Done", f"Successfully downloaded {success_count} .md file(s).")
 
 if __name__ == "__main__":
     # Update this with your GitHub username
