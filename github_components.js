@@ -40,27 +40,26 @@ function renderCalendar(container, data) {
   container.innerHTML = ''; 
   
   const calendarWrapper = document.createElement('div');
-  calendarWrapper.className = 'calendar-wrapper';
-  calendarWrapper.style.cssText = 'display:flex; flex-direction:column; gap:4px; padding:5px 0; width:100%;';
+  calendarWrapper.style.cssText = 'display:flex; flex-direction:column; gap:6px; padding:10px 0; width:100%; align-items:center;';
 
-  // Create a scrollable container for both months and squares
+  // Scroll Container
   const scrollContainer = document.createElement('div');
-  scrollContainer.style.cssText = 'overflow-x: auto; width: 100%; padding-bottom: 5px;';
+  scrollContainer.style.cssText = 'overflow-x: auto; width: 100%; display: flex; justify-content: center;';
 
   const innerScroll = document.createElement('div');
-  innerScroll.style.cssText = 'min-width: 750px; position: relative;'; // Minimum width to prevent squashing
+  innerScroll.style.cssText = 'padding: 0 10px; display: flex; flex-direction: column; gap: 4px;';
 
-  // Month Labels Row
+  // Months Row (Flex-based for perfect alignment)
   const monthRow = document.createElement('div');
-  monthRow.style.cssText = 'display:flex; margin-left:32px; font-size:10px; color:var(--text-muted); height:18px; position:relative;';
+  monthRow.style.cssText = 'display:flex; gap:3px; margin-left:32px; font-size:10px; color:var(--text-muted); height:18px;';
 
-  // Main Grid (Day labels + Squares)
+  // Main Grid Row
   const mainGrid = document.createElement('div');
   mainGrid.style.cssText = 'display:flex; gap:8px; align-items:flex-start;';
 
   // Day Labels Column
   const dayLabels = document.createElement('div');
-  dayLabels.style.cssText = 'display:flex; flex-direction:column; justify-content:space-between; height:95px; font-size:10px; color:var(--text-muted); padding-top:1px; width:24px; flex-shrink:0;';
+  dayLabels.style.cssText = 'display:flex; flex-direction:column; justify-content:space-between; height:95px; font-size:10px; color:var(--text-muted); padding-top:1px; width:24px; flex-shrink:0; text-align: right; margin-right: 2px;';
   ['', 'Mon', '', 'Wed', '', 'Fri', ''].forEach(d => {
     const span = document.createElement('span');
     span.textContent = d;
@@ -70,27 +69,30 @@ function renderCalendar(container, data) {
 
   // Squares Grid
   const graphContainer = document.createElement('div');
-  graphContainer.className = 'js-calendar-graph-svg';
   graphContainer.style.cssText = 'display:flex; gap:3px;';
 
   const levelMap = { 'NONE':'0', 'FIRST_QUARTILE':'1', 'SECOND_QUARTILE':'2', 'THIRD_QUARTILE':'3', 'FOURTH_QUARTILE':'4' };
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  let currentMonth = '';
+  let lastMonth = -1;
 
-  data.contributions.forEach((week, weekIndex) => {
+  data.contributions.forEach((week) => {
     const weekCol = document.createElement('div');
     weekCol.style.cssText = 'display:flex; flex-direction:column; gap:3px;';
 
-    // Month logic
+    // Month Label Logic (using flex columns to match week columns)
+    const monthCell = document.createElement('div');
+    monthCell.style.cssText = 'width:11px; flex-shrink:0; position:relative;';
+    
     const dateObj = new Date(week[0].date);
-    const monthName = monthNames[dateObj.getMonth()];
-    if (monthName !== currentMonth) {
-      currentMonth = monthName;
-      const mLabel = document.createElement('div');
-      mLabel.textContent = monthName;
-      mLabel.style.cssText = `position:absolute; left:${weekIndex * 14}px; white-space:nowrap;`;
-      monthRow.appendChild(mLabel);
+    const monthIdx = dateObj.getMonth();
+    if (monthIdx !== lastMonth) {
+      lastMonth = monthIdx;
+      const mLabel = document.createElement('span');
+      mLabel.textContent = monthNames[monthIdx];
+      mLabel.style.cssText = 'position:absolute; left:0; top:0; white-space:nowrap;';
+      monthCell.appendChild(mLabel);
     }
+    monthRow.appendChild(monthCell);
 
     week.forEach(day => {
       const dayRect = document.createElement('div');
@@ -114,13 +116,12 @@ function renderCalendar(container, data) {
   
   // Footer
   const footer = document.createElement('div');
-  footer.className = 'contrib-footer';
-  footer.style.cssText = 'display:flex; justify-content:space-between; align-items:center; margin-top:10px; font-size:12px; color:var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top:12px;';
+  footer.style.cssText = 'display:flex; justify-content:space-between; align-items:center; margin-top:12px; font-size:12px; color:var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top:12px; width:100%; max-width: 800px;';
   footer.innerHTML = `
     <div><a href="https://github.com/${GITHUB_USERNAME}" target="_blank" style="color: inherit; text-decoration: none; opacity: 0.8;">GitHub Profile ↗</a></div>
     <div class="contrib-legend" style="display:flex; align-items:center; gap:4px;">
       <span style="font-size:11px;">Less</span>
-      <ul class="legend" style="display:flex; gap:3px; list-style:none; padding:0; margin:0 4px;">
+      <ul style="display:flex; gap:3px; list-style:none; padding:0; margin:0 4px;">
         <li class="ContributionCalendar-day" data-level="0" style="width:10px; height:10px; border-radius:2px;"></li>
         <li class="ContributionCalendar-day" data-level="1" style="width:10px; height:10px; border-radius:2px;"></li>
         <li class="ContributionCalendar-day" data-level="2" style="width:10px; height:10px; border-radius:2px;"></li>
