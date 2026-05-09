@@ -4,17 +4,20 @@
 
 const GITHUB_USERNAME = 'thippeswammy';
 const CONTRIBUTIONS_API = `https://github-contributions-api.deno.dev/${GITHUB_USERNAME}.json`;
+const START_YEAR = 2019; // The year the user started on GitHub
 
 document.addEventListener('DOMContentLoaded', () => {
   initGitHubCalendar();
   initPinnedProjects();
-  initYearLinks();
 });
 
 function initGitHubCalendar() {
   const calendarContainer = document.querySelector('.calendar');
   const contributionHeader = document.querySelector('.gh-stat-number');
   if (!calendarContainer) return;
+
+  // Dynamically create the year navigation
+  generateYearList();
 
   calendarContainer.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted); font-family: var(--font-b);">Initializing neural grid...</div>';
 
@@ -25,14 +28,16 @@ function initGitHubCalendar() {
     })
     .then(data => {
       renderCalendar(calendarContainer, data);
-      if (contributionHeader && data.totalContributions) {
-        animateCountUp(contributionHeader, data.totalContributions);
+      if (contributionHeader) {
+        animateCountUp(contributionHeader, data.totalContributions || 0);
       }
       updateAnalytics(data);
     })
     .catch(err => {
       console.warn('GitHub API Error, using fallback:', err);
-      loadYearlyFallback(calendarContainer, 'extracted', contributionHeader);
+      // Try to load current year from fallback if API fails
+      const currentYear = new Date().getFullYear().toString();
+      loadYearlyFallback(calendarContainer, currentYear, contributionHeader);
     });
 }
 
@@ -163,10 +168,12 @@ function renderCalendar(container, data) {
 
 
 function loadYearlyFallback(container, year, header) {
-  const fileName = year === 'extracted' ? 'extracted_contributions.html' : `contributions_${year}.html`;
+  const fileName = `contributions_${year}.html`;
   
-  fetch(fileName).then(r => r.text()).then(html => {
-    // Wrap the HTML to apply styles
+  fetch(fileName).then(r => {
+    if (!r.ok) throw new Error(`File ${fileName} not found`);
+    return r.text();
+  }).then(html => {
     container.innerHTML = `
       <div class="calendar-wrapper" style="display:flex; flex-direction:column; align-items:center; width:100%;">
         <div class="scroll-container" style="overflow-x:auto; width:100%; display:flex; justify-content:center;">
@@ -177,28 +184,84 @@ function loadYearlyFallback(container, year, header) {
       </div>
     `;
     
-    // Fix SVG styles if it's the raw GitHub SVG
     const svg = container.querySelector('svg');
     if (svg) {
       svg.style.cssText = 'background:transparent; width:100%; height:auto; min-width: 700px;';
-      // Hide GitHub's own legend if it exists to use our CSS-based one or keep theirs
     }
 
-    // Extract count if possible
+    // Extract stats and update analytics
+    const stats = extractStatsFromHTML(html);
+    
     if (header) {
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = html;
-      const countEl = tempDiv.querySelector('h2');
-      if (countEl) {
-        header.textContent = countEl.textContent.trim().replace(/\s+/g, ' ');
-      }
+      animateCountUp(header, stats.totalContributions);
     }
 
+    updateAnalytics(stats);
     setupCustomTooltips(container);
   }).catch(err => {
     console.error(`Failed to load ${fileName}:`, err);
-    container.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding:20px;">Data for ${year} unavailable. <a href="https://github.com/${GITHUB_USERNAME}" target="_blank" style="color:var(--accent);">View on GitHub</a></p>`;
+    container.innerHTML = `
+      <div style="text-align: center; padding: 60px 20px; background: rgba(255,255,255,0.02); border-radius: 20px; border: 1px dashed rgba(255,255,255,0.1);">
+        <div style="font-size: 24px; margin-bottom: 10px;">📡</div>
+        <p style="color:var(--text-muted); margin-bottom: 20px;">Data for ${year} is currently unavailable in the neural cache.</p>
+        <a href="https://github.com/${GITHUB_USERNAME}" target="_blank" class="gh-btn" style="display: inline-block; padding: 10px 20px; background: var(--accent); color: #fff; text-decoration: none; border-radius: 30px; font-weight: 600; font-size: 13px;">View on GitHub ↗</a>
+      </div>
+    `;
+    
+    // Clear analytics if data is missing
+    const analyticsContainer = document.getElementById('gh-analytics');
+    if (analyticsContainer) analyticsContainer.innerHTML = '<div style="color:var(--text-muted); font-size:12px; opacity:0.5;">Awaiting sync...</div>';
+    if (header) header.textContent = '0';
   });
+}
+
+function extractStatsFromHTML(html) {
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = html;
+  
+  // Total count from H2
+  let total = 0;
+  const h2 = tempDiv.querySelector('h2');
+  if (h2) {
+    const totalMatch = h2.textContent.match(/(\d+)/);
+    if (totalMatch) total = parseInt(totalMatch[1]);
+  }
+
+  // Parse days for streak and max day
+  const dayEls = tempDiv.querySelectorAll('.ContributionCalendar-day');
+  const contributions = [];
+  
+  dayEls.forEach(el => {
+    const date = el.getAttribute('data-date');
+    if (!date) return;
+    
+    // GitHub tooltips are often separate, so we try to find the count from the tooltip
+    // or fallback to data-level if needed (though count is better)
+    const id = el.getAttribute('id');
+    let count = 0;
+    if (id) {
+      const tooltip = tempDiv.querySelector(`tool-tip[for="${id}"]`);
+      if (tooltip) {
+        const text = tooltip.textContent.trim();
+        const match = text.match(/^(\d+) contribution/);
+        if (match) count = parseInt(match[1]);
+      } else {
+        // Fallback: estimate from data-level
+        const level = parseInt(el.getAttribute('data-level') || '0');
+        if (level === 1) count = 2;
+        else if (level === 2) count = 5;
+        else if (level === 3) count = 15;
+        else if (level === 4) count = 30;
+      }
+    }
+    
+    contributions.push({ date, contributionCount: count });
+  });
+
+  return {
+    totalContributions: total,
+    contributions: contributions // This is a flat array
+  };
 }
 
 function setupCustomTooltips(container) {
@@ -258,7 +321,11 @@ function updateAnalytics(data) {
   const analyticsContainer = document.getElementById('gh-analytics');
   if (!analyticsContainer || !data.contributions) return;
 
-  const flatDays = data.contributions.flat();
+  // Handle both API (nested weeks) and parsed HTML (flat array) formats
+  const flatDays = Array.isArray(data.contributions[0]) 
+    ? data.contributions.flat() 
+    : data.contributions;
+
   let longestStreak = 0;
   let currentStreak = 0;
   let maxDay = { count: 0, date: '' };
@@ -277,14 +344,17 @@ function updateAnalytics(data) {
 
   analyticsContainer.innerHTML = `
     <div class="gh-analytic-card">
+      <div class="gh-analytic-glow"></div>
       <span class="label">Longest Streak</span>
       <span class="value">${longestStreak} Days</span>
     </div>
     <div class="gh-analytic-card">
+      <div class="gh-analytic-glow"></div>
       <span class="label">Most Active Day</span>
       <span class="value">${maxDay.count} Commits</span>
     </div>
     <div class="gh-analytic-card">
+      <div class="gh-analytic-glow"></div>
       <span class="label">Status</span>
       <span class="value">Neural Sync Active</span>
     </div>
@@ -292,27 +362,60 @@ function updateAnalytics(data) {
 }
 
 
+function generateYearList() {
+  const container = document.querySelector('.year-list');
+  if (!container) return;
+
+  const currentYear = new Date().getFullYear();
+  let html = '';
+
+  for (let year = currentYear; year >= START_YEAR; year--) {
+    const isActive = year === currentYear ? 'active' : '';
+    html += `
+      <li class="year-item ${isActive}">
+        <span class="year-dot"></span>
+        <a href="#" class="${isActive}">${year}</a>
+      </li>
+    `;
+  }
+
+  container.innerHTML = html;
+  initYearLinks();
+}
+
 function initYearLinks() {
   const yearLinks = document.querySelectorAll('.year-list a');
+  const currentYear = new Date().getFullYear().toString();
+  
   yearLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       
-      const parent = link.closest('.year-item');
+      const year = link.textContent.trim();
+      
+      // Update UI active states
       document.querySelectorAll('.year-item').forEach(item => item.classList.remove('active'));
       document.querySelectorAll('.year-list a').forEach(l => l.classList.remove('active'));
-      
-      if (parent) parent.classList.add('active');
+      link.closest('.year-item').classList.add('active');
       link.classList.add('active');
       
-      const year = link.textContent.trim();
       const calendarContainer = document.querySelector('.calendar');
       const contributionHeader = document.querySelector('.gh-stat-number');
+      const contributionSub = document.querySelector('.gh-stat-label');
       
       if (calendarContainer) {
-        calendarContainer.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-muted); font-family: var(--font-b);">Recalibrating for ${year}...</div>`;
+        calendarContainer.innerHTML = `
+          <div style="text-align: center; padding: 60px; color: var(--text-muted);">
+            <div class="spinner-sync" style="width: 40px; height: 40px; border: 2px solid rgba(255,255,255,0.05); border-top-color: var(--accent); border-radius: 50%; margin: 0 auto 20px; animation: spin 1s linear infinite;"></div>
+            <div style="font-family: var(--font-b); letter-spacing: 2px; text-transform: uppercase; font-size: 10px;">Recalibrating for ${year}...</div>
+          </div>
+        `;
         
-        if (year === '2026') {
+        if (contributionSub) {
+          contributionSub.textContent = year === currentYear ? 'contributions in the last year' : `contributions in ${year}`;
+        }
+
+        if (year === currentYear) {
           initGitHubCalendar(); 
         } else {
           loadYearlyFallback(calendarContainer, year, contributionHeader);
