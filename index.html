@@ -692,20 +692,19 @@
       </div>
     </div>
 
-    <!-- Pinned Projects (Separated for clarity) -->
-    <div id="pinned-section" style="margin-top: 60px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 40px;">
-      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px;">
-        <div>
-          <div style="font-family: var(--font-h); font-size: 0.7rem; color: #6366f1; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 8px; opacity: 0.8;">01 // FEATURED_MODULE</div>
-          <h3 style="font-family: var(--font-h); font-size: 2rem; font-weight: 700; color: #fff; line-height: 1;">Premium Repositories</h3>
-        </div>
-        <button class="customize-pins-btn" onclick="openPinModal()">
-          <span style="margin-right: 8px;">⚙</span> SYSTEM_CONFIG
-        </button>
-      </div>
-      <div id="github-pinned-container" class="github-pinned-grid"></div>
-    </div>
   </section>
+
+  <!-- Pinned Projects (Separated) -->
+  <section id="pinned-section" style="max-width: 1200px; margin: 80px auto; padding: 0 40px;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px;">
+      <h3 style="font-family: var(--font-h); font-size: 2rem; font-weight: 700; color: #fff; line-height: 1;">Premium Repositories</h3>
+      <button class="customize-pins-btn" onclick="openPinModal()">
+        <span style="margin-right: 8px;">⚙</span> Customize
+      </button>
+    </div>
+    <div id="github-pinned-container" class="github-pinned-grid"></div>
+  </section>
+
 
 
 
@@ -888,10 +887,10 @@
           const header = document.createElement('div');
           header.className = 'cluster-header';
           header.innerHTML = `
-            <div class="cluster-subtitle">MODULE // 0${clusterIndex + 2}_SYNC</div>
             <h3 class="cluster-title" style="color: ${cluster.css}">${cluster.full}</h3>
           `;
           section.appendChild(header);
+
 
 
           const grid = document.createElement('div');
