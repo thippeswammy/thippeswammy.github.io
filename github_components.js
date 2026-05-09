@@ -30,8 +30,8 @@ function initGitHubCalendar() {
       }
     })
     .catch(err => {
-      console.error('GitHub API Error:', err);
-      loadLocalFallback(calendarContainer);
+      console.warn('GitHub API Error, using fallback:', err);
+      loadYearlyFallback(calendarContainer, 'extracted', header);
     });
 }
 
@@ -42,22 +42,18 @@ function renderCalendar(container, data) {
   const calendarWrapper = document.createElement('div');
   calendarWrapper.style.cssText = 'display:flex; flex-direction:column; gap:6px; padding:10px 0; width:100%; align-items:center;';
 
-  // Scroll Container
   const scrollContainer = document.createElement('div');
   scrollContainer.style.cssText = 'overflow-x: auto; width: 100%; display: flex; justify-content: center;';
 
   const innerScroll = document.createElement('div');
   innerScroll.style.cssText = 'padding: 0 10px; display: flex; flex-direction: column; gap: 4px;';
 
-  // Months Row (Flex-based for perfect alignment)
   const monthRow = document.createElement('div');
   monthRow.style.cssText = 'display:flex; gap:3px; margin-left:32px; font-size:10px; color:var(--text-muted); height:18px;';
 
-  // Main Grid Row
   const mainGrid = document.createElement('div');
   mainGrid.style.cssText = 'display:flex; gap:8px; align-items:flex-start;';
 
-  // Day Labels Column
   const dayLabels = document.createElement('div');
   dayLabels.style.cssText = 'display:flex; flex-direction:column; justify-content:space-between; height:95px; font-size:10px; color:var(--text-muted); padding-top:1px; width:24px; flex-shrink:0; text-align: right; margin-right: 2px;';
   ['', 'Mon', '', 'Wed', '', 'Fri', ''].forEach(d => {
@@ -67,7 +63,6 @@ function renderCalendar(container, data) {
     dayLabels.appendChild(span);
   });
 
-  // Squares Grid
   const graphContainer = document.createElement('div');
   graphContainer.style.cssText = 'display:flex; gap:3px;';
 
@@ -78,8 +73,6 @@ function renderCalendar(container, data) {
   data.contributions.forEach((week) => {
     const weekCol = document.createElement('div');
     weekCol.style.cssText = 'display:flex; flex-direction:column; gap:3px;';
-
-    // Month Label Logic (using flex columns to match week columns)
     const monthCell = document.createElement('div');
     monthCell.style.cssText = 'width:11px; flex-shrink:0; position:relative;';
     
@@ -108,13 +101,11 @@ function renderCalendar(container, data) {
 
   mainGrid.appendChild(dayLabels);
   mainGrid.appendChild(graphContainer);
-  
   innerScroll.appendChild(monthRow);
   innerScroll.appendChild(mainGrid);
   scrollContainer.appendChild(innerScroll);
   calendarWrapper.appendChild(scrollContainer);
   
-  // Footer
   const footer = document.createElement('div');
   footer.style.cssText = 'display:flex; justify-content:space-between; align-items:center; margin-top:12px; font-size:12px; color:var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top:12px; width:100%; max-width: 800px;';
   footer.innerHTML = `
@@ -137,14 +128,42 @@ function renderCalendar(container, data) {
   setupCustomTooltips(container);
 }
 
-function loadLocalFallback(container) {
-  fetch('extracted_contributions.html').then(r => r.text()).then(html => {
-    container.innerHTML = html;
+function loadYearlyFallback(container, year, header) {
+  const fileName = year === 'extracted' ? 'extracted_contributions.html' : `contributions_${year}.html`;
+  
+  fetch(fileName).then(r => r.text()).then(html => {
+    // Wrap the HTML to apply styles
+    container.innerHTML = `
+      <div class="calendar-wrapper" style="display:flex; flex-direction:column; align-items:center; width:100%;">
+        <div class="scroll-container" style="overflow-x:auto; width:100%; display:flex; justify-content:center;">
+          <div class="inner-content" style="padding: 10px;">
+            ${html}
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Fix SVG styles if it's the raw GitHub SVG
     const svg = container.querySelector('svg');
-    if (svg) { svg.style.cssText = 'background:transparent; width:100%; height:auto;'; }
+    if (svg) {
+      svg.style.cssText = 'background:transparent; width:100%; height:auto; min-width: 700px;';
+      // Hide GitHub's own legend if it exists to use our CSS-based one or keep theirs
+    }
+
+    // Extract count if possible
+    if (header) {
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = html;
+      const countEl = tempDiv.querySelector('h2');
+      if (countEl) {
+        header.textContent = countEl.textContent.trim().replace(/\s+/g, ' ');
+      }
+    }
+
     setupCustomTooltips(container);
-  }).catch(() => {
-    container.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding:20px;">Data temporarily unavailable. <a href="https://github.com/${GITHUB_USERNAME}" target="_blank" style="color:var(--accent);">View on GitHub</a></p>`;
+  }).catch(err => {
+    console.error(`Failed to load ${fileName}:`, err);
+    container.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding:20px;">Data for ${year} unavailable. <a href="https://github.com/${GITHUB_USERNAME}" target="_blank" style="color:var(--accent);">View on GitHub</a></p>`;
   });
 }
 
@@ -156,7 +175,7 @@ function setupCustomTooltips(container) {
     document.body.appendChild(tooltip);
   }
   container.addEventListener('mouseover', (e) => {
-    const dayEl = e.target.closest('.ContributionCalendar-day');
+    const dayEl = e.target.closest('.ContributionCalendar-day') || e.target.closest('rect.ContributionCalendar-day');
     if (dayEl) {
       const date = dayEl.getAttribute('data-date');
       const count = dayEl.getAttribute('data-count');
@@ -183,16 +202,15 @@ function initYearLinks() {
       const year = link.textContent.trim();
       const calendarContainer = document.querySelector('.calendar');
       const header = document.getElementById('contribution-count-header');
+      
       if (calendarContainer) {
-        calendarContainer.innerHTML = `
-          <div style="text-align: center; padding: 40px 20px; color: var(--text-muted, #8b949e); background: var(--glass, transparent); border-radius: 16px; min-height: 150px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-            <svg viewBox="0 0 16 16" width="24" height="24" fill="currentColor" style="margin-bottom: 10px;"><path fill-rule="evenodd" d="M1.643 3.143L.427 1.927A.25.25 0 000 2.104V5.75c0 .138.112.25.25.25h3.646a.25.25 0 00.177-.427L2.715 4.215a6.5 6.5 0 11-1.18 4.458.75.75 0 10-1.493.154 8.001 8.001 0 101.6-5.684zM7.75 4a.75.75 0 01.75.75v2.992l2.028.812a.75.75 0 01-.557 1.392l-2.5-1A.75.75 0 017 8.25v-3.5A.75.75 0 017.75 4z"></path></svg>
-            <h4 style="color: var(--text-main, #c9d1d9); margin: 0 0 5px 0; font-family: var(--font-h);">Activity for ${year}</h4>
-            <p style="margin: 0; font-size: 13px; font-family: var(--font-b);">Live history requires direct GitHub profile access.<br>
-            <a href="${link.getAttribute('href')}" target="_blank" style="color: var(--accent, #6366f1); font-weight: 600; text-decoration: none;">View ${year} on GitHub ↗</a></p>
-          </div>
-        `;
-        if (header) header.textContent = `Contributions in ${year}`;
+        calendarContainer.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-muted);">Loading ${year} activity...</div>`;
+        
+        if (year === '2026') {
+          initGitHubCalendar(); // Live fetch for current year
+        } else {
+          loadYearlyFallback(calendarContainer, year, header);
+        }
       }
     });
   });
