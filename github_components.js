@@ -7,7 +7,7 @@ const CONTRIBUTIONS_API = `https://github-contributions-api.deno.dev/${GITHUB_US
 const START_YEAR = 2020; // Changed from 2019
 
 document.addEventListener('DOMContentLoaded', () => {
-  generateYearList(); 
+  generateYearList();
   initGitHubCalendar();
   initPinnedProjects();
 });
@@ -43,7 +43,7 @@ function animateCountUp(el, target) {
   let count = 0;
   const duration = 2000;
   const start = performance.now();
-  
+
   function update(now) {
     const elapsed = now - start;
     const progress = Math.min(elapsed / duration, 1);
@@ -58,8 +58,8 @@ function animateCountUp(el, target) {
 
 function renderCalendar(container, data) {
   if (!data || !data.contributions) return;
-  container.innerHTML = ''; 
-  
+  container.innerHTML = '';
+
   const calendarWrapper = document.createElement('div');
   calendarWrapper.className = 'calendar-wrapper';
   calendarWrapper.style.cssText = 'display:flex; flex-direction:column; gap:2px; width:100%;';
@@ -88,7 +88,7 @@ function renderCalendar(container, data) {
   const graphContainer = document.createElement('div');
   graphContainer.style.cssText = 'display:flex; gap:3px;';
 
-  const levelMap = { 'NONE':'0', 'FIRST_QUARTILE':'1', 'SECOND_QUARTILE':'2', 'THIRD_QUARTILE':'3', 'FOURTH_QUARTILE':'4' };
+  const levelMap = { 'NONE': '0', 'FIRST_QUARTILE': '1', 'SECOND_QUARTILE': '2', 'THIRD_QUARTILE': '3', 'FOURTH_QUARTILE': '4' };
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   let lastMonth = -1;
 
@@ -97,7 +97,7 @@ function renderCalendar(container, data) {
     weekCol.style.cssText = 'display:flex; flex-direction:column; gap:3px;';
     const monthCell = document.createElement('div');
     monthCell.style.cssText = 'width:11px; flex-shrink:0; position:relative;';
-    
+
     const dateObj = new Date(week[0].date);
     const monthIdx = dateObj.getMonth();
     if (monthIdx !== lastMonth) {
@@ -130,7 +130,7 @@ function renderCalendar(container, data) {
   innerScroll.appendChild(mainGrid);
   scrollContainer.appendChild(innerScroll);
   calendarWrapper.appendChild(scrollContainer);
-  
+
   const footerContainer = document.getElementById('gh-footer-container');
   if (footerContainer) {
     footerContainer.innerHTML = `
@@ -159,7 +159,7 @@ function renderCalendar(container, data) {
       </div>
     `;
   }
-  
+
   container.appendChild(calendarWrapper);
   setupCustomTooltips(container);
 }
@@ -170,7 +170,7 @@ function loadYearlyFallback(container, year, header) {
   const fromDate = `${year}-01-01`;
   const toDate = `${year}-12-31`;
   const apiURL = `https://github-contributions-api.deno.dev/${GITHUB_USERNAME}.json?from=${fromDate}&to=${toDate}`;
-  
+
   // Attempt 1: Fetch via API (Automated & CORS-friendly)
   fetch(apiURL)
     .then(r => {
@@ -181,9 +181,9 @@ function loadYearlyFallback(container, year, header) {
       // We only throw if the basic structure is missing. 
       // If totalContributions is 0, we still want to render the grid!
       if (!data.contributions || data.contributions.length === 0) {
-          throw new Error('No structural data in API');
+        throw new Error('No structural data in API');
       }
-      
+
       renderCalendar(container, data);
       if (header) {
         animateCountUp(header, data.totalContributions || 0);
@@ -192,10 +192,10 @@ function loadYearlyFallback(container, year, header) {
     })
     .catch(apiErr => {
       console.warn(`API range fetch failed for ${year}, trying local fallback:`, apiErr);
-      
+
       // Attempt 2: Local HTML Fallback (Existing files)
       const fileName = `contributions_${year}.html`;
-      fetch(`./${fileName}`)
+      fetch(`./contributions/${fileName}`)
         .then(r => {
           if (!r.ok) throw new Error(`Local file not found and API failed`);
           return r.text();
@@ -210,7 +210,7 @@ function loadYearlyFallback(container, year, header) {
               </div>
             </div>
           `;
-          
+
           const svg = container.querySelector('svg');
           if (svg) svg.style.cssText = 'background:transparent; width:100%; height:auto; min-width: 700px;';
 
@@ -242,7 +242,7 @@ function loadYearlyFallback(container, year, header) {
 function extractStatsFromHTML(html) {
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = html;
-  
+
   // 1. Extract Total Contributions from the H2 header
   let total = 0;
   const h2 = tempDiv.querySelector('h2');
@@ -254,14 +254,14 @@ function extractStatsFromHTML(html) {
   // 2. Extract Individual Days
   const dayEls = tempDiv.querySelectorAll('.ContributionCalendar-day');
   const contributions = [];
-  
+
   dayEls.forEach(el => {
     const date = el.getAttribute('data-date');
     if (!date) return;
-    
+
     let count = 0;
     const id = el.getAttribute('id');
-    
+
     // Attempt 1: Look for associated tool-tip by ID
     if (id) {
       const tooltip = tempDiv.querySelector(`tool-tip[for="${id}"], [for="${id}"]`);
@@ -271,7 +271,7 @@ function extractStatsFromHTML(html) {
         if (match) count = parseInt(match[1]);
       }
     }
-    
+
     // Attempt 2: Fallback to data-level estimation if count is still 0 but level > 0
     if (count === 0) {
       const level = parseInt(el.getAttribute('data-level') || '0');
@@ -281,7 +281,7 @@ function extractStatsFromHTML(html) {
         count = levelMap[level] || 0;
       }
     }
-    
+
     contributions.push({ date, contributionCount: count });
   });
 
@@ -321,10 +321,10 @@ function setupCustomTooltips(container) {
   container.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
 }
 
-window.startReplay = function() {
+window.startReplay = function () {
   const days = document.querySelectorAll('.calendar .ContributionCalendar-day[data-date]');
   if (!days.length) return;
-  
+
   let i = 0;
   const interval = setInterval(() => {
     if (i >= days.length) {
@@ -334,12 +334,12 @@ window.startReplay = function() {
     const day = days[i];
     day.style.transform = 'scale(2)';
     day.style.filter = 'brightness(2) drop-shadow(0 0 10px currentColor)';
-    
+
     setTimeout(() => {
       day.style.transform = '';
       day.style.filter = '';
     }, 200);
-    
+
     i++;
   }, 10);
 };
@@ -359,8 +359,8 @@ function updateAnalytics(data) {
   }
 
   // Handle both API (nested weeks) and parsed HTML (flat array) formats
-  const flatDays = Array.isArray(data.contributions[0]) 
-    ? data.contributions.flat() 
+  const flatDays = Array.isArray(data.contributions[0])
+    ? data.contributions.flat()
     : data.contributions;
 
   let longestStreak = 0;
@@ -423,23 +423,23 @@ function generateYearList() {
 function initYearLinks() {
   const yearLinks = document.querySelectorAll('.year-list a');
   const currentYear = new Date().getFullYear().toString();
-  
+
   yearLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
-      
+
       const year = link.textContent.trim();
-      
+
       // Update UI active states
       document.querySelectorAll('.year-item').forEach(item => item.classList.remove('active'));
       document.querySelectorAll('.year-list a').forEach(l => l.classList.remove('active'));
       link.closest('.year-item').classList.add('active');
       link.classList.add('active');
-      
+
       const calendarContainer = document.querySelector('.calendar');
       const contributionHeader = document.querySelector('.gh-stat-number');
       const contributionSub = document.querySelector('.gh-stat-label');
-      
+
       if (calendarContainer) {
         calendarContainer.innerHTML = `
           <div style="text-align: center; padding: 60px; color: var(--text-muted);">
@@ -447,13 +447,13 @@ function initYearLinks() {
             <div style="font-family: var(--font-b); letter-spacing: 2px; text-transform: uppercase; font-size: 10px;">Recalibrating for ${year}...</div>
           </div>
         `;
-        
+
         if (contributionSub) {
           contributionSub.textContent = year === currentYear ? 'contributions in the last year' : `contributions in ${year}`;
         }
 
         if (year === currentYear) {
-          initGitHubCalendar(); 
+          initGitHubCalendar();
         } else {
           loadYearlyFallback(calendarContainer, year, contributionHeader);
         }
