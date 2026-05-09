@@ -152,50 +152,57 @@ function mkSphere(r,color,opts={}){
   const mat=new THREE.MeshStandardMaterial({color,...opts});
   return mkMesh(new THREE.SphereGeometry(r,16,16),mat);
 }
-function mkLabel(text,fontSize=28,textColor='#ffffff',bgColor=null){
+function mkLabel(text,fontSize=28,textColor='#ffffff',bgColor='#0f172a'){
   const cv=document.createElement('canvas');
-  cv.width=512; cv.height=128;
+  cv.width=2048; cv.height=512;
   const ctx=cv.getContext('2d');
-  if(bgColor){ctx.fillStyle=bgColor;ctx.fillRect(0,0,512,128);}
+  ctx.fillStyle=bgColor;ctx.fillRect(0,0,2048,512);
+  ctx.strokeStyle=textColor; ctx.lineWidth=12; ctx.strokeRect(12,12,2024,488);
   ctx.fillStyle=textColor;
-  ctx.font=`${fontSize}px Orbitron,monospace`;
+  const sfs = fontSize * 7;
+  ctx.font=`bold ${sfs}px Orbitron,monospace`;
   ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText(text,256,64);
+  ctx.fillText(text,1024,256);
   const tex=new THREE.CanvasTexture(cv);
-  const mat=new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false});
-  const sp=new THREE.Sprite(mat);
-  sp.scale.set(4,1,1);
-  return sp;
+  const matF=new THREE.MeshBasicMaterial({map:tex});
+  const matS=new THREE.MeshStandardMaterial({color:0x0f172a,roughness:0.8});
+  const m=mkMesh(new THREE.BoxGeometry(1,1,0.05),[matS,matS,matS,matS,matF,matS]);
+  m.scale.set(4,1,1); return m;
 }
 function mkLabelSmall(text,textColor='#e2e8f0'){
-  const cv=document.createElement('canvas');cv.width=512;cv.height=80;
+  const cv=document.createElement('canvas');cv.width=2048;cv.height=320;
   const ctx=cv.getContext('2d');
+  ctx.fillStyle='#0f172a';ctx.fillRect(0,0,2048,320);
+  ctx.strokeStyle=textColor; ctx.lineWidth=12; ctx.strokeRect(12,12,2024,296);
   ctx.fillStyle=textColor;
-  ctx.font='bold 22px Orbitron,monospace';
+  ctx.font='bold 110px Orbitron,monospace';
   ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText(text,256,40);
+  ctx.fillText(text,1024,160);
   const tex=new THREE.CanvasTexture(cv);
-  const mat=new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false});
-  const sp=new THREE.Sprite(mat);sp.scale.set(3,.6,1);return sp;
+  const matF=new THREE.MeshBasicMaterial({map:tex});
+  const matS=new THREE.MeshStandardMaterial({color:0x0f172a,roughness:0.8});
+  const m=mkMesh(new THREE.BoxGeometry(1,1,0.05),[matS,matS,matS,matS,matF,matS]);
+  m.scale.set(3,.6,1);return m;
 }
 function mkScreen(w,h,text,color='#0a1628',textColor='#00d4ff'){
-  const cv=document.createElement('canvas');cv.width=512;cv.height=256;
+  const cv=document.createElement('canvas');cv.width=2048;cv.height=1024;
   const ctx=cv.getContext('2d');
-  ctx.fillStyle=color;ctx.fillRect(0,0,512,256);
-  ctx.strokeStyle=textColor;ctx.lineWidth=2;ctx.strokeRect(4,4,504,248);
+  ctx.fillStyle=color;ctx.fillRect(0,0,2048,1024);
+  ctx.strokeStyle=textColor;ctx.lineWidth=24;ctx.strokeRect(12,12,2024,1000);
   ctx.fillStyle=textColor;
-  ctx.font='bold 20px Orbitron,monospace';
+  ctx.font='bold 120px Orbitron,monospace';
   ctx.textAlign='center';ctx.textBaseline='middle';
   const words=text.split('\n');
-  words.forEach((l,i)=>ctx.fillText(l,256,128+(i-(words.length-1)/2)*30));
+  words.forEach((l,i)=>ctx.fillText(l,1024,512+(i-(words.length-1)/2)*150));
   const tex=new THREE.CanvasTexture(cv);
-  const mat=new THREE.MeshStandardMaterial({map:tex,emissive:new THREE.Color(textColor),emissiveIntensity:.1});
-  return mkMesh(new THREE.PlaneGeometry(w,h),mat);
+  const matF=new THREE.MeshBasicMaterial({map:tex});
+  const matS=new THREE.MeshStandardMaterial({color:color,roughness:0.8});
+  return mkMesh(new THREE.BoxGeometry(w,h,0.2),[matS,matS,matS,matS,matF,matS]);
 }
 function mkGround(size,color){
   const mat=new THREE.MeshStandardMaterial({color,roughness:.8,metalness:.1});
-  const m=mkMesh(new THREE.PlaneGeometry(size,size),mat);
-  m.rotation.x=-Math.PI/2; return m;
+  const m=mkMesh(new THREE.BoxGeometry(size,0.5,size),mat);
+  m.position.y=-0.25; return m;
 }
 function mkGridLines(size,div,color){
   const g=new THREE.GridHelper(size,div,color,color);
@@ -236,7 +243,7 @@ class LobbyScene {
     const sub=mkLabel('SELECT A CLUSTER TO BEGIN',18,'#475569');
     sub.position.set(0,5.8,-8); sub.scale.set(6,1,1); g.add(sub);
     // Ambient + key
-    g.add(new THREE.AmbientLight(0x0f172a,2));
+    g.add(new THREE.AmbientLight(0x475569,2));
     const key=new THREE.DirectionalLight(0xffffff,.4);key.position.set(0,10,-5);g.add(key);
     // 6 portals in semi-circle
     const count=CLUSTERS.length;
@@ -308,7 +315,7 @@ class RoboticsWorld extends BaseWorld {
     super.build();
     const g=this.group;
     // Background color
-    g.add(new THREE.AmbientLight(0x8ecae6,.4));
+    g.add(new THREE.AmbientLight(0x8ecae6,1.2));
     const sun=new THREE.DirectionalLight(0xfff5e0,.8);sun.position.set(5,12,5);g.add(sun);
     // Floor - warehouse concrete
     const floor=mkGround(50,0x1a1f2e);g.add(floor);
@@ -414,8 +421,8 @@ class RoboticsWorld extends BaseWorld {
     }
     // Floor lane markings
     const markMat=new THREE.MeshBasicMaterial({color:0xfbbf24});
-    const mark1=mkMesh(new THREE.PlaneGeometry(24,.08),markMat);mark1.rotation.x=-Math.PI/2;mark1.position.set(0,.01,-5);g.add(mark1);
-    const mark2=mkMesh(new THREE.PlaneGeometry(24,.08),markMat.clone());mark2.rotation.x=-Math.PI/2;mark2.position.set(0,.01,5);g.add(mark2);
+    const mark1=mkMesh(new THREE.BoxGeometry(24,0.02,0.08),markMat);mark1.position.set(0,.01,-5);g.add(mark1);
+    const mark2=mkMesh(new THREE.BoxGeometry(24,0.02,0.08),markMat.clone());mark2.position.set(0,.01,5);g.add(mark2);
     // Fog
     this.scene.fog=new THREE.Fog(0x060d1a,.1,50);
   }
@@ -427,7 +434,7 @@ class AICVWorld extends BaseWorld {
   build(){
     super.build();
     const g=this.group;
-    g.add(new THREE.AmbientLight(0x0a1628,.6));
+    g.add(new THREE.AmbientLight(0x1e3a5f,1.5));
     // Dark floor with glow grid
     const floor=mkGround(50,0x070d1a);g.add(floor);
     const grid=mkGridLines(50,25,0x1e3a5f);g.add(grid);
@@ -513,7 +520,7 @@ class GamesWorld extends BaseWorld {
   build(){
     super.build();
     const g=this.group;
-    g.add(new THREE.AmbientLight(0x1a0533,.8));
+    g.add(new THREE.AmbientLight(0x2d1b4e,1.5));
     const floor=mkGround(40,0x0d0920);g.add(floor);
     // Checkered floor overlay
     for(let x=-8;x<8;x++){for(let z=-8;z<8;z++){if((x+z)%2===0){const t=mkBox(.9,.01,.9,(x+z)%4===0?0x1a0533:0x0d0920);t.position.set(x*.9,.01,z*.9);g.add(t);}}}
@@ -564,7 +571,7 @@ class EmbeddedWorld extends BaseWorld {
   build(){
     super.build();
     const g=this.group;
-    g.add(new THREE.AmbientLight(0x0a1f0a,.5));
+    g.add(new THREE.AmbientLight(0x1a3f1a,1.5));
     // PCB green floor
     const floor=mkGround(50,0x0a1f0a);g.add(floor);
     const grid=mkGridLines(50,25,0x145214);g.add(grid);
@@ -623,7 +630,7 @@ class AppsWorld extends BaseWorld {
   build(){
     super.build();
     const g=this.group;
-    g.add(new THREE.AmbientLight(0x0a1a0d,.5));
+    g.add(new THREE.AmbientLight(0x1a3a22,1.5));
     const floor=mkGround(50,0x060f09);g.add(floor);
     const grid=mkGridLines(50,20,0x1a3a1f);g.add(grid);
     mkScreen(16,2,'FUTURISTIC DIGITAL CITY\nAPPS & SOFTWARE SECTOR','#040a06','#22c55e');
@@ -668,7 +675,7 @@ class ToolsWorld extends BaseWorld {
   build(){
     super.build();
     const g=this.group;
-    g.add(new THREE.AmbientLight(0x1a0822,.6));
+    g.add(new THREE.AmbientLight(0x2a1832,1.5));
     const floor=mkGround(40,0x0d0518);g.add(floor);
     const grid=mkGridLines(40,20,0x2d1048);g.add(grid);
     const titleSc=mkScreen(16,2,'RESEARCH & DEV TOOLS LAB\nDEV TOOLS & UTILITIES','#0a040e','#ec4899');titleSc.position.set(0,7,-18);g.add(titleSc);
@@ -730,10 +737,10 @@ class App {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
     this.renderer.setSize(window.innerWidth,window.innerHeight);
     this.renderer.toneMapping=THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure=1;
+    this.renderer.toneMappingExposure=1.2;
     // Scene + Camera
     this.scene=new THREE.Scene();
-    this.scene.background=new THREE.Color(0x06060f);
+    this.scene.background=new THREE.Color(0x0a1128);
     this.camera=new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,.1,200);
     this.camera.position.set(0,5,16);
     this.camera.lookAt(0,3,0);
@@ -825,7 +832,7 @@ class App {
       Object.values(this.worlds).forEach(w=>w.hide());this.activeWorld=null;
       this.lobby.show();
       this.scene.fog=null;
-      this.scene.background=new THREE.Color(0x06060f);
+      this.scene.background=new THREE.Color(0x0a1128);
       this.camera.position.set(0,5,16);this.camera.lookAt(0,3,0);
       this.controls.target.set(0,2,0);this.controls.update();
       this.$back.style.display='none';
