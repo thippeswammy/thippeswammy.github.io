@@ -25,12 +25,69 @@ function initGitHubCalendar() {
       // Attempt to hide "Skip to contributions year list"
       const skipText = calendarContainer.querySelector('h2.sr-only');
       if (skipText) skipText.style.display = 'none';
+
+      // Setup custom native tooltips
+      setupCustomTooltips(calendarContainer);
       
     }).catch(e => {
       calendarContainer.innerHTML = '<p>Error loading GitHub contributions.</p>';
       console.error(e);
     });
   }
+}
+
+function setupCustomTooltips(calendarContainer) {
+  let tooltip = document.getElementById('github-native-tooltip');
+  if (!tooltip) {
+    tooltip = document.createElement('div');
+    tooltip.id = 'github-native-tooltip';
+    document.body.appendChild(tooltip);
+  }
+
+  calendarContainer.addEventListener('mouseover', (e) => {
+    // Some calendar structures use <rect> instead of <td>, or have nested elements
+    const dayEl = e.target.closest('.ContributionCalendar-day');
+    if (dayEl) {
+      const date = dayEl.getAttribute('data-date');
+      const level = dayEl.getAttribute('data-level');
+      
+      let text = '';
+      const id = dayEl.id;
+      
+      // Attempt to find the sibling <tool-tip> created by GitHub/github-calendar
+      if (id) {
+        const tooltipEl = document.querySelector(`tool-tip[for="${id}"]`);
+        if (tooltipEl) text = tooltipEl.textContent;
+      }
+      
+      // Fallback formatting if <tool-tip> is missing
+      if (!text && date) {
+        if (!level || level === "0") {
+          text = `No contributions on ${date}`;
+        } else {
+          text = `${level} contributions on ${date}`; // Fallback logic
+        }
+      }
+
+      if (text) {
+        tooltip.textContent = text;
+        tooltip.style.display = 'block';
+        
+        const rect = dayEl.getBoundingClientRect();
+        const tooltipRect = tooltip.getBoundingClientRect();
+        
+        // Position centered above the element
+        tooltip.style.left = `${rect.left + window.scrollX + (rect.width / 2) - (tooltipRect.width / 2)}px`;
+        tooltip.style.top = `${rect.top + window.scrollY - tooltipRect.height - 8}px`;
+      }
+    }
+  });
+
+  calendarContainer.addEventListener('mouseout', (e) => {
+    if (e.target.closest('.ContributionCalendar-day')) {
+      tooltip.style.display = 'none';
+    }
+  });
 }
 
 // State management for pinned projects
