@@ -14,10 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
 function initGitHubCalendar() {
   const calendarContainer = document.querySelector('.calendar');
   const header = document.getElementById('contribution-count-header');
-  
   if (!calendarContainer) return;
 
-  // Initial loading state
   calendarContainer.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted); font-family: var(--font-b);">Updating live contributions...</div>';
 
   fetch(CONTRIBUTIONS_API)
@@ -39,104 +37,114 @@ function initGitHubCalendar() {
 
 function renderCalendar(container, data) {
   if (!data.contributions || !data.contributions.length) return;
-
   container.innerHTML = ''; 
   
   const calendarWrapper = document.createElement('div');
   calendarWrapper.className = 'calendar-wrapper';
-  calendarWrapper.style.display = 'flex';
-  calendarWrapper.style.flexDirection = 'column';
-  calendarWrapper.style.gap = '12px';
-  calendarWrapper.style.padding = '5px 0';
+  calendarWrapper.style.cssText = 'display:flex; flex-direction:column; gap:4px; padding:5px 0; width:100%;';
 
+  // Create a scrollable container for both months and squares
+  const scrollContainer = document.createElement('div');
+  scrollContainer.style.cssText = 'overflow-x: auto; width: 100%; padding-bottom: 5px;';
+
+  const innerScroll = document.createElement('div');
+  innerScroll.style.cssText = 'min-width: 750px; position: relative;'; // Minimum width to prevent squashing
+
+  // Month Labels Row
+  const monthRow = document.createElement('div');
+  monthRow.style.cssText = 'display:flex; margin-left:32px; font-size:10px; color:var(--text-muted); height:18px; position:relative;';
+
+  // Main Grid (Day labels + Squares)
+  const mainGrid = document.createElement('div');
+  mainGrid.style.cssText = 'display:flex; gap:8px; align-items:flex-start;';
+
+  // Day Labels Column
+  const dayLabels = document.createElement('div');
+  dayLabels.style.cssText = 'display:flex; flex-direction:column; justify-content:space-between; height:95px; font-size:10px; color:var(--text-muted); padding-top:1px; width:24px; flex-shrink:0;';
+  ['', 'Mon', '', 'Wed', '', 'Fri', ''].forEach(d => {
+    const span = document.createElement('span');
+    span.textContent = d;
+    span.style.height = '11px';
+    dayLabels.appendChild(span);
+  });
+
+  // Squares Grid
   const graphContainer = document.createElement('div');
-  graphContainer.className = 'js-calendar-graph-svg'; // Matches existing CSS
-  graphContainer.style.display = 'flex';
-  graphContainer.style.gap = '3px';
-  graphContainer.style.overflowX = 'auto';
-  graphContainer.style.paddingBottom = '10px';
+  graphContainer.className = 'js-calendar-graph-svg';
+  graphContainer.style.cssText = 'display:flex; gap:3px;';
 
-  // Level mapping for CSS data-level attributes
-  const levelMap = {
-    'NONE': '0',
-    'FIRST_QUARTILE': '1',
-    'SECOND_QUARTILE': '2',
-    'THIRD_QUARTILE': '3',
-    'FOURTH_QUARTILE': '4'
-  };
+  const levelMap = { 'NONE':'0', 'FIRST_QUARTILE':'1', 'SECOND_QUARTILE':'2', 'THIRD_QUARTILE':'3', 'FOURTH_QUARTILE':'4' };
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  let currentMonth = '';
 
-  data.contributions.forEach(week => {
+  data.contributions.forEach((week, weekIndex) => {
     const weekCol = document.createElement('div');
-    weekCol.style.display = 'flex';
-    weekCol.style.flexDirection = 'column';
-    weekCol.style.gap = '3px';
+    weekCol.style.cssText = 'display:flex; flex-direction:column; gap:3px;';
+
+    // Month logic
+    const dateObj = new Date(week[0].date);
+    const monthName = monthNames[dateObj.getMonth()];
+    if (monthName !== currentMonth) {
+      currentMonth = monthName;
+      const mLabel = document.createElement('div');
+      mLabel.textContent = monthName;
+      mLabel.style.cssText = `position:absolute; left:${weekIndex * 14}px; white-space:nowrap;`;
+      monthRow.appendChild(mLabel);
+    }
 
     week.forEach(day => {
       const dayRect = document.createElement('div');
-      dayRect.className = 'ContributionCalendar-day'; // Matches existing CSS
-      dayRect.style.width = '11px';
-      dayRect.style.height = '11px';
-      dayRect.style.borderRadius = '2px';
-      
-      const level = levelMap[day.contributionLevel] || '0';
-      dayRect.setAttribute('data-level', level);
+      dayRect.className = 'ContributionCalendar-day';
+      dayRect.style.cssText = 'width:11px; height:11px; border-radius:2px;';
+      dayRect.setAttribute('data-level', levelMap[day.contributionLevel] || '0');
       dayRect.setAttribute('data-date', day.date);
       dayRect.setAttribute('data-count', day.contributionCount);
-      
       weekCol.appendChild(dayRect);
     });
     graphContainer.appendChild(weekCol);
   });
 
-  calendarWrapper.appendChild(graphContainer);
+  mainGrid.appendChild(dayLabels);
+  mainGrid.appendChild(graphContainer);
   
-  // Legend & Footer
+  innerScroll.appendChild(monthRow);
+  innerScroll.appendChild(mainGrid);
+  scrollContainer.appendChild(innerScroll);
+  calendarWrapper.appendChild(scrollContainer);
+  
+  // Footer
   const footer = document.createElement('div');
-  footer.className = 'contrib-footer'; // Matches existing CSS
-  footer.style.display = 'flex';
-  footer.style.justifyContent = 'space-between';
-  footer.style.alignItems = 'center';
-  footer.style.marginTop = '10px';
-  footer.style.fontSize = '11px';
-  footer.style.color = 'var(--text-muted)';
-  
+  footer.className = 'contrib-footer';
+  footer.style.cssText = 'display:flex; justify-content:space-between; align-items:center; margin-top:10px; font-size:12px; color:var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top:12px;';
   footer.innerHTML = `
-    <div><a href="https://github.com/${GITHUB_USERNAME}" target="_blank" style="color: inherit; text-decoration: none;">GitHub Profile ↗</a></div>
-    <div class="contrib-legend" style="display: flex; align-items: center; gap: 4px;">
-      <span>Less</span>
-      <ul class="legend" style="display: flex; gap: 3px; list-style: none; padding: 0; margin: 0 4px;">
-        <li class="ContributionCalendar-day" data-level="0" style="width: 10px; height: 10px; border-radius: 2px;"></li>
-        <li class="ContributionCalendar-day" data-level="1" style="width: 10px; height: 10px; border-radius: 2px;"></li>
-        <li class="ContributionCalendar-day" data-level="2" style="width: 10px; height: 10px; border-radius: 2px;"></li>
-        <li class="ContributionCalendar-day" data-level="3" style="width: 10px; height: 10px; border-radius: 2px;"></li>
-        <li class="ContributionCalendar-day" data-level="4" style="width: 10px; height: 10px; border-radius: 2px;"></li>
+    <div><a href="https://github.com/${GITHUB_USERNAME}" target="_blank" style="color: inherit; text-decoration: none; opacity: 0.8;">GitHub Profile ↗</a></div>
+    <div class="contrib-legend" style="display:flex; align-items:center; gap:4px;">
+      <span style="font-size:11px;">Less</span>
+      <ul class="legend" style="display:flex; gap:3px; list-style:none; padding:0; margin:0 4px;">
+        <li class="ContributionCalendar-day" data-level="0" style="width:10px; height:10px; border-radius:2px;"></li>
+        <li class="ContributionCalendar-day" data-level="1" style="width:10px; height:10px; border-radius:2px;"></li>
+        <li class="ContributionCalendar-day" data-level="2" style="width:10px; height:10px; border-radius:2px;"></li>
+        <li class="ContributionCalendar-day" data-level="3" style="width:10px; height:10px; border-radius:2px;"></li>
+        <li class="ContributionCalendar-day" data-level="4" style="width:10px; height:10px; border-radius:2px;"></li>
       </ul>
-      <span>More</span>
+      <span style="font-size:11px;">More</span>
     </div>
   `;
   
   calendarWrapper.appendChild(footer);
   container.appendChild(calendarWrapper);
-  
   setupCustomTooltips(container);
 }
 
 function loadLocalFallback(container) {
-  fetch('extracted_contributions.html')
-    .then(response => response.text())
-    .then(html => {
-      container.innerHTML = html;
-      const svg = container.querySelector('svg');
-      if (svg) {
-        svg.style.backgroundColor = 'transparent';
-        svg.style.width = '100%';
-        svg.style.height = 'auto';
-      }
-      setupCustomTooltips(container);
-    })
-    .catch(() => {
-      container.innerHTML = `<p style="color: var(--text-muted); text-align: center; padding: 20px;">Data temporarily unavailable. <a href="https://github.com/${GITHUB_USERNAME}" target="_blank" style="color: var(--accent);">View on GitHub</a></p>`;
-    });
+  fetch('extracted_contributions.html').then(r => r.text()).then(html => {
+    container.innerHTML = html;
+    const svg = container.querySelector('svg');
+    if (svg) { svg.style.cssText = 'background:transparent; width:100%; height:auto;'; }
+    setupCustomTooltips(container);
+  }).catch(() => {
+    container.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding:20px;">Data temporarily unavailable. <a href="https://github.com/${GITHUB_USERNAME}" target="_blank" style="color:var(--accent);">View on GitHub</a></p>`;
+  });
 }
 
 function setupCustomTooltips(container) {
@@ -146,7 +154,6 @@ function setupCustomTooltips(container) {
     tooltip.id = 'github-native-tooltip';
     document.body.appendChild(tooltip);
   }
-
   container.addEventListener('mouseover', (e) => {
     const dayEl = e.target.closest('.ContributionCalendar-day');
     if (dayEl) {
@@ -162,10 +169,7 @@ function setupCustomTooltips(container) {
       }
     }
   });
-
-  container.addEventListener('mouseout', () => {
-    tooltip.style.display = 'none';
-  });
+  container.addEventListener('mouseout', () => { tooltip.style.display = 'none'; });
 }
 
 function initYearLinks() {
@@ -178,7 +182,6 @@ function initYearLinks() {
       const year = link.textContent.trim();
       const calendarContainer = document.querySelector('.calendar');
       const header = document.getElementById('contribution-count-header');
-      
       if (calendarContainer) {
         calendarContainer.innerHTML = `
           <div style="text-align: center; padding: 40px 20px; color: var(--text-muted, #8b949e); background: var(--glass, transparent); border-radius: 16px; min-height: 150px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
@@ -196,7 +199,6 @@ function initYearLinks() {
 
 // --- Pinned Projects Logic ---
 let pinnedProjectIds = [];
-
 function initPinnedProjects() {
   pinnedProjectIds = window.PINNED_PROJECTS || [];
   renderPinnedProjects();
@@ -226,7 +228,6 @@ function renderPinnedProjects() {
     else if (proj.lang === 'Java') langColor = '#b07219';
     else if (proj.lang === 'C#') langColor = '#178600';
     else if (proj.lang === 'MATLAB') langColor = '#e16737';
-
     const card = document.createElement('div');
     card.className = 'pinned-item';
     card.dataset.id = proj.id;
@@ -240,10 +241,7 @@ function renderPinnedProjects() {
       </div>
       <p class="pinned-item-desc">${proj.summary}</p>
       <div class="pinned-item-meta">
-        <span class="pinned-item-lang">
-          <span class="lang-color" style="background-color: ${langColor}"></span>
-          ${proj.lang}
-        </span>
+        <span class="pinned-item-lang"><span class="lang-color" style="background-color:${langColor}"></span>${proj.lang}</span>
       </div>
     `;
     container.appendChild(card);
@@ -272,27 +270,17 @@ window.openPinModal = function () {
   modal.classList.add('active');
   document.body.classList.add('modal-open');
 };
-
 window.closePinModal = function () {
   const modal = document.getElementById('pin-modal');
   if (modal) modal.classList.remove('active');
   document.body.classList.remove('modal-open');
 };
-
 window.toggleModalPin = function (checkbox) {
   const val = checkbox.value;
-  if (checkbox.checked) {
-    if (!pinnedProjectIds.includes(val)) pinnedProjectIds.push(val);
-  } else {
-    pinnedProjectIds = pinnedProjectIds.filter(id => id !== val);
-  }
+  if (checkbox.checked) { if (!pinnedProjectIds.includes(val)) pinnedProjectIds.push(val); }
+  else { pinnedProjectIds = pinnedProjectIds.filter(id => id !== val); }
 };
-
-window.saveModalPins = function () {
-  renderPinnedProjects();
-  closePinModal();
-};
-
+window.saveModalPins = function () { renderPinnedProjects(); closePinModal(); };
 window.addEventListener('click', (event) => {
   const modal = document.getElementById('pin-modal');
   if (event.target == modal) window.closePinModal();
