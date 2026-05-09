@@ -167,11 +167,54 @@
   min-height: 150px;
 }
 
-/* Hide annoying components from github-calendar */
-.calendar header,
-.calendar .sr-only,
+/* Ensure the title matches dark mode */
 .calendar .position-relative h2,
+.calendar h2.f4 {
+  color: #c9d1d9 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  margin-bottom: 12px !important;
+  text-align: left !important;
+}
+
+/* Fix the bottom legend "Less / More" */
 .calendar .contrib-footer {
+  color: #8b949e !important;
+  font-size: 12px !important;
+  padding-top: 10px !important;
+}
+.calendar .contrib-legend {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+}
+.calendar .contrib-legend .legend {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+  margin: 0 4px !important;
+  list-style: none !important;
+  padding: 0 !important;
+}
+.calendar .contrib-legend .legend li {
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 2px !important;
+  display: inline-block !important;
+}
+
+/* Correct the legend colors */
+.calendar .contrib-legend .legend li[data-level="0"], .calendar .contrib-legend .legend li:nth-child(1) { background-color: #161b22 !important; outline: 1px solid rgba(255,255,255,0.05) !important; outline-offset: -1px !important; }
+.calendar .contrib-legend .legend li[data-level="1"], .calendar .contrib-legend .legend li:nth-child(2) { background-color: #0e4429 !important; outline: 1px solid rgba(255,255,255,0.05) !important; outline-offset: -1px !important; }
+.calendar .contrib-legend .legend li[data-level="2"], .calendar .contrib-legend .legend li:nth-child(3) { background-color: #006d32 !important; outline: 1px solid rgba(255,255,255,0.05) !important; outline-offset: -1px !important; }
+.calendar .contrib-legend .legend li[data-level="3"], .calendar .contrib-legend .legend li:nth-child(4) { background-color: #26a641 !important; outline: 1px solid rgba(255,255,255,0.05) !important; outline-offset: -1px !important; }
+.calendar .contrib-legend .legend li[data-level="4"], .calendar .contrib-legend .legend li:nth-child(5) { background-color: #39d353 !important; outline: 1px solid rgba(255,255,255,0.05) !important; outline-offset: -1px !important; }
+
+/* Hide annoying sr-only stuff, raw links, and skip link */
+.calendar .sr-only,
+.calendar .hide-sm.hide-md.hide-lg,
+.calendar a[href*="year-link"],
+.calendar header {
   display: none !important;
 }
 
