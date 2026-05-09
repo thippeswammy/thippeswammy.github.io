@@ -57,7 +57,7 @@ function animateCountUp(el, target) {
 
 
 function renderCalendar(container, data) {
-  if (!data.contributions || !data.contributions.length) return;
+  if (!data || !data.contributions) return;
   container.innerHTML = ''; 
   
   const calendarWrapper = document.createElement('div');
@@ -177,15 +177,15 @@ function loadYearlyFallback(container, year, header) {
       return r.json();
     })
     .then(data => {
-      // If the API returns 0 contributions, it might be a year with no data or a limitation
-      // But we check if there's actual contribution data
-      if (!data.contributions || data.contributions.length === 0 || data.totalContributions === 0) {
-          throw new Error('No data in API for this range');
+      // We only throw if the basic structure is missing. 
+      // If totalContributions is 0, we still want to render the grid!
+      if (!data.contributions || data.contributions.length === 0) {
+          throw new Error('No structural data in API');
       }
       
       renderCalendar(container, data);
       if (header) {
-        animateCountUp(header, data.totalContributions);
+        animateCountUp(header, data.totalContributions || 0);
       }
       updateAnalytics(data);
     })
@@ -345,7 +345,17 @@ window.startReplay = function() {
 
 function updateAnalytics(data) {
   const analyticsContainer = document.getElementById('gh-analytics');
-  if (!analyticsContainer || !data.contributions) return;
+  if (!analyticsContainer) return;
+
+  // Handle case where no contributions exist
+  if (!data.contributions || (Array.isArray(data.contributions) && data.contributions.length === 0)) {
+    analyticsContainer.innerHTML = `
+      <div class="gh-analytic-card"><div class="gh-analytic-glow"></div><span class="label">Longest Streak</span><span class="value">0 Days</span></div>
+      <div class="gh-analytic-card"><div class="gh-analytic-glow"></div><span class="label">Most Active Day</span><span class="value">0 Commits</span></div>
+      <div class="gh-analytic-card"><div class="gh-analytic-glow"></div><span class="label">Status</span><span class="value">Neural Sync Active</span></div>
+    `;
+    return;
+  }
 
   // Handle both API (nested weeks) and parsed HTML (flat array) formats
   const flatDays = Array.isArray(data.contributions[0]) 
