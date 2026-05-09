@@ -203,8 +203,17 @@
 
     /* Sections */
     section.cluster {
-      padding: 120px 5%;
+      padding: 60px 5%;
       position: relative;
+    }
+    .cluster:not(:last-of-type)::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
     }
     .cluster-header {
       margin-bottom: 60px;
@@ -746,6 +755,14 @@
         ? `Showing ${totalVisible} project${totalVisible === 1 ? '' : 's'}`
         : '';
 
+      // Auto-scroll to results if searching/filtering
+      if (searchQuery !== '' || activeTechFilter !== 'all') {
+        const rect = document.querySelector('.controls-container').getBoundingClientRect();
+        if (rect.top > 100) { // Only scroll if the results aren't already well in view
+          lenis.scrollTo('.controls-container', { offset: -100, duration: 1.5 });
+        }
+      }
+
       // Handle Empty State
       if (totalVisible === 0) {
         mainContainer.innerHTML = `
@@ -804,6 +821,20 @@
         e.target.classList.add('active');
         activeTechFilter = e.target.dataset.filter;
         renderPortfolio();
+      }
+    });
+
+    // Handle all internal navigation smoothly
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a');
+      if (link && link.getAttribute('href') && link.getAttribute('href').startsWith('#')) {
+        e.preventDefault();
+        const target = link.getAttribute('href');
+        if (target === '#') {
+          lenis.scrollTo(0);
+        } else {
+          lenis.scrollTo(target, { offset: -100 });
+        }
       }
     });
 
