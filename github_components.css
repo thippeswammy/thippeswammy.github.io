@@ -175,10 +175,13 @@
 
 /* ── CONTRIBUTIONS LAYOUT ───────────────────────────── */
 #github-activity-section {
-  max-width: 1400px !important;
+  width: 95% !important;
+  max-width: 1200px !important;
   margin: 100px auto !important;
   padding: 40px !important;
   background: rgba(8, 10, 24, 0.8) !important;
+
+
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -190,11 +193,22 @@
 
 .contributions-layout {
   display: grid;
-  grid-template-columns: 1fr 120px;
-  gap: 30px;
+  grid-template-columns: minmax(700px, auto) 100px;
+  gap: 40px;
   position: relative;
   z-index: 1;
+  justify-content: center;
 }
+
+.contributions-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+
+
+
 
 @media (max-width: 1024px) {
   .contributions-layout {

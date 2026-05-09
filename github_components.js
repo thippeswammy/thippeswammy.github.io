@@ -109,7 +109,10 @@ function renderCalendar(container, data) {
     week.forEach(day => {
       const dayRect = document.createElement('div');
       dayRect.className = 'ContributionCalendar-day';
-      dayRect.style.cssText = 'width:11px; height:11px;';
+      dayRect.style.width = '11px';
+      dayRect.style.height = '11px';
+      dayRect.style.margin = '1px';
+      dayRect.style.borderRadius = '2px';
       dayRect.setAttribute('data-level', levelMap[day.contributionLevel] || '0');
       dayRect.setAttribute('data-date', day.date);
       dayRect.setAttribute('data-count', day.contributionCount);
