@@ -71,16 +71,18 @@ function renderCalendar(container, data) {
   innerScroll.style.cssText = 'padding: 0 5px; display: flex; flex-direction: column; gap: 2px; min-width: 800px;';
 
   const monthRow = document.createElement('div');
-  monthRow.style.cssText = 'display:flex; gap:3px; margin-left:32px; font-size:10px; color:var(--text-muted); height:20px;';
+  monthRow.style.cssText = 'display:flex; gap:3px; margin-left:34px; font-size:10px; color:var(--text-muted); height:20px;';
 
   const mainGrid = document.createElement('div');
   mainGrid.style.cssText = 'display:flex; gap:8px; align-items:flex-start;';
 
   const dayLabels = document.createElement('div');
   dayLabels.style.cssText = 'display:flex; flex-direction:column; justify-content:space-between; height:95px; font-size:10px; color:var(--text-muted); padding-top:1px; width:24px; flex-shrink:0; text-align: right; margin-right: 2px;';
-  ['', 'Mon', '', 'Wed', '', 'Fri', ''].forEach(d => {
+
+  // Keep the day order fixed, placing Mon, Wed, Fri correctly
+  ['', 'Mon', '', 'Wed', '', 'Fri', ''].forEach(day => {
     const span = document.createElement('span');
-    span.textContent = d;
+    span.textContent = day;
     span.style.height = '11px';
     dayLabels.appendChild(span);
   });
@@ -96,10 +98,18 @@ function renderCalendar(container, data) {
     const weekCol = document.createElement('div');
     weekCol.style.cssText = 'display:flex; flex-direction:column; gap:3px;';
     const monthCell = document.createElement('div');
-    monthCell.style.cssText = 'width:11px; flex-shrink:0; position:relative;';
+    // Align with weekCol which is 13px wide (11px + 1px margin left + 1px margin right)
+    monthCell.style.cssText = 'width:13px; flex-shrink:0; position:relative;';
 
-    const dateObj = new Date(week[0].date);
-    const monthIdx = dateObj.getMonth();
+    // GitHub places the label on the first week that contains the first day of the new month
+    let monthIdx = -1;
+    week.forEach(day => {
+      const dDate = new Date(day.date);
+      if (dDate.getDate() === 1 || monthIdx === -1) {
+        monthIdx = dDate.getMonth();
+      }
+    });
+
     if (monthIdx !== lastMonth) {
       lastMonth = monthIdx;
       const mLabel = document.createElement('span');
