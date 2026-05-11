@@ -68,27 +68,33 @@ function renderCalendar(container, data) {
   scrollContainer.style.cssText = 'overflow-x: auto; width: 100%;';
 
   const innerScroll = document.createElement('div');
-  innerScroll.style.cssText = 'padding: 0 5px; display: flex; flex-direction: column; gap: 2px; min-width: 800px;';
+  innerScroll.className = 'calendar-inner-scroll';
 
   const monthRow = document.createElement('div');
-  monthRow.style.cssText = 'display:flex; gap:3px; margin-left:34px; font-size:10px; color:var(--text-muted); height:20px;';
+  monthRow.className = 'calendar-month-row';
 
   const mainGrid = document.createElement('div');
-  mainGrid.style.cssText = 'display:flex; gap:8px; align-items:flex-start;';
+  mainGrid.className = 'calendar-main-grid';
 
   const dayLabels = document.createElement('div');
-  dayLabels.style.cssText = 'display:flex; flex-direction:column; justify-content:space-between; height:95px; font-size:10px; color:var(--text-muted); padding-top:1px; width:24px; flex-shrink:0; text-align: right; margin-right: 2px;';
+  dayLabels.className = 'calendar-day-labels';
 
-  // Keep the day order fixed, placing Mon, Wed, Fri correctly
-  ['', 'Mon', '', 'Wed', '', 'Fri', ''].forEach(day => {
+  // Determine starting day offset dynamically from the first contribution date
+  const firstDateStr = data.contributions[0] && data.contributions[0][0] ? data.contributions[0][0].date : (data.contributions[0] ? data.contributions[0].date : new Date().toISOString());
+  const firstDateObj = new Date(firstDateStr);
+  const startDayIdx = firstDateObj.getDay(); // 0 is Sunday, 1 is Monday
+  const fullDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  for (let i = 0; i < 7; i++) {
+    const currentDayName = fullDays[(startDayIdx + i) % 7];
+    const shouldShow = (i === 1 || i === 3 || i === 5); // Display 2nd, 4th, 6th rows
     const span = document.createElement('span');
-    span.textContent = day;
-    span.style.height = '11px';
+    span.textContent = shouldShow ? currentDayName : '';
     dayLabels.appendChild(span);
-  });
+  }
 
   const graphContainer = document.createElement('div');
-  graphContainer.style.cssText = 'display:flex; gap:3px;';
+  graphContainer.className = 'calendar-graph-container';
 
   const levelMap = { 'NONE': '0', 'FIRST_QUARTILE': '1', 'SECOND_QUARTILE': '2', 'THIRD_QUARTILE': '3', 'FOURTH_QUARTILE': '4' };
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -96,10 +102,10 @@ function renderCalendar(container, data) {
 
   data.contributions.forEach((week) => {
     const weekCol = document.createElement('div');
-    weekCol.style.cssText = 'display:flex; flex-direction:column; gap:3px;';
+    weekCol.className = 'calendar-week-col';
     const monthCell = document.createElement('div');
     // Align with weekCol which is 13px wide (11px + 1px margin left + 1px margin right)
-    monthCell.style.cssText = 'width:13px; flex-shrink:0; position:relative;';
+    monthCell.className = 'calendar-month-cell';
 
     // GitHub places the label on the first week that contains the first day of the new month
     let monthIdx = -1;
@@ -114,7 +120,7 @@ function renderCalendar(container, data) {
       lastMonth = monthIdx;
       const mLabel = document.createElement('span');
       mLabel.textContent = monthNames[monthIdx];
-      mLabel.style.cssText = 'position:absolute; left:0; top:0; white-space:nowrap;';
+      mLabel.className = 'calendar-month-label';
       monthCell.appendChild(mLabel);
     }
     monthRow.appendChild(monthCell);
@@ -122,10 +128,6 @@ function renderCalendar(container, data) {
     week.forEach(day => {
       const dayRect = document.createElement('div');
       dayRect.className = 'ContributionCalendar-day';
-      dayRect.style.width = '11px';
-      dayRect.style.height = '11px';
-      dayRect.style.margin = '1px';
-      dayRect.style.borderRadius = '2px';
       dayRect.setAttribute('data-level', levelMap[day.contributionLevel] || '0');
       dayRect.setAttribute('data-date', day.date);
       dayRect.setAttribute('data-count', day.contributionCount);
@@ -138,6 +140,9 @@ function renderCalendar(container, data) {
   mainGrid.appendChild(graphContainer);
   innerScroll.appendChild(monthRow);
   innerScroll.appendChild(mainGrid);
+
+  // Reorder for mobile using flex order where monthRow becomes the left axis if needed, or CSS flex-direction takes care of it.
+
   scrollContainer.appendChild(innerScroll);
   calendarWrapper.appendChild(scrollContainer);
 
@@ -487,8 +492,44 @@ function initYearLinks() {
           loadYearlyFallback(calendarContainer, year, contributionHeader);
         }
       }
+
+      // Update mobile display
+      const mobileDisplay = document.getElementById('mobile-year-display');
+      if (mobileDisplay) mobileDisplay.textContent = year;
     });
   });
+
+  // Initialize Mobile Toggle logic
+  const mobileDisplay = document.getElementById('mobile-year-display');
+  const btnPrev = document.getElementById('mobile-year-prev');
+  const btnNext = document.getElementById('mobile-year-next');
+  let activeYear = parseInt(currentYear);
+
+  if (mobileDisplay) {
+    mobileDisplay.textContent = activeYear;
+
+    if (btnPrev) {
+      btnPrev.addEventListener('click', () => {
+        if (activeYear > START_YEAR) {
+          activeYear--;
+          mobileDisplay.textContent = activeYear;
+          const targetLink = Array.from(yearLinks).find(l => parseInt(l.textContent) === activeYear);
+          if (targetLink) targetLink.click();
+        }
+      });
+    }
+
+    if (btnNext) {
+      btnNext.addEventListener('click', () => {
+        if (activeYear < parseInt(currentYear)) {
+          activeYear++;
+          mobileDisplay.textContent = activeYear;
+          const targetLink = Array.from(yearLinks).find(l => parseInt(l.textContent) === activeYear);
+          if (targetLink) targetLink.click();
+        }
+      });
+    }
+  }
 }
 
 
