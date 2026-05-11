@@ -635,3 +635,49 @@
 .scroll-container::-webkit-scrollbar-thumb:hover {
   background: rgba(99, 102, 241, 0.4);
 }
+
+/* ── RESPONSIVE STYLES ────────────────────────────── */
+@media (max-width: 1024px) {
+  #github-activity-section {
+    width: 90% !important;
+    padding: 20px !important;
+    margin: 40px auto !important;
+  }
+  .contributions-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .contributions-sidebar {
+    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+  .year-list {
+    flex-direction: row;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 5px;
+  }
+  .gh-hero-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+  }
+  .gh-hero-stats {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .gh-analytics-row {
+    flex-direction: column;
+  }
+  #gh-analytics {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .pinned-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

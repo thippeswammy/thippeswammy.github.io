@@ -319,6 +319,24 @@ function setupCustomTooltips(container) {
     }
   });
   container.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+
+  // Add touch support for mobile
+  container.addEventListener('touchstart', (e) => {
+    if (e.target.classList.contains('ContributionCalendar-day')) {
+      const date = e.target.getAttribute('data-date');
+      if (date && window.contributionMap && window.contributionMap[date] !== undefined) {
+        const count = window.contributionMap[date];
+        tooltip.innerHTML = `
+          <strong>${count} contributions</strong> on ${date}
+        `;
+        tooltip.style.display = 'block';
+        const touch = e.touches[0];
+        const tooltipRect = tooltip.getBoundingClientRect();
+        tooltip.style.left = `${touch.pageX - (tooltipRect.width / 2)}px`;
+        tooltip.style.top = `${touch.pageY - tooltipRect.height - 15}px`;
+      }
+    }
+  }, { passive: true });
 }
 
 window.startReplay = function () {
@@ -474,6 +492,8 @@ function initPinnedProjects() {
     new Sortable(container, {
       animation: 150,
       ghostClass: 'sortable-ghost',
+      delay: window.innerWidth <= 1024 ? 200 : 0, // Delay on mobile to allow scrolling
+      delayOnTouchOnly: true,
       onEnd: function () {
         const itemEls = container.querySelectorAll('.pinned-item');
         pinnedProjectIds = Array.from(itemEls).map(el => el.dataset.id);
