@@ -595,8 +595,44 @@
       font-size: 1.1rem;
     }
 
+    .mobile-menu-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      z-index: 2002;
+    }
+    .mobile-menu-toggle span {
+      width: 25px;
+      height: 3px;
+      background: var(--text-main);
+      border-radius: 3px;
+      transition: all 0.3s;
+    }
+
     @media (max-width: 768px) {
-      header { flex-direction: column; gap: 15px; padding: 15px; }
+      header { flex-direction: column; gap: 15px; padding: 15px; width: 95%; top: 10px; }
+      .header-main { flex-direction: row; justify-content: space-between; align-items: center; width: 100%; }
+      .mobile-menu-toggle { display: flex; }
+      nav {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        align-items: stretch;
+      }
+      nav.active { display: flex; }
+      .header-search-bar {
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+      }
+      .header-search-bar.active { display: flex; }
+      .header-search-bar .filter-select { min-width: unset; width: 100%; }
+      .clear-filters-btn { width: 100%; }
+      .hero { margin-top: 180px; min-height: 50vh; }
       .hero h2 { font-size: 2.5rem; }
       .grid { grid-template-columns: 1fr; }
       section.cluster { padding: 80px 20px; }
@@ -625,6 +661,11 @@
           <span id="header-results-count" class="header-badge"></span>
         </div>
       </a>
+      <div class="mobile-menu-toggle" id="mobile-menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
       <nav id="nav-links"></nav>
     </div>
     <div class="header-search-bar">
@@ -806,6 +847,8 @@
     const clearFiltersBtn = document.getElementById('clear-filters');
     const headerResultsCount = document.getElementById('header-results-count');
     const bttButton = document.getElementById('back-to-top');
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const headerSearchBar = document.querySelector('.header-search-bar');
 
     let activeTechFilter = 'all';
     let activeClusterFilter = 'all';
@@ -1034,6 +1077,23 @@
         }
       }
     });
+
+    if (mobileMenuToggle) {
+      mobileMenuToggle.addEventListener("click", () => {
+        navContainer.classList.toggle("active");
+        if (headerSearchBar) headerSearchBar.classList.toggle("active");
+        mobileMenuToggle.classList.toggle("open");
+        if(mobileMenuToggle.classList.contains("open")) {
+          mobileMenuToggle.children[0].style.transform = "rotate(45deg) translate(5px, 6px)";
+          mobileMenuToggle.children[1].style.opacity = "0";
+          mobileMenuToggle.children[2].style.transform = "rotate(-45deg) translate(5px, -6px)";
+        } else {
+          mobileMenuToggle.children[0].style.transform = "none";
+          mobileMenuToggle.children[1].style.opacity = "1";
+          mobileMenuToggle.children[2].style.transform = "none";
+        }
+      });
+    }
 
     bttButton.addEventListener('click', () => {
       lenis.scrollTo(0);
