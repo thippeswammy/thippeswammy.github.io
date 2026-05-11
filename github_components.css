@@ -300,6 +300,40 @@
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
 }
 
+.mobile-year-toggle {
+  display: none;
+  align-items: center;
+  gap: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.year-toggle-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 18px;
+  font-family: var(--font-h);
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: color 0.3s;
+}
+
+.year-toggle-btn:hover {
+  color: #fff;
+}
+
+.year-toggle-display {
+  font-family: var(--font-h);
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  min-width: 50px;
+  text-align: center;
+}
+
 
 
 /* ── CALENDAR WIDGET OVERRIDE ────────────────────────── */
@@ -311,7 +345,76 @@
   margin-bottom: 20px !important;
 }
 
+.calendar-inner-scroll {
+  padding: 0 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 800px;
+}
+
+.calendar-month-row {
+  display: flex;
+  gap: 3px;
+  margin-left: 34px;
+  font-size: 10px;
+  color: var(--text-muted);
+  height: 20px;
+}
+
+.calendar-main-grid {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.calendar-day-labels {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 95px;
+  font-size: 10px;
+  color: var(--text-muted);
+  padding-top: 1px;
+  width: 24px;
+  flex-shrink: 0;
+  text-align: right;
+  margin-right: 2px;
+}
+
+.calendar-day-labels span {
+  height: 11px;
+}
+
+.calendar-graph-container {
+  display: flex;
+  gap: 3px;
+}
+
+.calendar-week-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.calendar-month-cell {
+  width: 13px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.calendar-month-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: nowrap;
+}
+
 .ContributionCalendar-day {
+  width: 11px;
+  height: 11px;
+  margin: 1px;
+  border-radius: 2px;
   rx: 2px;
   ry: 2px;
   transition: all 0.2s ease;
@@ -637,6 +740,55 @@
 }
 
 /* ── RESPONSIVE STYLES ────────────────────────────── */
+@media (max-width: 768px) {
+  .calendar-inner-scroll {
+    min-width: unset;
+    flex-direction: row;
+    padding: 0;
+    gap: 15px;
+  }
+  .calendar-main-grid {
+    flex-direction: column;
+    gap: 4px;
+    align-items: stretch;
+  }
+  .calendar-day-labels {
+    flex-direction: row;
+    height: auto;
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 2px;
+    padding-left: 20px;
+    justify-content: space-around;
+  }
+  .calendar-day-labels span {
+    width: auto;
+    height: auto;
+  }
+  .calendar-graph-container {
+    flex-direction: column;
+    gap: 3px;
+  }
+  .calendar-week-col {
+    flex-direction: row;
+  }
+  .calendar-month-row {
+    flex-direction: column;
+    margin-left: 0;
+    margin-top: 15px;
+    width: 25px;
+    height: auto;
+  }
+  .calendar-month-cell {
+    width: auto;
+    height: 13px;
+  }
+  .calendar-month-label {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
 @media (max-width: 1024px) {
   #github-activity-section {
     width: 90% !important;
@@ -655,10 +807,10 @@
     padding-bottom: 10px;
   }
   .year-list {
-    flex-direction: row;
-    overflow-x: auto;
-    white-space: nowrap;
-    padding-bottom: 5px;
+    display: none;
+  }
+  .mobile-year-toggle {
+    display: flex !important;
   }
   .gh-hero-header {
     flex-direction: column;
