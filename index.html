@@ -116,6 +116,7 @@
       gap: 20px;
       position: relative;
       z-index: 2;
+      flex-wrap: wrap;
     }
 
     .header-search-bar {
@@ -130,11 +131,15 @@
       border-top: 1px solid rgba(255,255,255,0.05);
       position: relative;
       z-index: 2;
+      flex-wrap: wrap;
     }
 
     header.nav-hidden {
       transform: translateX(-50%) translateY(-150%);
       opacity: 0;
+    }
+    .gh-year-toggle {
+      display: flex;
     }
 
     .brand {
@@ -170,7 +175,7 @@
       line-height: 1;
     }
 
-    nav { display: flex; gap: 4px; }
+    nav { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
     nav a {
       text-decoration: none;
       color: var(--text-muted);
@@ -430,7 +435,7 @@
     .header-search-bar .search-wrapper {
       flex: 1;
       position: relative;
-      min-width: 200px;
+      min-width: 250px;
     }
     .header-search-bar .search-input {
       width: 100%;
@@ -471,7 +476,7 @@
       cursor: pointer;
       outline: none;
       min-width: 140px;
-      flex: 1;
+      flex-shrink: 0;
       appearance: none;
       background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
       background-repeat: no-repeat;
@@ -614,43 +619,70 @@
       transition: all 0.3s;
     }
 
+    @media (max-width: 1024px) {
+      header { width: 98%; padding: 10px 15px; }
+      .header-search-bar { flex-wrap: wrap; }
+      .search-input { min-width: 180px; }
+      .filter-select { min-width: 120px; }
+    }
+
     @media (max-width: 768px) {
-      header { flex-direction: column; gap: 15px; padding: 15px; width: 95%; top: 10px; }
+      header { flex-direction: column; gap: 10px; padding: 15px; width: 95%; top: 10px; border-radius: 18px; }
       .header-main { flex-direction: row; justify-content: space-between; align-items: center; width: 100%; position: relative; }
-      .brand { max-width: calc(100% - 40px); }
-      .mobile-menu-toggle { display: flex; position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
+      
+      .mobile-menu-toggle { 
+        display: flex; 
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+      }
       nav {
         display: none;
         flex-direction: column;
         width: 100%;
-        padding-top: 20px;
-        margin-top: 10px;
-        align-items: stretch;
+        padding: 20px 0;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        align-items: flex-start;
+      }
+      nav a {
+        padding: 12px 10px;
+        width: 100%;
+        font-size: 1.1rem;
+        border-bottom: 1px solid rgba(255,255,255,0.03);
       }
       nav a {
         text-align: center;
         padding: 12px;
       }
       nav.active { display: flex; }
+      
       .header-search-bar {
         display: none;
         flex-direction: column;
-        gap: 10px;
+        gap: 15px;
         align-items: stretch;
-        margin-top: 15px;
         padding-top: 15px;
         border-top: 1px solid rgba(255,255,255,0.1);
+        margin-top: 5px;
       }
       .header-search-bar.active { display: flex; }
       .header-search-bar .filter-select { min-width: unset; width: 100%; }
       .clear-filters-btn { width: 100%; }
-      .hero { margin-top: 180px; min-height: 50vh; }
-      .hero h2 { font-size: 2.5rem; }
+      
+      .hero { margin-top: 140px; min-height: 40vh; }
+      .hero h2 { font-size: 2.2rem; }
       .grid { grid-template-columns: 1fr; }
-      section.cluster { padding: 80px 20px; }
+      section.cluster { padding: 60px 20px; }
       .controls-container { margin-top: -20px; }
       .back-to-top { bottom: 20px; right: 20px; width: 44px; height: 44px; font-size: 1.2rem; }
     }
+
+    /* Menu Toggle Animation Fixes */
+    .mobile-menu-toggle.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .mobile-menu-toggle.active span:nth-child(2) { opacity: 0; }
+    .mobile-menu-toggle.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
   </style>
 
   <!-- GitHub Calendar CSS -->
@@ -1099,16 +1131,7 @@
       mobileMenuToggle.addEventListener("click", () => {
         navContainer.classList.toggle("active");
         if (headerSearchBar) headerSearchBar.classList.toggle("active");
-        mobileMenuToggle.classList.toggle("open");
-        if(mobileMenuToggle.classList.contains("open")) {
-          mobileMenuToggle.children[0].style.transform = "rotate(45deg) translate(5px, 6px)";
-          mobileMenuToggle.children[1].style.opacity = "0";
-          mobileMenuToggle.children[2].style.transform = "rotate(-45deg) translate(5px, -6px)";
-        } else {
-          mobileMenuToggle.children[0].style.transform = "none";
-          mobileMenuToggle.children[1].style.opacity = "1";
-          mobileMenuToggle.children[2].style.transform = "none";
-        }
+        mobileMenuToggle.classList.toggle("active");
       });
     }
 

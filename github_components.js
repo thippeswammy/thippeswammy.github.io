@@ -84,11 +84,18 @@ function renderCalendar(container, data) {
   if (!data || !data.contributions) return;
   container.innerHTML = '';
 
+  const isMobile = window.innerWidth <= 768;
+  if (isMobile) {
+    renderVerticalCalendar(container, data);
+    return;
+  }
+
   const calendarWrapper = document.createElement('div');
   calendarWrapper.className = 'calendar-wrapper';
   calendarWrapper.style.cssText = 'display:flex; flex-direction:column; gap:2px; width:100%;';
 
   const scrollContainer = document.createElement('div');
+  scrollContainer.className = 'scroll-container';
   scrollContainer.style.cssText = 'overflow-x: auto; width: 100%;';
 
   const innerScroll = document.createElement('div');
@@ -330,6 +337,66 @@ function extractStatsFromHTML(html) {
   };
 }
 
+
+function renderVerticalCalendar(container, data) {
+  const flatDays = data.contributions.flat();
+  const levelMap = { 'NONE': '0', 'FIRST_QUARTILE': '1', 'SECOND_QUARTILE': '2', 'THIRD_QUARTILE': '3', 'FOURTH_QUARTILE': '4' };
+
+  const calendarWrapper = document.createElement('div');
+  calendarWrapper.className = 'gh-calendar-vertical';
+
+  // Day Headers (S M T W T F S)
+  const daysHeader = document.createElement('div');
+  daysHeader.className = 'gh-vertical-header';
+  ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach(d => {
+    const span = document.createElement('span');
+    span.textContent = d;
+    daysHeader.appendChild(span);
+  });
+  calendarWrapper.appendChild(daysHeader);
+
+  const grid = document.createElement('div');
+  grid.className = 'gh-vertical-grid';
+
+  let currentMonth = -1;
+
+  flatDays.forEach(day => {
+    const dDate = new Date(day.date);
+    
+    // Insert month header row if month changes
+    if (dDate.getMonth() !== currentMonth) {
+      currentMonth = dDate.getMonth();
+      const monthRow = document.createElement('div');
+      monthRow.className = 'gh-vertical-month-row';
+      monthRow.textContent = dDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      grid.appendChild(monthRow);
+      
+      // Pad grid to align correctly with day of week
+      const dayOfWeek = dDate.getDay(); // 0 is Sunday
+      for (let i = 0; i < dayOfWeek; i++) {
+        const pad = document.createElement('div');
+        pad.className = 'ContributionCalendar-day empty';
+        grid.appendChild(pad);
+      }
+    }
+
+    const dayRect = document.createElement('div');
+    dayRect.className = 'ContributionCalendar-day';
+    dayRect.setAttribute('data-level', levelMap[day.contributionLevel] || '0');
+    dayRect.setAttribute('data-date', day.date);
+    dayRect.setAttribute('data-count', day.contributionCount);
+    
+    if (!window.contributionMap) window.contributionMap = {};
+    window.contributionMap[day.date] = day.contributionCount;
+    
+    grid.appendChild(dayRect);
+  });
+
+  calendarWrapper.appendChild(grid);
+  container.appendChild(calendarWrapper);
+  setupCustomTooltips(container);
+}
+
 function setupCustomTooltips(container) {
   let tooltip = document.getElementById('github-native-tooltip');
   if (!tooltip) {
@@ -474,7 +541,63 @@ function generateYearList() {
   }
 
   container.innerHTML = html;
+
+  // Add Mobile Year Toggle
+  const sidebar = document.querySelector('.contributions-sidebar');
+  if (sidebar && !document.querySelector('.gh-year-toggle')) {
+    const toggleDiv = document.createElement('div');
+    toggleDiv.className = 'gh-year-toggle';
+    toggleDiv.innerHTML = `
+      <button class="year-nav-btn prev">❮</button>
+      <span class="current-year-display">${currentYear}</span>
+      <button class="year-nav-btn next" disabled>❯</button>
+    `;
+    sidebar.insertBefore(toggleDiv, container);
+    initYearToggle(currentYear);
+  }
+
   initYearLinks();
+}
+
+function initYearToggle(initialYear) {
+  const prevBtn = document.querySelector('.year-nav-btn.prev');
+  const nextBtn = document.querySelector('.year-nav-btn.next');
+  const display = document.querySelector('.current-year-display');
+  if (!prevBtn || !nextBtn || !display) return;
+
+  let currentYear = parseInt(initialYear);
+
+  const updateYear = (newYear) => {
+    currentYear = newYear;
+    display.textContent = currentYear;
+    
+    // Update button states
+    prevBtn.disabled = currentYear <= START_YEAR;
+    nextBtn.disabled = currentYear >= new Date().getFullYear();
+
+    // Trigger load
+    const calendarContainer = document.querySelector('.calendar');
+    const contributionHeader = document.querySelector('.gh-stat-number');
+    if (calendarContainer) {
+      calendarContainer.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted);">Syncing neural grid...</div>';
+      loadYearlyFallback(calendarContainer, currentYear.toString(), contributionHeader);
+    }
+
+    // Sync with desktop list if visible
+    document.querySelectorAll('.year-item').forEach(item => {
+      const year = item.querySelector('a').textContent.trim();
+      if (year === currentYear.toString()) {
+        item.classList.add('active');
+        item.querySelector('a').classList.add('active');
+      } else {
+        item.classList.remove('active');
+        item.querySelector('a').classList.remove('active');
+      }
+    });
+  };
+
+  prevBtn.addEventListener('click', () => updateYear(currentYear - 1));
+  nextBtn.addEventListener('click', () => updateYear(currentYear + 1));
 }
 
 function initYearLinks() {
