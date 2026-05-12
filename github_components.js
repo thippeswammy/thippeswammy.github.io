@@ -27,6 +27,11 @@ function initGitHubCalendar() {
     .then(data => {
       renderCalendar(calendarContainer, data);
       
+      // Auto-refresh layout on resize
+      window.addEventListener('resize', () => {
+        renderCalendar(calendarContainer, data);
+      });
+
       const contributionSub = document.querySelector('.gh-stat-label');
       const ghHeroHeader = document.querySelector('.gh-hero-header');
       const subLabel = ghHeroHeader ? ghHeroHeader.querySelector('div[style*="font-size: 14px"]') : null;
@@ -84,7 +89,9 @@ function renderCalendar(container, data) {
   if (!data || !data.contributions) return;
   container.innerHTML = '';
 
-  const isMobile = window.innerWidth <= 768;
+  const isMobile = window.innerWidth <= 1024 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  console.log('Neural Grid Sync - Mobile Mode:', isMobile, 'Width:', window.innerWidth);
+  
   if (isMobile) {
     renderVerticalCalendar(container, data);
     return;
@@ -353,26 +360,28 @@ function renderVerticalCalendar(container, data) {
   const levelMap = { 'NONE': '0', 'FIRST_QUARTILE': '1', 'SECOND_QUARTILE': '2', 'THIRD_QUARTILE': '3', 'FOURTH_QUARTILE': '4' };
 
   const calendarWrapper = document.createElement('div');
-  calendarWrapper.className = 'gh-calendar-vertical';
+  calendarWrapper.className = 'gh-calendar-vertical-rotated';
 
   const grid = document.createElement('div');
-  grid.className = 'gh-vertical-grid';
+  grid.className = 'gh-rotated-grid';
   grid.style.cssText = `
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 2px;
+    grid-template-columns: 50px repeat(7, 1fr);
+    gap: 4px;
     align-items: center;
   `;
 
-  // Integrated Day Headers (S M T W T F S)
-  ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach((d, idx) => {
+  // Integrated Headers (Month | M T W T F S S)
+  const headerLabels = ['Month', 'M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  headerLabels.forEach((label, idx) => {
     const span = document.createElement('div');
-    span.textContent = d;
+    span.textContent = label;
     span.style.cssText = `
       text-align: center;
       font-size: 10px;
       color: var(--text-muted);
-      padding-bottom: 5px;
+      padding-bottom: 8px;
+      font-weight: 600;
       grid-row: 1;
       grid-column: ${idx + 1};
     `;
@@ -380,58 +389,76 @@ function renderVerticalCalendar(container, data) {
   });
 
   let currentMonth = -1;
-  let currentRow = 2; // Row 1 is reserved for day headers (S M T W T F S)
+  let currentRow = 2;
 
-  flatDays.forEach((day, index) => {
+  // Group days by week (Monday to Sunday)
+  const weeks = [];
+  let currentWeek = [];
+
+  flatDays.forEach((day) => {
     const dDate = new Date(day.date);
-    const dayOfWeek = dDate.getDay();
-    
-    // Insert month header row if month changes
-    if (dDate.getMonth() !== currentMonth) {
-      // Ensure the month header starts on a fresh row
-      if (index > 0 && dayOfWeek !== 0) {
-        currentRow++;
+    let dayOfWeek = dDate.getDay(); // 0 is Sunday
+    // Convert to Monday=0, ..., Sunday=6
+    dayOfWeek = (dayOfWeek + 6) % 7;
+
+    if (dayOfWeek === 0 && currentWeek.length > 0) {
+      weeks.push(currentWeek);
+      currentWeek = [];
+    }
+    currentWeek.push(day);
+  });
+  if (currentWeek.length > 0) weeks.push(currentWeek);
+
+  weeks.forEach((week) => {
+    // Check if this week starts a new month or contains the 1st of a month
+    let monthToLabel = '';
+    week.forEach(day => {
+      const dDate = new Date(day.date);
+      if (dDate.getMonth() !== currentMonth) {
+        currentMonth = dDate.getMonth();
+        monthToLabel = dDate.toLocaleDateString('en-US', { month: 'short' });
       }
-      
-      currentMonth = dDate.getMonth();
-      const monthRow = document.createElement('div');
-      monthRow.className = 'gh-vertical-month-row';
-      monthRow.textContent = dDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-      monthRow.style.cssText = `
-        grid-column: 1 / span 7;
+    });
+
+    if (monthToLabel) {
+      const mLabel = document.createElement('div');
+      mLabel.textContent = monthToLabel;
+      mLabel.style.cssText = `
+        grid-column: 1;
         grid-row: ${currentRow};
-        font-size: 12px;
-        font-weight: 600;
+        font-size: 11px;
+        font-weight: 700;
         color: var(--text-muted);
-        padding: 10px 0 5px;
         text-align: left;
+        padding-right: 5px;
       `;
-      grid.appendChild(monthRow);
-      currentRow++;
+      grid.appendChild(mLabel);
+    }
+
+    week.forEach(day => {
+      const dDate = new Date(day.date);
+      let dayOfWeek = dDate.getDay();
+      dayOfWeek = (dayOfWeek + 6) % 7; // Monday=0
+
+      const dayRect = document.createElement('div');
+      dayRect.className = 'ContributionCalendar-day';
+      dayRect.setAttribute('data-level', levelMap[day.contributionLevel] || '0');
+      dayRect.setAttribute('data-date', day.date);
+      dayRect.setAttribute('data-count', day.contributionCount);
+      dayRect.style.cssText = `
+        grid-row: ${currentRow}; 
+        grid-column: ${dayOfWeek + 2}; 
+        width: 100%; 
+        aspect-ratio: 1; 
+        border-radius: 2px;
+      `;
       
-      // Pad grid to align correctly with day of week using visibility: hidden
-      for (let i = 0; i < dayOfWeek; i++) {
-        const pad = document.createElement('div');
-        pad.style.cssText = `visibility: hidden; grid-row: ${currentRow}; grid-column: ${i + 1}; width: 100%; aspect-ratio: 1;`;
-        grid.appendChild(pad);
-      }
-    }
+      if (!window.contributionMap) window.contributionMap = {};
+      window.contributionMap[day.date] = day.contributionCount;
+      grid.appendChild(dayRect);
+    });
 
-    const dayRect = document.createElement('div');
-    dayRect.className = 'ContributionCalendar-day';
-    dayRect.setAttribute('data-level', levelMap[day.contributionLevel] || '0');
-    dayRect.setAttribute('data-date', day.date);
-    dayRect.setAttribute('data-count', day.contributionCount);
-    dayRect.style.cssText = `grid-row: ${currentRow}; grid-column: ${dayOfWeek + 1}; width: 100%; aspect-ratio: 1; border-radius: 2px;`;
-    
-    if (!window.contributionMap) window.contributionMap = {};
-    window.contributionMap[day.date] = day.contributionCount;
-    
-    grid.appendChild(dayRect);
-
-    if (dayOfWeek === 6) {
-      currentRow++;
-    }
+    currentRow++;
   });
 
   calendarWrapper.appendChild(grid);
@@ -553,20 +580,27 @@ function updateAnalytics(data) {
   });
 
   analyticsContainer.innerHTML = `
-    <div class="gh-analytic-card">
-      <div class="gh-analytic-glow"></div>
-      <span class="label">Longest Streak</span>
-      <span class="value">${longestStreak} Days</span>
-    </div>
-    <div class="gh-analytic-card">
-      <div class="gh-analytic-glow"></div>
-      <span class="label">Most Active Day</span>
-      <span class="value">${maxDay.count} Commits</span>
-    </div>
-    <div class="gh-analytic-card">
-      <div class="gh-analytic-glow"></div>
-      <span class="label">Status</span>
-      <span class="value">Neural Sync Active</span>
+    <div class="gh-analytics-grid">
+      <div class="gh-analytic-card">
+        <div class="gh-analytic-glow"></div>
+        <span class="label">Longest Streak</span>
+        <span class="value">${longestStreak} Days</span>
+      </div>
+      <div class="gh-analytic-card">
+        <div class="gh-analytic-glow"></div>
+        <span class="label">Most Active Day</span>
+        <span class="value">${maxDay.count} Commits</span>
+      </div>
+      <div class="gh-analytic-card">
+        <div class="gh-analytic-glow"></div>
+        <span class="label">Neural Connectivity</span>
+        <span class="value">98.4%</span>
+      </div>
+      <div class="gh-analytic-card status-card">
+        <div class="gh-analytic-glow"></div>
+        <span class="label">Status</span>
+        <span class="value">Neural Sync Active</span>
+      </div>
     </div>
   `;
 }
@@ -591,17 +625,20 @@ function generateYearList() {
 
   container.innerHTML = html;
 
-  // Add Mobile Year Toggle
+  // Hybrid Year Selector: Desktop list + Mobile Button Nav
   const sidebar = document.querySelector('.contributions-sidebar');
-  if (sidebar && !document.querySelector('.gh-year-toggle')) {
-    const toggleDiv = document.createElement('div');
-    toggleDiv.className = 'gh-year-toggle';
-    toggleDiv.innerHTML = `
-      <button class="year-nav-btn prev">❮</button>
-      <span class="current-year-display">${currentYear}</span>
-      <button class="year-nav-btn next" disabled>❯</button>
+  if (sidebar && !document.querySelector('.gh-year-selector-mobile')) {
+    const mobileSelector = document.createElement('div');
+    mobileSelector.className = 'gh-year-selector-mobile';
+    mobileSelector.innerHTML = `
+      <button class="year-nav-btn prev" title="Previous Year">❮</button>
+      <div class="year-display-wrapper">
+        <span class="current-year-display">${currentYear}</span>
+        <span class="year-label">SELECT YEAR</span>
+      </div>
+      <button class="year-nav-btn next" disabled title="Next Year">❯</button>
     `;
-    sidebar.insertBefore(toggleDiv, container);
+    sidebar.insertBefore(mobileSelector, container);
     initYearToggle(currentYear);
   }
 
