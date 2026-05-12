@@ -26,9 +26,33 @@ function initGitHubCalendar() {
     })
     .then(data => {
       renderCalendar(calendarContainer, data);
+      
+      const contributionSub = document.querySelector('.gh-stat-label');
+      const ghHeroHeader = document.querySelector('.gh-hero-header');
+      const subLabel = ghHeroHeader ? ghHeroHeader.querySelector('div[style*="font-size: 14px"]') : null;
+
       if (contributionHeader) {
         animateCountUp(contributionHeader, data.totalContributions || 0);
       }
+
+      // Dynamic date range for the header
+      if (data.contributions && data.contributions.length > 0) {
+        const firstWeek = data.contributions[0];
+        const lastWeek = data.contributions[data.contributions.length - 1];
+        const startDate = new Date(firstWeek[0].date);
+        const endDate = new Date(lastWeek[lastWeek.length - 1].date);
+        
+        const options = { month: 'short', day: 'numeric', year: 'numeric' };
+        const rangeText = `${startDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} - ${endDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
+        
+        if (contributionSub) {
+          contributionSub.textContent = `contributions in the last year`;
+        }
+        if (subLabel) {
+          subLabel.textContent = `Activity Period: ${rangeText} • Neural Sync Active`;
+        }
+      }
+
       updateAnalytics(data);
     })
     .catch(err => {
@@ -107,19 +131,19 @@ function renderCalendar(container, data) {
     // Align with weekCol which is 13px wide (11px + 1px margin left + 1px margin right)
     monthCell.className = 'calendar-month-cell';
 
-    // GitHub places the label on the first week that contains the first day of the new month
-    let monthIdx = -1;
+    // Align month label strictly to the week containing the 1st day of the month
+    let monthIdxToShow = -1;
     week.forEach(day => {
       const dDate = new Date(day.date);
-      if (dDate.getDate() === 1 || monthIdx === -1) {
-        monthIdx = dDate.getMonth();
+      if (dDate.getDate() === 1) {
+        monthIdxToShow = dDate.getMonth();
       }
     });
 
-    if (monthIdx !== lastMonth) {
-      lastMonth = monthIdx;
+    if (monthIdxToShow !== -1 && monthIdxToShow !== lastMonth) {
+      lastMonth = monthIdxToShow;
       const mLabel = document.createElement('span');
-      mLabel.textContent = monthNames[monthIdx];
+      mLabel.textContent = monthNames[monthIdxToShow];
       mLabel.className = 'calendar-month-label';
       monthCell.appendChild(mLabel);
     }
