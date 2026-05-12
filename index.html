@@ -116,6 +116,7 @@
       gap: 20px;
       position: relative;
       z-index: 2;
+      flex-wrap: wrap;
     }
 
     .header-search-bar {
@@ -123,16 +124,22 @@
       display: flex;
       gap: 12px;
       align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
       margin-top: 10px;
       padding-top: 10px;
       border-top: 1px solid rgba(255,255,255,0.05);
       position: relative;
       z-index: 2;
+      flex-wrap: wrap;
     }
 
     header.nav-hidden {
       transform: translateX(-50%) translateY(-150%);
       opacity: 0;
+    }
+    .gh-year-toggle {
+      display: flex;
     }
 
     .brand {
@@ -168,7 +175,7 @@
       line-height: 1;
     }
 
-    nav { display: flex; gap: 4px; }
+    nav { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
     nav a {
       text-decoration: none;
       color: var(--text-muted);
@@ -428,6 +435,7 @@
     .header-search-bar .search-wrapper {
       flex: 1;
       position: relative;
+      min-width: 250px;
     }
     .header-search-bar .search-input {
       width: 100%;
@@ -468,6 +476,7 @@
       cursor: pointer;
       outline: none;
       min-width: 140px;
+      flex-shrink: 0;
       appearance: none;
       background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
       background-repeat: no-repeat;
@@ -595,14 +604,85 @@
       font-size: 1.1rem;
     }
 
+    .mobile-menu-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      z-index: 2002;
+    }
+    .mobile-menu-toggle span {
+      width: 25px;
+      height: 3px;
+      background: var(--text-main);
+      border-radius: 3px;
+      transition: all 0.3s;
+    }
+
+    @media (max-width: 1024px) {
+      header { width: 98%; padding: 10px 15px; }
+      .header-search-bar { flex-wrap: wrap; }
+      .search-input { min-width: 180px; }
+      .filter-select { min-width: 120px; }
+    }
+
     @media (max-width: 768px) {
-      header { flex-direction: column; gap: 15px; padding: 15px; }
-      .hero h2 { font-size: 2.5rem; }
+      header { flex-direction: column; gap: 10px; padding: 15px; width: 95%; top: 10px; border-radius: 18px; }
+      .header-main { flex-direction: row; justify-content: space-between; align-items: center; width: 100%; position: relative; }
+      
+      .mobile-menu-toggle { 
+        display: flex; 
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      nav {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        padding: 20px 0;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        align-items: flex-start;
+      }
+      nav a {
+        padding: 12px 10px;
+        width: 100%;
+        font-size: 1.1rem;
+        border-bottom: 1px solid rgba(255,255,255,0.03);
+      }
+      nav a {
+        text-align: center;
+        padding: 12px;
+      }
+      nav.active { display: flex; }
+      
+      .header-search-bar {
+        display: none;
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        margin-top: 5px;
+      }
+      .header-search-bar.active { display: flex; }
+      .header-search-bar .filter-select { min-width: unset; width: 100%; }
+      .clear-filters-btn { width: 100%; }
+      
+      .hero { margin-top: 140px; min-height: 40vh; }
+      .hero h2 { font-size: 2.2rem; }
       .grid { grid-template-columns: 1fr; }
-      section.cluster { padding: 80px 20px; }
+      section.cluster { padding: 60px 20px; }
       .controls-container { margin-top: -20px; }
       .back-to-top { bottom: 20px; right: 20px; width: 44px; height: 44px; font-size: 1.2rem; }
     }
+
+    /* Menu Toggle Animation Fixes */
+    .mobile-menu-toggle.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .mobile-menu-toggle.active span:nth-child(2) { opacity: 0; }
+    .mobile-menu-toggle.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
   </style>
 
   <!-- GitHub Calendar CSS -->
@@ -625,6 +705,11 @@
           <span id="header-results-count" class="header-badge"></span>
         </div>
       </a>
+      <div class="mobile-menu-toggle" id="mobile-menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
       <nav id="nav-links"></nav>
     </div>
     <div class="header-search-bar">
@@ -659,8 +744,6 @@
       <div style="font-size: 14px; color: var(--text-muted); margin-top: 5px;">Your activity across time • Keep up the great work!</div>
     </div>
 
-
-
     <!-- Contributions Layout -->
     <div id="contributions-section" class="contributions-layout">
       <div class="contributions-main">
@@ -688,7 +771,6 @@
         </ul>
       </div>
     </div>
-
   </section>
 
   <!-- Pinned Projects (Separated) -->
@@ -702,17 +784,13 @@
     <div id="github-pinned-container" class="github-pinned-grid"></div>
   </section>
 
-
-
-
-
   <!-- Customize Pins Modal -->
   <div id="pin-modal" class="pin-modal-overlay">
     <div class="pin-modal-content">
       <div class="pin-modal-header">
         <h3 class="pin-modal-title">Customize your pinned items</h3>
         <button class="pin-modal-close" onclick="closePinModal()">
-          <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path></svg>
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path></svg>
         </button>
       </div>
       <div class="pin-modal-body">
@@ -806,6 +884,8 @@
     const clearFiltersBtn = document.getElementById('clear-filters');
     const headerResultsCount = document.getElementById('header-results-count');
     const bttButton = document.getElementById('back-to-top');
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const headerSearchBar = document.querySelector('.header-search-bar');
 
     let activeTechFilter = 'all';
     let activeClusterFilter = 'all';
@@ -1034,6 +1114,14 @@
         }
       }
     });
+
+    if (mobileMenuToggle) {
+      mobileMenuToggle.addEventListener("click", () => {
+        navContainer.classList.toggle("active");
+        if (headerSearchBar) headerSearchBar.classList.toggle("active");
+        mobileMenuToggle.classList.toggle("active");
+      });
+    }
 
     bttButton.addEventListener('click', () => {
       lenis.scrollTo(0);
