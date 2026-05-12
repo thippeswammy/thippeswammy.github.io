@@ -171,16 +171,18 @@ class RepoSyncGUI:
 
     def setup_ui(self):
         self.root.title("GitHub Sync Engine")
-        self.root.geometry("700x850")
+        self.root.geometry("800x850")
         self.root.configure(bg=COLOR_BG)
 
         # Main Layout: Sidebar (Controls) + Content (Repo List)
         main_container = ttk.Frame(self.root)
         main_container.pack(fill="both", expand=True)
 
-        # Left Sidebar (approx 35% width)
+        # Left Sidebar
         self.sidebar = ttk.Frame(main_container, style="Sidebar.TFrame", padding=20)
-        self.sidebar.pack(side="left", fill="both", expand=False, width=250)
+        self.sidebar.pack(side="left", fill="both", expand=False)
+        self.sidebar.configure(width=250)
+        self.sidebar.pack_propagate(False) # Keep fixed width
 
         # Content Area
         self.content = ttk.Frame(main_container, padding=10)
@@ -201,7 +203,7 @@ class RepoSyncGUI:
         self.type_filter = tk.StringVar(value="all")
         for text, val in [("All Repos", "all"), ("Sources Only", "source"), ("Forks Only", "fork")]:
             ttk.Radiobutton(self.sidebar, text=text, value=val, variable=self.type_filter, 
-                            command=self.refresh_list, style="Sidebar.TRadiobutton").pack(anchor="w", pady=2)
+                            command=self.refresh_list).pack(anchor="w", pady=2)
 
         ttk.Separator(self.sidebar, orient="horizontal").pack(fill="x", pady=20)
 
