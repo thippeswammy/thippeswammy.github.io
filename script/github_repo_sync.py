@@ -5,12 +5,12 @@ import requests
 import tkinter as tk
 from tkinter import messagebox, ttk
 import threading
-import time
+from datetime import datetime
 
 # --- Configuration & Constants ---
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 META_FILE = ".sync_meta.json"
-USER_AGENT = "GitHubRepoSync-Advanced-v2"
+USER_AGENT = "GitHubRepoSync-Advanced-v3"
 THEME_COLOR = "#212529"
 ACCENT_COLOR = "#0d6efd"
 SUCCESS_COLOR = "#198754"
@@ -18,13 +18,15 @@ BG_COLOR = "#f8f9fa"
 
 # --- Helper Functions ---
 
-def get_headers():
+def get_headers(etag=None):
     headers = {
         "User-Agent": USER_AGENT,
         "Accept": "application/vnd.github.v3+json"
     }
     if GITHUB_TOKEN:
         headers["Authorization"] = f"token {GITHUB_TOKEN}"
+    if etag:
+        headers["If-None-Match"] = etag
     return headers
 
 def load_meta():
@@ -34,7 +36,7 @@ def load_meta():
                 return json.load(f)
         except:
             return {}
-    return {}
+    return {"repos": {}, "selected_repos": [], "last_sync": None}
 
 def save_meta(meta):
     with open(META_FILE, "w") as f:
@@ -64,28 +66,38 @@ def fetch_repos(username):
         print(f"Connection error: {e}")
         return []
 
-def download_md_files(username, repo_name, meta, progress_callback, log_callback):
-    headers = get_headers()
-    repo_meta = meta.get("repos", {}).get(repo_name, {"files": {}})
+def download_md_files(username, repo_obj, meta, progress_callback, log_callback):
+    repo_name = repo_obj['name']
+    pushed_at = repo_obj['pushed_at']
+    repo_meta = meta.get("repos", {}).get(repo_name, {"files": {}, "etag": None, "last_pushed": None})
     
-    log_callback(f"Checking {repo_name}...")
-    
-    # 1. Get default branch
-    url = f"https://api.github.com/repos/{username}/{repo_name}"
-    res = requests.get(url, headers=headers)
-    if res.status_code != 200:
-        handle_error(res, f"fetching {repo_name} info", log_callback)
+    # Optimization 1: Check pushed_at timestamp
+    if repo_meta.get("last_pushed") == pushed_at:
+        log_callback(f"Skipping {repo_name} - No changes since last sync.")
         return 0
     
-    branch = res.json().get('default_branch', 'main')
+    log_callback(f"Checking {repo_name}...")
+    headers = get_headers(repo_meta.get("etag"))
     
-    # 2. Get recursive tree
+    # 1. Get default branch (This call is cheap, but we can also use repo_obj)
+    branch = repo_obj.get('default_branch', 'main')
+    
+    # 2. Get recursive tree with ETag
     tree_url = f"https://api.github.com/repos/{username}/{repo_name}/git/trees/{branch}?recursive=1"
     res = requests.get(tree_url, headers=headers)
+    
+    if res.status_code == 304:
+        log_callback(f"  Unchanged (ETag Match).")
+        # Update timestamp even if no files changed to skip next time
+        if repo_name not in meta["repos"]: meta["repos"][repo_name] = repo_meta
+        meta["repos"][repo_name]["last_pushed"] = pushed_at
+        return 0
+        
     if res.status_code != 200:
         handle_error(res, f"fetching tree for {repo_name}", log_callback)
         return 0
     
+    new_etag = res.headers.get("ETag")
     tree = res.json().get('tree', [])
     ignored_files = {'setup.md', 'contribution.md', 'contributing.md'}
     md_files = [
@@ -109,7 +121,7 @@ def download_md_files(username, repo_name, meta, progress_callback, log_callback
         # Download
         encoded_path = urllib.parse.quote(path)
         raw_url = f"https://raw.githubusercontent.com/{username}/{repo_name}/{branch}/{encoded_path}"
-        res = requests.get(raw_url, headers=headers)
+        res = requests.get(raw_url, headers=get_headers())
         
         if res.status_code == 200:
             local_path = os.path.join(repo_name, path)
@@ -119,7 +131,7 @@ def download_md_files(username, repo_name, meta, progress_callback, log_callback
             
             # Update meta
             if "repos" not in meta: meta["repos"] = {}
-            if repo_name not in meta["repos"]: meta["repos"][repo_name] = {"files": {}}
+            if repo_name not in meta["repos"]: meta["repos"][repo_name] = {"files": {}, "etag": None}
             meta["repos"][repo_name]["files"][path] = remote_sha
             
             count += 1
@@ -129,6 +141,11 @@ def download_md_files(username, repo_name, meta, progress_callback, log_callback
         
         progress_callback()
         
+    # Update Repo Meta with new ETag and Timestamp
+    if repo_name not in meta["repos"]: meta["repos"][repo_name] = {"files": {}}
+    meta["repos"][repo_name]["etag"] = new_etag
+    meta["repos"][repo_name]["last_pushed"] = pushed_at
+    
     if skipped > 0:
         log_callback(f"  Skipped {skipped} unchanged files.")
     
@@ -200,12 +217,12 @@ class AdvancedRepoSyncApp:
         self.canvas_window = self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
         self.canvas.configure(yscrollcommand=self.scrollbar.set)
         
-        # Mouse wheel support
-        self.canvas.bind_all("<MouseWheel>", lambda e: self.canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
-
         self.canvas.pack(side="left", fill="both", expand=True)
         self.scrollbar.pack(side="right", fill="y")
         
+        # Mouse wheel support
+        self.canvas.bind_all("<MouseWheel>", lambda e: self.canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+
         self.root.bind("<Configure>", self.on_resize)
 
         # Populate Repos
@@ -213,7 +230,7 @@ class AdvancedRepoSyncApp:
 
         # Log Area
         log_frame = ttk.Frame(self.root, padding=(20, 10))
-        log_frame.pack(fill="both", expand=False, height=150)
+        log_frame.pack(fill="both", expand=False) # Fixed: Removed height=150
         
         ttk.Label(log_frame, text="Activity Log", font=("Segoe UI", 9, "bold")).pack(anchor="w")
         self.log_text = tk.Text(log_frame, height=8, font=("Consolas", 9), bg="#f1f3f5", state="disabled")
@@ -234,7 +251,7 @@ class AdvancedRepoSyncApp:
         self.sync_btn.pack(fill="x")
 
     def on_resize(self, event):
-        self.canvas.itemconfig(self.canvas_window, width=event.width - 60)
+        self.canvas.itemconfig(self.canvas_window, width=max(event.width - 60, 100))
 
     def render_repo_list(self, filter_text=""):
         for cb in self.checkbuttons:
@@ -283,38 +300,40 @@ class AdvancedRepoSyncApp:
         save_meta(self.meta)
 
     def start_sync_thread(self):
-        selected = [repo for repo, var in self.vars.items() if var.get()]
-        if not selected:
+        selected_names = [repo for repo, var in self.vars.items() if var.get()]
+        if not selected_names:
             messagebox.showwarning("No Selection", "Select at least one repository.")
             return
+        
+        selected_repos = [r for r in self.repos_data if r['name'] in selected_names]
         
         self.save_preferences()
         self.sync_btn.config(state="disabled", text="SYNCING...")
         self.progress_var.set(0)
         
-        thread = threading.Thread(target=self.run_sync, args=(selected,))
+        thread = threading.Thread(target=self.run_sync, args=(selected_repos,))
         thread.daemon = True
         thread.start()
 
-    def run_sync(self, selected):
-        total_repos = len(selected)
-        success_count = 0
+    def run_sync(self, selected_repos):
+        total_repos = len(selected_repos)
         total_files = 0
         
         self.log(f"--- Starting Sync for {total_repos} repositories ---")
         
-        for i, repo in enumerate(selected):
-            self.log(f"[{i+1}/{total_repos}] Processing {repo}...")
+        for i, repo_obj in enumerate(selected_repos):
+            repo_name = repo_obj['name']
+            self.log(f"[{i+1}/{total_repos}] Processing {repo_name}...")
             
             def update_progress():
-                pass # Individual file progress could be added here
+                pass
                 
-            files_updated = download_md_files(self.username, repo, self.meta, update_progress, self.log)
+            files_updated = download_md_files(self.username, repo_obj, self.meta, update_progress, self.log)
             total_files += files_updated
             
-            # Update overall progress
             self.progress_var.set(((i + 1) / total_repos) * 100)
             
+        self.meta["last_sync"] = datetime.utcnow().isoformat()
         save_meta(self.meta)
         self.log(f"--- Sync Complete. {total_files} files updated. ---")
         
