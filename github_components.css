@@ -266,6 +266,12 @@
   justify-content: flex-end;
 }
 
+@media (max-width: 1024px) {
+  .year-list {
+    display: none !important;
+  }
+}
+
 .year-dot {
   width: 6px;
   height: 6px;
@@ -300,6 +306,84 @@
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
 }
 
+/* ── MOBILE YEAR SELECTOR ───────────────────────────── */
+.gh-year-selector-mobile {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 12px 20px;
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto 30px;
+  backdrop-filter: blur(10px);
+}
+
+@media (max-width: 1024px) {
+  .gh-year-selector-mobile {
+    display: flex;
+  }
+}
+
+.year-display-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.current-year-display {
+  font-family: var(--font-h);
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+}
+
+.year-label {
+  font-size: 9px;
+  color: #6366f1;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.mobile-year-toggle {
+  display: none;
+  align-items: center;
+  gap: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.year-toggle-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 18px;
+  font-family: var(--font-h);
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: color 0.3s;
+}
+
+.year-toggle-btn:hover {
+  color: #fff;
+}
+
+.year-toggle-display {
+  font-family: var(--font-h);
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  min-width: 50px;
+  text-align: center;
+}
+
 
 
 /* ── CALENDAR WIDGET OVERRIDE ────────────────────────── */
@@ -311,7 +395,76 @@
   margin-bottom: 20px !important;
 }
 
+.calendar-inner-scroll {
+  padding: 0 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 800px;
+}
+
+.calendar-month-row {
+  display: flex;
+  gap: 3px;
+  margin-left: 34px;
+  font-size: 10px;
+  color: var(--text-muted);
+  height: 20px;
+}
+
+.calendar-main-grid {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.calendar-day-labels {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 95px;
+  font-size: 10px;
+  color: var(--text-muted);
+  padding-top: 1px;
+  width: 24px;
+  flex-shrink: 0;
+  text-align: right;
+  margin-right: 2px;
+}
+
+.calendar-day-labels span {
+  height: 11px;
+}
+
+.calendar-graph-container {
+  display: flex;
+  gap: 3px;
+}
+
+.calendar-week-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.calendar-month-cell {
+  width: 13px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.calendar-month-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: nowrap;
+}
+
 .ContributionCalendar-day {
+  width: 11px;
+  height: 11px;
+  margin: 1px;
+  border-radius: 2px;
   rx: 2px;
   ry: 2px;
   transition: all 0.2s ease;
@@ -346,6 +499,26 @@
 .calendar .ContributionCalendar-day[data-level="4"] {
   fill: #d946ef !important;
   background-color: #d946ef !important;
+}
+
+/* ── ROTATED VERTICAL GRID (MOBILE) ─────────────────── */
+.gh-calendar-vertical-rotated {
+  width: 100%;
+  padding: 20px 10px;
+  background: rgba(255, 255, 255, 0.01);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.gh-rotated-grid {
+  width: 100%;
+}
+
+.gh-rotated-grid .ContributionCalendar-day {
+  width: 100% !important;
+  aspect-ratio: 1;
+  height: auto !important;
+  margin: 0 !important;
 }
 
 
@@ -387,6 +560,34 @@
   font-size: 18px;
   font-weight: 700;
   color: #fff;
+}
+
+/* ── RESPONSIVE ANALYTICS GRID ──────────────────────── */
+.gh-analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+.gh-analytics-grid .status-card {
+  grid-column: span 1;
+}
+@media (max-width: 768px) {
+  .gh-analytics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .gh-analytics-grid .status-card {
+    grid-column: span 1;
+  }
+  .gh-analytic-card {
+    min-width: 0;
+    padding: 15px;
+  }
+  .gh-analytic-card .value {
+    font-size: 16px;
+  }
 }
 
 .gh-replay-btn {
@@ -634,4 +835,246 @@
 
 .scroll-container::-webkit-scrollbar-thumb:hover {
   background: rgba(99, 102, 241, 0.4);
+}
+
+/* Year Toggle (Mobile) */
+.gh-year-toggle {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 8px 12px;
+  width: 100%;
+  max-width: 200px;
+  margin: 0 auto 10px;
+}
+
+.current-year-display {
+  font-family: var(--font-h);
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.year-nav-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.year-nav-btn:hover:not(:disabled) {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: rgba(99, 102, 241, 0.4);
+}
+
+.year-nav-btn:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+/* Vertical Calendar (Mobile) */
+.gh-calendar-vertical {
+  width: 100%;
+  padding: 15px 5px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.gh-vertical-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  text-align: center;
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  padding: 0 4px;
+}
+
+.gh-vertical-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  padding: 0 4px;
+}
+
+.gh-vertical-month-row {
+  grid-column: span 7;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  padding: 15px 0 8px 2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.gh-vertical-grid .ContributionCalendar-day {
+  width: 100% !important;
+  aspect-ratio: 1/1;
+  height: auto !important;
+  margin: 0 !important;
+}
+
+.gh-vertical-grid .ContributionCalendar-day.empty {
+  background: transparent;
+  border: none;
+}
+
+/* ── RESPONSIVE STYLES ────────────────────────────── */
+@media (max-width: 768px) {
+  .calendar-inner-scroll {
+    min-width: unset;
+    flex-direction: row;
+    padding: 0;
+    gap: 15px;
+  }
+  .calendar-main-grid {
+    flex-direction: column;
+    gap: 4px;
+    align-items: stretch;
+  }
+  .calendar-day-labels {
+    flex-direction: row;
+    height: auto;
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 2px;
+    padding-left: 20px;
+    justify-content: space-around;
+  }
+  .calendar-day-labels span {
+    width: auto;
+    height: auto;
+  }
+  .calendar-graph-container {
+    flex-direction: column;
+    gap: 3px;
+  }
+  .calendar-week-col {
+    flex-direction: row;
+  }
+  .calendar-month-row {
+    flex-direction: column;
+    margin-left: 0;
+    margin-top: 15px;
+    width: 25px;
+    height: auto;
+  }
+  .calendar-month-cell {
+    width: auto;
+    height: 13px;
+  }
+  .calendar-month-label {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+@media (max-width: 1024px) {
+  #github-activity-section {
+    width: 90% !important;
+    padding: 20px !important;
+    margin: 40px auto !important;
+  }
+  .contributions-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .contributions-sidebar {
+    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+  .gh-year-toggle {
+    display: flex;
+  }
+  .mobile-year-toggle {
+    display: flex !important;
+  }
+  .gh-hero-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+  }
+  .gh-hero-stats {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .gh-analytics-row {
+    flex-direction: column;
+  }
+  #gh-analytics {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .pinned-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+}
+
+
+}
+
+/* ── CALENDAR LOADING OVERLAY ──────────────────────── */
+.calendar {
+  position: relative;
+  transition: opacity 0.5s ease;
+}
+
+.calendar.loading-state {
+  pointer-events: none;
+}
+
+.calendar.loading-state::after {
+  content: "RECALIBRATING...";
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(10, 11, 20, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-family: var(--font-b);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 6px;
+  z-index: 100;
+  border-radius: 20px;
+  animation: pulse-sync 1.5s infinite ease-in-out;
+}
+
+.calendar-wrapper, .gh-calendar-vertical-rotated {
+  animation: neural-fade-in 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes neural-fade-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); filter: blur(4px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes pulse-sync {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+.gh-analytic-card .value {
+  transition: transform 0.3s ease, color 0.3s ease;
 }
