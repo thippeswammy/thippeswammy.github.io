@@ -739,6 +739,102 @@
   background: rgba(99, 102, 241, 0.4);
 }
 
+/* Year Toggle (Mobile) */
+.gh-year-toggle {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 8px 12px;
+  width: 100%;
+  max-width: 200px;
+  margin: 0 auto 10px;
+}
+
+.current-year-display {
+  font-family: var(--font-h);
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.year-nav-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.year-nav-btn:hover:not(:disabled) {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: rgba(99, 102, 241, 0.4);
+}
+
+.year-nav-btn:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+/* Vertical Calendar (Mobile) */
+.gh-calendar-vertical {
+  width: 100%;
+  padding: 15px 5px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.gh-vertical-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  text-align: center;
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  padding: 0 4px;
+}
+
+.gh-vertical-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  padding: 0 4px;
+}
+
+.gh-vertical-month-row {
+  grid-column: span 7;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  padding: 15px 0 8px 2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.gh-vertical-grid .ContributionCalendar-day {
+  width: 100% !important;
+  aspect-ratio: 1/1;
+  height: auto !important;
+  margin: 0 !important;
+}
+
+.gh-vertical-grid .ContributionCalendar-day.empty {
+  background: transparent;
+  border: none;
+}
+
 /* ── RESPONSIVE STYLES ────────────────────────────── */
 @media (max-width: 768px) {
   .calendar-inner-scroll {
@@ -806,8 +902,8 @@
     overflow-x: auto;
     padding-bottom: 10px;
   }
-  .year-list {
-    display: none;
+  .gh-year-toggle {
+    display: flex;
   }
   .mobile-year-toggle {
     display: flex !important;
