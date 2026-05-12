@@ -97,7 +97,7 @@ function renderCalendar(container, data) {
   const scrollContainer = document.createElement('div');
   scrollContainer.className = 'scroll-container';
   scrollContainer.style.cssText = 'overflow-x: auto; width: 100%;';
-
+  const innerScroll = document.createElement('div');
   innerScroll.style.cssText = 'padding: 0 5px; min-width: 800px;';
 
   // Intelligent Master Grid: Row 1 = Months, Rows 2-8 = Days. Col 1 = Day Labels.
