@@ -4,7 +4,7 @@
 
 const GITHUB_USERNAME = 'thippeswammy';
 const CONTRIBUTIONS_API = `https://github-contributions-api.deno.dev/${GITHUB_USERNAME}.json`;
-const START_YEAR = 2020; // Changed from 2019
+const START_YEAR = 2020; 
 
 document.addEventListener('DOMContentLoaded', () => {
   generateYearList();
@@ -20,10 +20,7 @@ function initGitHubCalendar() {
   calendarContainer.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted); font-family: var(--font-b);">Initializing neural grid...</div>';
 
   fetch(CONTRIBUTIONS_API)
-    .then(response => {
-      if (!response.ok) throw new Error('API unreachable');
-      return response.json();
-    })
+    .then(response => { if (!response.ok) throw new Error('API unreachable'); return response.json(); })
     .then(data => {
       renderCalendar(calendarContainer, data);
       window.addEventListener('resize', () => renderCalendar(calendarContainer, data));
@@ -35,10 +32,8 @@ function initGitHubCalendar() {
       if (contributionHeader) animateCountUp(contributionHeader, data.totalContributions || 0);
 
       if (data.contributions && data.contributions.length > 0) {
-        const firstWeek = data.contributions[0];
-        const lastWeek = data.contributions[data.contributions.length - 1];
-        const startDate = new Date(firstWeek[0].date);
-        const endDate = new Date(lastWeek[lastWeek.length - 1].date);
+        const firstWeek = data.contributions[0], lastWeek = data.contributions[data.contributions.length - 1];
+        const startDate = new Date(firstWeek[0].date), endDate = new Date(lastWeek[lastWeek.length - 1].date);
         const rangeText = `${startDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} - ${endDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
         if (contributionSub) contributionSub.textContent = `contributions in the last year`;
         if (subLabel) subLabel.textContent = `Activity Period: ${rangeText} • Neural Sync Active`;
@@ -52,16 +47,16 @@ function initGitHubCalendar() {
     });
 }
 
-function animateCountUp(el, target) {
+function animateCountUp(el, target, suffix = '') {
   let count = 0;
-  const duration = 2000;
+  const duration = 1500;
   const start = performance.now();
   function update(now) {
     const elapsed = now - start;
     const progress = Math.min(elapsed / duration, 1);
-    const easeOutQuad = t => t * (2 - t);
-    const current = Math.floor(easeOutQuad(progress) * target);
-    el.textContent = current.toLocaleString();
+    const easeOutExpo = t => (t === 1) ? 1 : 1 - Math.pow(2, -10 * t);
+    const current = Math.floor(easeOutExpo(progress) * target);
+    el.textContent = `${current.toLocaleString()}${suffix}`;
     if (progress < 1) requestAnimationFrame(update);
   }
   requestAnimationFrame(update);
@@ -69,65 +64,66 @@ function animateCountUp(el, target) {
 
 function renderCalendar(container, data) {
   if (!data || !data.contributions) return;
-  container.classList.remove('loading-state');
-  container.style.height = 'auto';
-  container.style.minHeight = '0';
-  container.innerHTML = '';
+  
+  // Adding a tiny deliberate delay for the "Neural Sync" aesthetic
+  setTimeout(() => {
+    container.classList.remove('loading-state');
+    container.style.height = 'auto';
+    container.style.minHeight = '0';
+    container.innerHTML = '';
 
-  const isMobile = window.innerWidth <= 1024 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  if (isMobile) { renderVerticalCalendar(container, data); return; }
+    const isMobile = window.innerWidth <= 1024 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) { renderVerticalCalendar(container, data); return; }
 
-  const calendarWrapper = document.createElement('div');
-  calendarWrapper.className = 'calendar-wrapper';
-  const scrollContainer = document.createElement('div');
-  scrollContainer.className = 'scroll-container';
-  const innerScroll = document.createElement('div');
-  innerScroll.style.cssText = 'padding: 0 5px; min-width: 800px;';
+    const calendarWrapper = document.createElement('div');
+    calendarWrapper.className = 'calendar-wrapper';
+    const scrollContainer = document.createElement('div');
+    scrollContainer.className = 'scroll-container';
+    const innerScroll = document.createElement('div');
+    innerScroll.style.cssText = 'padding: 0 5px; min-width: 800px;';
 
-  const totalWeeks = data.contributions.length;
-  const masterGrid = document.createElement('div');
-  masterGrid.style.cssText = `display: grid; grid-template-columns: 30px repeat(${totalWeeks}, 11px); grid-template-rows: 15px repeat(7, 11px); column-gap: 3px; row-gap: 3px; align-items: center;`;
+    const totalWeeks = data.contributions.length;
+    const masterGrid = document.createElement('div');
+    masterGrid.style.cssText = `display: grid; grid-template-columns: 30px repeat(${totalWeeks}, 11px); grid-template-rows: 15px repeat(7, 11px); column-gap: 3px; row-gap: 3px; align-items: center;`;
 
-  const levelMap = { 'NONE': '0', 'FIRST_QUARTILE': '1', 'SECOND_QUARTILE': '2', 'THIRD_QUARTILE': '3', 'FOURTH_QUARTILE': '4' };
-  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  let lastMonth = -1;
+    const levelMap = { 'NONE': '0', 'FIRST_QUARTILE': '1', 'SECOND_QUARTILE': '2', 'THIRD_QUARTILE': '3', 'FOURTH_QUARTILE': '4' };
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    let lastMonth = -1;
 
-  const dayConfig = [{ label: 'Mon', row: 3 }, { label: 'Wed', row: 5 }, { label: 'Fri', row: 7 }];
-  dayConfig.forEach(cfg => {
-    const span = document.createElement('span');
-    span.textContent = cfg.label;
-    span.style.cssText = `grid-column: 1; grid-row: ${cfg.row}; font-size: 9px; color: var(--text-muted); align-self: center; padding-right: 4px;`;
-    masterGrid.appendChild(span);
-  });
-
-  data.contributions.forEach((week, weekIdx) => {
-    const colIdx = weekIdx + 2;
-    const monthIdx = new Date(week[0].date).getMonth();
-    if (monthIdx !== lastMonth) {
-      const mLabel = document.createElement('span');
-      mLabel.textContent = monthNames[monthIdx];
-      mLabel.style.cssText = `grid-row: 1; grid-column: ${colIdx}; font-size: 10px; color: var(--text-muted); white-space: nowrap;`;
-      masterGrid.appendChild(mLabel);
-      lastMonth = monthIdx;
-    }
-    week.forEach((day, dayIdx) => {
-      const dayRect = document.createElement('div');
-      dayRect.className = 'ContributionCalendar-day';
-      dayRect.style.cssText = `grid-row: ${dayIdx + 2}; grid-column: ${colIdx}; width: 11px; height: 11px; border-radius: 2px;`;
-      dayRect.setAttribute('data-level', levelMap[day.contributionLevel] || '0');
-      dayRect.setAttribute('data-date', day.date);
-      dayRect.setAttribute('data-count', day.contributionCount);
-      masterGrid.appendChild(dayRect);
-      if (!window.contributionMap) window.contributionMap = {};
-      window.contributionMap[day.date] = day.contributionCount;
+    const dayConfig = [{ label: 'Mon', row: 3 }, { label: 'Wed', row: 5 }, { label: 'Fri', row: 7 }];
+    dayConfig.forEach(cfg => {
+      const span = document.createElement('span');
+      span.textContent = cfg.label;
+      span.style.cssText = `grid-column: 1; grid-row: ${cfg.row}; font-size: 9px; color: var(--text-muted); align-self: center; padding-right: 4px;`;
+      masterGrid.appendChild(span);
     });
-  });
 
-  innerScroll.appendChild(masterGrid);
-  scrollContainer.appendChild(innerScroll);
-  calendarWrapper.appendChild(scrollContainer);
-  container.appendChild(calendarWrapper);
-  setupCustomTooltips(container);
+    data.contributions.forEach((week, weekIdx) => {
+      const colIdx = weekIdx + 2, monthIdx = new Date(week[0].date).getMonth();
+      if (monthIdx !== lastMonth) {
+        const mLabel = document.createElement('span');
+        mLabel.textContent = monthNames[monthIdx];
+        mLabel.style.cssText = `grid-row: 1; grid-column: ${colIdx}; font-size: 10px; color: var(--text-muted); white-space: nowrap;`;
+        masterGrid.appendChild(mLabel);
+        lastMonth = monthIdx;
+      }
+      week.forEach((day, dayIdx) => {
+        const dayRect = document.createElement('div');
+        dayRect.className = 'ContributionCalendar-day';
+        dayRect.style.cssText = `grid-row: ${dayIdx + 2}; grid-column: ${colIdx}; width: 11px; height: 11px; border-radius: 2px;`;
+        dayRect.setAttribute('data-level', levelMap[day.contributionLevel] || '0');
+        dayRect.setAttribute('data-date', day.date);
+        dayRect.setAttribute('data-count', day.contributionCount);
+        masterGrid.appendChild(dayRect);
+      });
+    });
+
+    innerScroll.appendChild(masterGrid);
+    scrollContainer.appendChild(innerScroll);
+    calendarWrapper.appendChild(scrollContainer);
+    container.appendChild(calendarWrapper);
+    setupCustomTooltips(container);
+  }, 400); 
 }
 
 function renderVerticalCalendar(container, data) {
@@ -251,11 +247,15 @@ function updateAnalytics(data) {
   });
   container.innerHTML = `
     <div class="gh-analytics-grid">
-      <div class="gh-analytic-card"><div class="gh-analytic-glow"></div><span class="label">Longest Streak</span><span class="value">${longestStreak} Days</span></div>
-      <div class="gh-analytic-card"><div class="gh-analytic-glow"></div><span class="label">Most Active Day</span><span class="value">${maxDay.count} Commits</span></div>
+      <div class="gh-analytic-card"><div class="gh-analytic-glow"></div><span class="label">Longest Streak</span><span class="value" id="stat-streak">0 Days</span></div>
+      <div class="gh-analytic-card"><div class="gh-analytic-glow"></div><span class="label">Most Active Day</span><span class="value" id="stat-max">0 Commits</span></div>
       <div class="gh-analytic-card"><div class="gh-analytic-glow"></div><span class="label">Neural Connectivity</span><span class="value">98.4%</span></div>
       <div class="gh-analytic-card status-card"><div class="gh-analytic-glow"></div><span class="label">Status</span><span class="value">Neural Sync Active</span></div>
     </div>`;
+  
+  const streakEl = document.getElementById('stat-streak'), maxEl = document.getElementById('stat-max');
+  if (streakEl) animateCountUp(streakEl, longestStreak, ' Days');
+  if (maxEl) animateCountUp(maxEl, maxDay.count, ' Commits');
 }
 
 function generateYearList() {
@@ -344,7 +344,6 @@ function renderPinnedProjects(pinnedProjectIds) {
     container.appendChild(card);
   });
 }
-
 window.openPinModal = function () {
   const modal = document.getElementById('pin-modal'), listContainer = document.getElementById('pin-modal-list');
   if (!modal || !listContainer) return;

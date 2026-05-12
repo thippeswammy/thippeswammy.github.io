@@ -1029,10 +1029,13 @@
 
 }
 
+
+}
+
 /* ── CALENDAR LOADING OVERLAY ──────────────────────── */
 .calendar {
   position: relative;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.5s ease;
 }
 
 .calendar.loading-state {
@@ -1043,21 +1046,35 @@
   content: "RECALIBRATING...";
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(10, 11, 20, 0.6);
-  backdrop-filter: blur(4px);
+  background: rgba(10, 11, 20, 0.7);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--accent);
   font-family: var(--font-b);
-  font-size: 12px;
-  letter-spacing: 4px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 6px;
   z-index: 100;
-  border-radius: 12px;
+  border-radius: 20px;
   animation: pulse-sync 1.5s infinite ease-in-out;
 }
 
+.calendar-wrapper, .gh-calendar-vertical-rotated {
+  animation: neural-fade-in 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes neural-fade-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); filter: blur(4px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
 @keyframes pulse-sync {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+.gh-analytic-card .value {
+  transition: transform 0.3s ease, color 0.3s ease;
 }
