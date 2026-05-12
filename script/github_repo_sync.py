@@ -10,17 +10,18 @@ from datetime import datetime
 # --- Configuration & Constants ---
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 META_FILE = ".sync_meta.json"
-USER_AGENT = "GitHubRepoSync-Engine-v5"
+USER_AGENT = "GitHubRepoSync-Engine-v6"
 
 # Premium Color Palette
-COLOR_BG = "#FFFFFF"           # White background
-COLOR_SIDEBAR = "#F8F9FA"      # Light gray sidebar/controls
-COLOR_TEXT = "#212529"         # Dark gray text
-COLOR_ACCENT = "#0D6EFD"       # Bootstrap Blue
-COLOR_SUCCESS = "#198754"      # Bootstrap Green
-COLOR_FORK = "#6C757D"         # Muted gray for forks
-COLOR_PRIVATE = "#6610F2"      # Purple for private repos
-COLOR_BORDER = "#DEE2E6"       # Light border color
+COLOR_BG = "#FFFFFF"
+COLOR_SIDEBAR = "#F8F9FA"
+COLOR_TEXT = "#212529"
+COLOR_ACCENT = "#0D6EFD"
+COLOR_SUCCESS = "#198754"
+COLOR_WARNING = "#FFC107"
+COLOR_FORK = "#6C757D"
+COLOR_PRIVATE = "#6610F2"
+COLOR_BORDER = "#DEE2E6"
 
 # --- Helper Functions ---
 
@@ -82,8 +83,12 @@ def download_md_files(username, repo_obj, meta, log_callback):
     pushed_at = repo_obj['pushed_at']
     repo_meta = meta.get("repos", {}).get(repo_name, {"files": {}, "etag": None, "last_pushed": None})
     
-    if repo_meta.get("last_pushed") == pushed_at:
-        log_callback(f"SKIP: {repo_name} (Up to date)")
+    # Check if folder exists
+    folder_exists = os.path.exists(repo_name)
+    
+    # Logic: Skip if metadata matches AND folder exists
+    if repo_meta.get("last_pushed") == pushed_at and folder_exists:
+        log_callback(f"SKIP: {repo_name} (Up to date & Folder present)")
         return 0
     
     log_callback(f"SYNC: {repo_name}...")
@@ -94,7 +99,7 @@ def download_md_files(username, repo_obj, meta, log_callback):
     tree_url = f"https://api.github.com/repos/{owner}/{repo_name}/git/trees/{branch}?recursive=1"
     res = requests.get(tree_url, headers=headers)
     
-    if res.status_code == 304:
+    if res.status_code == 304 and folder_exists:
         log_callback(f"  NO CHANGE: {repo_name}")
         if repo_name not in meta["repos"]: meta["repos"][repo_name] = repo_meta
         meta["repos"][repo_name]["last_pushed"] = pushed_at
@@ -136,6 +141,7 @@ def download_md_files(username, repo_obj, meta, log_callback):
     if repo_name not in meta["repos"]: meta["repos"][repo_name] = {"files": {}}
     meta["repos"][repo_name]["etag"] = new_etag
     meta["repos"][repo_name]["last_pushed"] = pushed_at
+    meta["repos"][repo_name]["last_sync"] = datetime.now().strftime("%Y-%m-%d %H:%M")
     return count
 
 # --- GUI Application ---
@@ -152,45 +158,35 @@ class RepoSyncGUI:
         self.setup_styles()
         self.setup_ui()
         
-        # Load data in background
         threading.Thread(target=self.initial_load, daemon=True).start()
 
     def setup_styles(self):
         self.style = ttk.Style()
-        # Use a more modern theme if possible
-        available_themes = self.style.theme_names()
-        if 'clam' in available_themes: self.style.theme_use('clam')
-        
+        if 'clam' in self.style.theme_names(): self.style.theme_use('clam')
         self.style.configure("TFrame", background=COLOR_BG)
         self.style.configure("Sidebar.TFrame", background=COLOR_SIDEBAR)
         self.style.configure("TLabel", background=COLOR_BG, font=("Segoe UI", 10))
         self.style.configure("Small.TLabel", font=("Segoe UI", 9))
         self.style.configure("Header.TLabel", font=("Segoe UI", 14, "bold"), foreground=COLOR_TEXT)
-        self.style.configure("Action.TButton", font=("Segoe UI", 10, "bold"))
-        self.style.configure("Horizontal.TProgressbar", thickness=10)
 
     def setup_ui(self):
-        self.root.title("GitHub Sync Engine")
+        self.root.title("GitHub Sync Engine Pro")
         self.root.geometry("800x850")
         self.root.configure(bg=COLOR_BG)
 
-        # Main Layout: Sidebar (Controls) + Content (Repo List)
         main_container = ttk.Frame(self.root)
         main_container.pack(fill="both", expand=True)
 
-        # Left Sidebar
         self.sidebar = ttk.Frame(main_container, style="Sidebar.TFrame", padding=20)
         self.sidebar.pack(side="left", fill="both", expand=False)
         self.sidebar.configure(width=250)
-        self.sidebar.pack_propagate(False) # Keep fixed width
+        self.sidebar.pack_propagate(False)
 
-        # Content Area
         self.content = ttk.Frame(main_container, padding=10)
         self.content.pack(side="right", fill="both", expand=True)
 
-        # --- Sidebar Content ---
+        # Sidebar
         ttk.Label(self.sidebar, text="ENGINE STATUS", style="Header.TLabel", background=COLOR_SIDEBAR).pack(anchor="w", pady=(0, 10))
-        
         self.auth_label = ttk.Label(self.sidebar, text="Checking...", background=COLOR_SIDEBAR)
         self.auth_label.pack(anchor="w", pady=(0, 20))
 
@@ -202,48 +198,35 @@ class RepoSyncGUI:
         ttk.Label(self.sidebar, text="TYPE FILTER", style="Small.TLabel", foreground=COLOR_FORK, background=COLOR_SIDEBAR).pack(anchor="w")
         self.type_filter = tk.StringVar(value="all")
         for text, val in [("All Repos", "all"), ("Sources Only", "source"), ("Forks Only", "fork")]:
-            ttk.Radiobutton(self.sidebar, text=text, value=val, variable=self.type_filter, 
-                            command=self.refresh_list).pack(anchor="w", pady=2)
+            ttk.Radiobutton(self.sidebar, text=text, value=val, variable=self.type_filter, command=self.refresh_list).pack(anchor="w", pady=2)
 
         ttk.Separator(self.sidebar, orient="horizontal").pack(fill="x", pady=20)
-
         ttk.Button(self.sidebar, text="Select All Visible", command=self.select_all).pack(fill="x", pady=2)
         ttk.Button(self.sidebar, text="Clear All", command=self.clear_all).pack(fill="x", pady=2)
 
-        # --- Content Area (Repo List) ---
+        # Content
         ttk.Label(self.content, text="REPOSITORIES", style="Header.TLabel").pack(anchor="w", pady=(0, 10))
-        
         list_frame = ttk.Frame(self.content)
         list_frame.pack(fill="both", expand=True)
-
         self.canvas = tk.Canvas(list_frame, bg="white", highlightthickness=0)
         self.scrollbar = ttk.Scrollbar(list_frame, orient="vertical", command=self.canvas.yview)
         self.scrollable_frame = tk.Frame(self.canvas, bg="white")
-
         self.scrollable_frame.bind("<Configure>", lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")))
         self.canvas_window = self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
         self.canvas.configure(yscrollcommand=self.scrollbar.set)
-        
         self.canvas.pack(side="left", fill="both", expand=True)
         self.scrollbar.pack(side="right", fill="y")
         self.canvas.bind_all("<MouseWheel>", self.on_mousewheel)
         self.root.bind("<Configure>", self.on_resize)
 
-        # --- Bottom Area (Progress & Logs) ---
+        # Footer
         footer = ttk.Frame(self.root, padding=10, style="Sidebar.TFrame")
         footer.pack(side="bottom", fill="x")
-
         self.progress_var = tk.DoubleVar()
         ttk.Progressbar(footer, variable=self.progress_var, maximum=100).pack(fill="x", pady=(0, 10))
-
         self.log_text = tk.Text(footer, height=6, font=("Consolas", 9), bg="#1E1E1E", fg="#D4D4D4", borderwidth=0, padx=10, pady=10)
         self.log_text.pack(fill="x", expand=True)
-        self.log_text.tag_config("success", foreground=COLOR_SUCCESS)
-        self.log_text.tag_config("error", foreground="#F44336")
-
-        self.sync_btn = tk.Button(footer, text="START SYNC ENGINE", command=self.start_sync, 
-                                 bg=COLOR_ACCENT, fg="white", font=("Segoe UI", 11, "bold"), 
-                                 relief="flat", pady=10, cursor="hand2")
+        self.sync_btn = tk.Button(footer, text="START SYNC ENGINE", command=self.start_sync, bg=COLOR_ACCENT, fg="white", font=("Segoe UI", 11, "bold"), relief="flat", pady=10)
         self.sync_btn.pack(fill="x", pady=(10, 0))
 
     def on_mousewheel(self, event):
@@ -253,60 +236,59 @@ class RepoSyncGUI:
         self.canvas.itemconfig(self.canvas_window, width=self.canvas.winfo_width())
 
     def initial_load(self):
-        self.log("Initializing...")
         self.repos_data = fetch_repos(self.username)
         self.root.after(0, self.on_data_loaded)
 
     def on_data_loaded(self):
         status = "Authenticated" if GITHUB_TOKEN else "Public Only"
         self.auth_label.config(text=f"STATUS: {status}", foreground=COLOR_SUCCESS if GITHUB_TOKEN else COLOR_FORK)
-        
-        # Pre-populate vars
         for repo in self.repos_data:
-            name = repo['name']
-            self.vars[name] = tk.BooleanVar(value=name in self.meta.get("selected_repos", []))
-            
+            self.vars[repo['name']] = tk.BooleanVar(value=repo['name'] in self.meta.get("selected_repos", []))
         self.refresh_list()
-        self.log(f"Loaded {len(self.repos_data)} repositories.")
 
     def refresh_list(self):
-        for frame in self.repo_frames:
-            frame.destroy()
+        for frame in self.repo_frames: frame.destroy()
         self.repo_frames = []
-
         query = self.search_var.get().lower()
         f_type = self.type_filter.get()
-
         sorted_repos = sorted(self.repos_data, key=lambda x: x['name'].lower())
         
         for repo in sorted_repos:
             name = repo['name']
-            is_fork = repo.get('fork', False)
-            is_private = repo.get('private', False)
-
-            if query and query not in name.lower(): continue
-            if f_type == "source" and is_fork: continue
-            if f_type == "fork" and not is_fork: continue
+            if (query and query not in name.lower()) or (f_type == "source" and repo['fork']) or (f_type == "fork" and not repo['fork']): continue
 
             frame = tk.Frame(self.scrollable_frame, bg="white", padx=10, pady=5)
             frame.pack(fill="x", expand=True)
             self.repo_frames.append(frame)
 
-            # Style logic
-            text_color = COLOR_TEXT
-            tag = ""
-            if is_fork: 
-                text_color = COLOR_FORK
-                tag = " (Fork)"
-            if is_private:
-                text_color = COLOR_PRIVATE
-                tag = " [Private]"
+            # Metadata Display
+            repo_meta = self.meta.get("repos", {}).get(name, {})
+            last_sync = repo_meta.get("last_sync", "Never")
+            folder_exists = os.path.exists(name)
+            
+            status_text = ""
+            status_color = COLOR_TEXT
+            if folder_exists:
+                if repo_meta.get("last_pushed") == repo['pushed_at']:
+                    status_text = " [Synced]"
+                    status_color = COLOR_SUCCESS
+                else:
+                    status_text = " [Update Available]"
+                    status_color = COLOR_WARNING
+            else:
+                status_text = " [New]"
+                status_color = COLOR_ACCENT
 
-            cb = tk.Checkbutton(frame, text=f"{name}{tag}", variable=self.vars[name], 
-                               bg="white", activebackground=COLOR_SIDEBAR, 
-                               font=("Segoe UI", 10), fg=text_color, 
-                               anchor="w", justify="left")
-            cb.pack(fill="x", side="left")
+            # Label Construction
+            is_fork = repo.get('fork', False)
+            is_private = repo.get('private', False)
+            tag = f"{' (Fork)' if is_fork else ''}{' [Private]' if is_private else ''}"
+            
+            cb = tk.Checkbutton(frame, text=f"{name}{tag}", variable=self.vars[name], bg="white", font=("Segoe UI", 10, "bold"), fg=COLOR_PRIVATE if is_private else COLOR_TEXT, anchor="w")
+            cb.pack(side="left")
+            
+            info_label = tk.Label(frame, text=f"{status_text} | Last: {last_sync}", bg="white", font=("Segoe UI", 8), fg=status_color)
+            info_label.pack(side="right")
 
     def log(self, msg, type=None):
         self.log_text.insert("end", f"> {msg}\n", type)
@@ -318,8 +300,7 @@ class RepoSyncGUI:
         f_type = self.type_filter.get()
         for repo in self.repos_data:
             name = repo['name']
-            if (not query or query in name.lower()) and \
-               (f_type == "all" or (f_type == "source" and not repo['fork']) or (f_type == "fork" and repo['fork'])):
+            if (not query or query in name.lower()) and (f_type == "all" or (f_type == "source" and not repo['fork']) or (f_type == "fork" and repo['fork'])):
                 self.vars[name].set(True)
 
     def clear_all(self):
@@ -328,47 +309,36 @@ class RepoSyncGUI:
     def start_sync(self):
         selected_names = [name for name, var in self.vars.items() if var.get()]
         if not selected_names:
-            messagebox.showwarning("No Selection", "Please select repositories to sync.")
+            messagebox.showwarning("No Selection", "Please select repositories.")
             return
-
         self.meta["selected_repos"] = selected_names
         save_meta(self.meta)
-        
-        self.sync_btn.config(state="disabled", text="RUNNING...")
-        self.progress_var.set(0)
-        
+        self.sync_btn.config(state="disabled", text="SYNCING...")
         selected_repos = [r for r in self.repos_data if r['name'] in selected_names]
         threading.Thread(target=self.run_engine, args=(selected_repos,), daemon=True).start()
 
     def run_engine(self, repos):
         total = len(repos)
         updated = 0
-        self.log(f"STARTING ENGINE: {total} TARGETS", "success")
-        
         for i, repo in enumerate(repos):
             try:
                 count = download_md_files(self.username, repo, self.meta, self.log)
                 updated += count
             except Exception as e:
-                self.log(f"FAILED {repo['name']}: {e}", "error")
+                self.log(f"FAILED {repo['name']}: {e}")
             self.progress_var.set(((i + 1) / total) * 100)
-            
-        self.meta["last_sync"] = datetime.utcnow().isoformat()
         save_meta(self.meta)
-        self.log(f"ENGINE HALTED: {updated} FILES PULLED", "success")
-        
-        self.root.after(0, lambda: self.finish(updated))
+        self.root.after(0, self.on_sync_finished, updated)
 
-    def finish(self, count):
+    def on_sync_finished(self, count):
         self.sync_btn.config(state="normal", text="START SYNC ENGINE")
-        messagebox.showinfo("Sync Complete", f"Successfully updated {count} files.")
+        self.refresh_list()
+        messagebox.showinfo("Sync Done", f"Updated {count} files.")
 
 if __name__ == "__main__":
     GITHUB_USER = "thippeswammy"
     root = tk.Tk()
-    # Attempt to set high DPI awareness on Linux
     try: root.tk.call('tk', 'scaling', 1.5)
     except: pass
-    
     app = RepoSyncGUI(root, GITHUB_USER)
     root.mainloop()
