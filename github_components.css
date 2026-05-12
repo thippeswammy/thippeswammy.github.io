@@ -1026,4 +1026,38 @@
   .pinned-grid {
     grid-template-columns: 1fr !important;
   }
+
+}
+
+/* ── CALENDAR LOADING OVERLAY ──────────────────────── */
+.calendar {
+  position: relative;
+  transition: opacity 0.3s ease;
+}
+
+.calendar.loading-state {
+  pointer-events: none;
+}
+
+.calendar.loading-state::after {
+  content: "RECALIBRATING...";
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(10, 11, 20, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-family: var(--font-b);
+  font-size: 12px;
+  letter-spacing: 4px;
+  z-index: 100;
+  border-radius: 12px;
+  animation: pulse-sync 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse-sync {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
 }

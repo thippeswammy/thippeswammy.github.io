@@ -86,7 +86,7 @@ function animateCountUp(el, target) {
 function renderCalendar(container, data) {
   if (!data || !data.contributions) return;
   
-  // Reset preserved height from sync states
+  container.classList.remove('loading-state');
   container.style.height = 'auto';
   container.style.minHeight = '0';
   container.innerHTML = '';
@@ -507,8 +507,7 @@ function initYearToggle(initialYear) {
     const calendarContainer = document.querySelector('.calendar');
     const contributionHeader = document.querySelector('.gh-stat-number');
     if (calendarContainer) {
-      calendarContainer.style.height = `${calendarContainer.offsetHeight}px`;
-      calendarContainer.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted);">Syncing neural grid...</div>';
+      calendarContainer.classList.add('loading-state');
       loadYearlyFallback(calendarContainer, currentYear.toString(), contributionHeader);
     }
     document.querySelectorAll('.year-item').forEach(item => {
@@ -517,8 +516,8 @@ function initYearToggle(initialYear) {
       else { item.classList.remove('active'); item.querySelector('a').classList.remove('active'); }
     });
   };
-  prevBtn.addEventListener('click', () => updateYear(currentYear - 1));
-  nextBtn.addEventListener('click', () => updateYear(currentYear + 1));
+  prevBtn.addEventListener('click', (e) => { e.preventDefault(); updateYear(currentYear - 1); });
+  nextBtn.addEventListener('click', (e) => { e.preventDefault(); updateYear(currentYear + 1); });
 }
 
 function initYearLinks() {
@@ -530,11 +529,8 @@ function initYearLinks() {
       const year = link.textContent.trim();
       const calendarContainer = document.querySelector('.calendar');
       const contributionHeader = document.querySelector('.gh-stat-number');
-      const contributionSub = document.querySelector('.gh-stat-label');
       if (calendarContainer) {
-        calendarContainer.style.height = `${calendarContainer.offsetHeight}px`;
-        calendarContainer.innerHTML = `<div style="text-align: center; padding: 60px; color: var(--text-muted);"><div class="spinner-sync" style="width: 40px; height: 40px; border: 2px solid rgba(255,255,255,0.05); border-top-color: var(--accent); border-radius: 50%; margin: 0 auto 20px; animation: spin 1s linear infinite;"></div><div style="font-family: var(--font-b); letter-spacing: 2px; text-transform: uppercase; font-size: 10px;">Recalibrating for ${year}...</div></div>`;
-        if (contributionSub) contributionSub.textContent = year === currentYear ? 'contributions in the last year' : `contributions in ${year}`;
+        calendarContainer.classList.add('loading-state');
         if (year === currentYear) initGitHubCalendar();
         else loadYearlyFallback(calendarContainer, year, contributionHeader);
       }
