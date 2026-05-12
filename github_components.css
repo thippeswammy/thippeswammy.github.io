@@ -266,6 +266,12 @@
   justify-content: flex-end;
 }
 
+@media (max-width: 1024px) {
+  .year-list {
+    display: none !important;
+  }
+}
+
 .year-dot {
   width: 6px;
   height: 6px;
@@ -298,6 +304,50 @@
   color: #fff;
   font-weight: 700;
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+}
+
+/* ── MOBILE YEAR SELECTOR ───────────────────────────── */
+.gh-year-selector-mobile {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 12px 20px;
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto 30px;
+  backdrop-filter: blur(10px);
+}
+
+@media (max-width: 1024px) {
+  .gh-year-selector-mobile {
+    display: flex;
+  }
+}
+
+.year-display-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.current-year-display {
+  font-family: var(--font-h);
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+}
+
+.year-label {
+  font-size: 9px;
+  color: #6366f1;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
 .mobile-year-toggle {
@@ -451,6 +501,26 @@
   background-color: #d946ef !important;
 }
 
+/* ── ROTATED VERTICAL GRID (MOBILE) ─────────────────── */
+.gh-calendar-vertical-rotated {
+  width: 100%;
+  padding: 20px 10px;
+  background: rgba(255, 255, 255, 0.01);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.gh-rotated-grid {
+  width: 100%;
+}
+
+.gh-rotated-grid .ContributionCalendar-day {
+  width: 100% !important;
+  aspect-ratio: 1;
+  height: auto !important;
+  margin: 0 !important;
+}
+
 
 
 /* ── ANALYTICS & REPLAY ────────────────────────────── */
@@ -490,6 +560,34 @@
   font-size: 18px;
   font-weight: 700;
   color: #fff;
+}
+
+/* ── RESPONSIVE ANALYTICS GRID ──────────────────────── */
+.gh-analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+.gh-analytics-grid .status-card {
+  grid-column: span 1;
+}
+@media (max-width: 768px) {
+  .gh-analytics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .gh-analytics-grid .status-card {
+    grid-column: span 1;
+  }
+  .gh-analytic-card {
+    min-width: 0;
+    padding: 15px;
+  }
+  .gh-analytic-card .value {
+    font-size: 16px;
+  }
 }
 
 .gh-replay-btn {
