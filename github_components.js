@@ -92,88 +92,93 @@ function renderCalendar(container, data) {
 
   const calendarWrapper = document.createElement('div');
   calendarWrapper.className = 'calendar-wrapper';
-  calendarWrapper.style.cssText = 'display:flex; flex-direction:column; gap:2px; width:100%;';
+  calendarWrapper.style.cssText = 'width:100%;';
 
   const scrollContainer = document.createElement('div');
   scrollContainer.className = 'scroll-container';
   scrollContainer.style.cssText = 'overflow-x: auto; width: 100%;';
 
-  const innerScroll = document.createElement('div');
-  innerScroll.className = 'calendar-inner-scroll';
+  innerScroll.style.cssText = 'padding: 0 5px; min-width: 800px;';
 
-  const monthRow = document.createElement('div');
-  monthRow.className = 'calendar-month-row';
-
-  const mainGrid = document.createElement('div');
-  mainGrid.className = 'calendar-main-grid';
-
-  const dayLabels = document.createElement('div');
-  dayLabels.className = 'calendar-day-labels';
-
-  // Determine starting day offset dynamically from the first contribution date
-  const firstDateStr = data.contributions[0] && data.contributions[0][0] ? data.contributions[0][0].date : (data.contributions[0] ? data.contributions[0].date : new Date().toISOString());
-  const firstDateObj = new Date(firstDateStr);
-  const startDayIdx = firstDateObj.getDay(); // 0 is Sunday, 1 is Monday
-  const fullDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-  for (let i = 0; i < 7; i++) {
-    const currentDayName = fullDays[(startDayIdx + i) % 7];
-    const shouldShow = (i === 1 || i === 3 || i === 5); // Display 2nd, 4th, 6th rows
-    const span = document.createElement('span');
-    span.textContent = shouldShow ? currentDayName : '';
-    dayLabels.appendChild(span);
-  }
-
-  const graphContainer = document.createElement('div');
-  graphContainer.className = 'calendar-graph-container';
+  // Intelligent Master Grid: Row 1 = Months, Rows 2-8 = Days. Col 1 = Day Labels.
+  const totalWeeks = data.contributions.length;
+  const masterGrid = document.createElement('div');
+  masterGrid.style.cssText = `
+    display: grid;
+    grid-template-columns: 32px repeat(${totalWeeks}, 13px);
+    grid-template-rows: 20px repeat(7, 13px);
+    column-gap: 2px;
+    row-gap: 2px;
+    align-items: center;
+  `;
 
   const levelMap = { 'NONE': '0', 'FIRST_QUARTILE': '1', 'SECOND_QUARTILE': '2', 'THIRD_QUARTILE': '3', 'FOURTH_QUARTILE': '4' };
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   let lastMonth = -1;
 
-  data.contributions.forEach((week) => {
-    const weekCol = document.createElement('div');
-    weekCol.className = 'calendar-week-col';
-    const monthCell = document.createElement('div');
-    // Align with weekCol which is 13px wide (11px + 1px margin left + 1px margin right)
-    monthCell.className = 'calendar-month-cell';
+  // 1. Add Day Labels (Col 1, Rows 2-8)
+  ['', 'Mon', '', 'Wed', '', 'Fri', ''].forEach((day, idx) => {
+    if (day) {
+      const label = document.createElement('span');
+      label.textContent = day;
+      label.style.cssText = `
+        grid-row: ${idx + 2};
+        grid-column: 1;
+        font-size: 10px;
+        color: var(--text-muted);
+        text-align: right;
+        padding-right: 4px;
+      `;
+      masterGrid.appendChild(label);
+    }
+  });
 
-    // Align month label strictly to the week containing the 1st day of the month
+  // 2. Populate Grid with Months and Days
+  data.contributions.forEach((week, weekIdx) => {
+    const colIdx = weekIdx + 2;
+
+    // Handle Month Labels
     let monthIdxToShow = -1;
     week.forEach(day => {
-      const dDate = new Date(day.date);
-      if (dDate.getDate() === 1) {
-        monthIdxToShow = dDate.getMonth();
-      }
+      if (new Date(day.date).getDate() === 1) monthIdxToShow = new Date(day.date).getMonth();
     });
 
     if (monthIdxToShow !== -1 && monthIdxToShow !== lastMonth) {
       lastMonth = monthIdxToShow;
       const mLabel = document.createElement('span');
       mLabel.textContent = monthNames[monthIdxToShow];
-      mLabel.className = 'calendar-month-label';
-      monthCell.appendChild(mLabel);
+      mLabel.style.cssText = `
+        grid-row: 1;
+        grid-column: ${colIdx};
+        font-size: 10px;
+        color: var(--text-muted);
+        white-space: nowrap;
+      `;
+      masterGrid.appendChild(mLabel);
     }
-    monthRow.appendChild(monthCell);
 
-    week.forEach(day => {
+    // Add Contribution Squares
+    week.forEach((day, dayIdx) => {
       const dayRect = document.createElement('div');
       dayRect.className = 'ContributionCalendar-day';
+      dayRect.style.cssText = `
+        grid-row: ${dayIdx + 2};
+        grid-column: ${colIdx};
+        width: 11px;
+        height: 11px;
+        border-radius: 2px;
+      `;
       dayRect.setAttribute('data-level', levelMap[day.contributionLevel] || '0');
       dayRect.setAttribute('data-date', day.date);
       dayRect.setAttribute('data-count', day.contributionCount);
-      weekCol.appendChild(dayRect);
+      masterGrid.appendChild(dayRect);
+      
+      if (!window.contributionMap) window.contributionMap = {};
+      window.contributionMap[day.date] = day.contributionCount;
     });
-    graphContainer.appendChild(weekCol);
   });
 
-  mainGrid.appendChild(dayLabels);
-  mainGrid.appendChild(graphContainer);
-  innerScroll.appendChild(monthRow);
-  innerScroll.appendChild(mainGrid);
-
-  // Reorder for mobile using flex order where monthRow becomes the left axis if needed, or CSS flex-direction takes care of it.
-
+  innerScroll.appendChild(masterGrid);
   scrollContainer.appendChild(innerScroll);
   calendarWrapper.appendChild(scrollContainer);
 
@@ -368,7 +373,7 @@ function renderVerticalCalendar(container, data) {
       currentMonth = dDate.getMonth();
       const monthRow = document.createElement('div');
       monthRow.className = 'gh-vertical-month-row';
-      monthRow.textContent = dDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      monthRow.textContent = dDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
       grid.appendChild(monthRow);
       
       // Pad grid to align correctly with day of week
