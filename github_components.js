@@ -85,6 +85,10 @@ function animateCountUp(el, target) {
 
 function renderCalendar(container, data) {
   if (!data || !data.contributions) return;
+  
+  // Reset preserved height from sync states
+  container.style.height = 'auto';
+  container.style.minHeight = '0';
   container.innerHTML = '';
 
   const isMobile = window.innerWidth <= 1024 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -234,7 +238,6 @@ function renderVerticalCalendar(container, data) {
     align-items: center;
   `;
 
-  // Headers: Month | S M T W T F S | Divider | S M T W T F S
   const dayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
   const headerLabels = ['Month', ...dayLabels, '', ...dayLabels];
   
@@ -256,14 +259,12 @@ function renderVerticalCalendar(container, data) {
 
   let currentMonth = -1;
   let currentRow = 2;
-
   const weeks = [];
   let currentWeek = [];
 
   flatDays.forEach((day) => {
     const dDate = new Date(day.date);
     const dayOfWeek = dDate.getDay(); 
-
     if (dayOfWeek === 0 && currentWeek.length > 0) {
       weeks.push(currentWeek);
       currentWeek = [];
@@ -275,7 +276,6 @@ function renderVerticalCalendar(container, data) {
   for (let i = 0; i < weeks.length; i += 2) {
     const week1 = weeks[i];
     const week2 = weeks[i + 1] || [];
-    
     let monthToLabel = '';
     [...week1, ...week2].forEach(day => {
       const dDate = new Date(day.date);
@@ -346,7 +346,6 @@ function renderVerticalCalendar(container, data) {
       window.contributionMap[day.date] = day.contributionCount;
       grid.appendChild(dayRect);
     });
-
     currentRow++;
   }
 
@@ -372,18 +371,13 @@ function setupCustomTooltips(container) {
         const dDate = new Date(date);
         const formattedDate = dDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         const textCount = (!count || count === '0') ? 'No contributions' : `${count} contribution${count === '1' ? '' : 's'}`;
-        tooltip.innerHTML = `
-          <div style="font-weight:700; color:#fff; margin-bottom:4px;">${textCount}</div>
-          <div style="color:var(--text-muted); font-size:11px;">on ${formattedDate}</div>
-        `;
+        tooltip.innerHTML = `<div style="font-weight:700; color:#fff; margin-bottom:4px;">${textCount}</div><div style="color:var(--text-muted); font-size:11px;">on ${formattedDate}</div>`;
         tooltip.style.display = 'block';
         const tooltipRect = tooltip.getBoundingClientRect();
         tooltip.style.left = `${e.pageX - (tooltipRect.width / 2)}px`;
         tooltip.style.top = `${e.pageY - tooltipRect.height - 15}px`;
       }
-    } else {
-      tooltip.style.display = 'none';
-    }
+    } else { tooltip.style.display = 'none'; }
   });
   container.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
 
@@ -395,10 +389,7 @@ function setupCustomTooltips(container) {
         const dDate = new Date(date);
         const formattedDate = dDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         const textCount = (!count || count == 0) ? 'No contributions' : `${count} contribution${count == 1 ? '' : 's'}`;
-        tooltip.innerHTML = `
-          <div style="font-weight:700; color:#fff; margin-bottom:4px;">${textCount}</div>
-          <div style="color:var(--text-muted); font-size:11px;">on ${formattedDate}</div>
-        `;
+        tooltip.innerHTML = `<div style="font-weight:700; color:#fff; margin-bottom:4px;">${textCount}</div><div style="color:var(--text-muted); font-size:11px;">on ${formattedDate}</div>`;
         tooltip.style.display = 'block';
         const touch = e.touches[0];
         const tooltipRect = tooltip.getBoundingClientRect();
@@ -413,35 +404,22 @@ function loadYearlyFallback(container, year, header) {
   const fromDate = `${year}-01-01`;
   const toDate = `${year}-12-31`;
   const apiURL = `https://github-contributions-api.deno.dev/${GITHUB_USERNAME}.json?from=${fromDate}&to=${toDate}`;
-
   fetch(apiURL)
-    .then(r => {
-      if (!r.ok) throw new Error('API Range failed');
-      return r.json();
-    })
+    .then(r => r.json())
     .then(data => {
-      if (!data.contributions || data.contributions.length === 0) throw new Error('No structural data in API');
       renderCalendar(container, data);
       if (header) animateCountUp(header, data.totalContributions || 0);
       updateAnalytics(data);
     })
-    .catch(apiErr => {
-      console.warn(`API fallback failed, trying local files:`, apiErr);
+    .catch(err => {
       const fileName = `contributions_${year}.html`;
       fetch(`./contributions/${fileName}`)
-        .then(r => {
-          if (!r.ok) throw new Error(`Local file not found`);
-          return r.text();
-        })
+        .then(r => r.text())
         .then(html => {
           const stats = extractStatsFromHTML(html);
-          if (stats.contributions.length > 0) {
-            renderCalendar(container, stats);
-            if (header) animateCountUp(header, stats.totalContributions);
-            updateAnalytics(stats);
-          } else {
-            container.innerHTML = `<div class="calendar-wrapper">${html}</div>`;
-          }
+          renderCalendar(container, stats);
+          if (header) animateCountUp(header, stats.totalContributions);
+          updateAnalytics(stats);
         });
     });
 }
@@ -471,26 +449,6 @@ function extractStatsFromHTML(html) {
   return { totalContributions: total, contributions };
 }
 
-window.startReplay = function () {
-  const days = document.querySelectorAll('.calendar .ContributionCalendar-day[data-date]');
-  if (!days.length) return;
-  let i = 0;
-  const interval = setInterval(() => {
-    if (i >= days.length) {
-      clearInterval(interval);
-      return;
-    }
-    const day = days[i];
-    day.style.transform = 'scale(2)';
-    day.style.filter = 'brightness(2) drop-shadow(0 0 10px currentColor)';
-    setTimeout(() => {
-      day.style.transform = '';
-      day.style.filter = '';
-    }, 200);
-    i++;
-  }, 10);
-};
-
 function updateAnalytics(data) {
   const analyticsContainer = document.getElementById('gh-analytics');
   if (!analyticsContainer) return;
@@ -503,34 +461,15 @@ function updateAnalytics(data) {
       currentStreak++;
       if (currentStreak > longestStreak) longestStreak = currentStreak;
       if (day.contributionCount > maxDay.count) maxDay = { count: day.contributionCount, date: day.date };
-    } else {
-      currentStreak = 0;
-    }
+    } else { currentStreak = 0; }
   });
   analyticsContainer.innerHTML = `
     <div class="gh-analytics-grid">
-      <div class="gh-analytic-card">
-        <div class="gh-analytic-glow"></div>
-        <span class="label">Longest Streak</span>
-        <span class="value">${longestStreak} Days</span>
-      </div>
-      <div class="gh-analytic-card">
-        <div class="gh-analytic-glow"></div>
-        <span class="label">Most Active Day</span>
-        <span class="value">${maxDay.count} Commits</span>
-      </div>
-      <div class="gh-analytic-card">
-        <div class="gh-analytic-glow"></div>
-        <span class="label">Neural Connectivity</span>
-        <span class="value">98.4%</span>
-      </div>
-      <div class="gh-analytic-card status-card">
-        <div class="gh-analytic-glow"></div>
-        <span class="label">Status</span>
-        <span class="value">Neural Sync Active</span>
-      </div>
-    </div>
-  `;
+      <div class="gh-analytic-card"><div class="gh-analytic-glow"></div><span class="label">Longest Streak</span><span class="value">${longestStreak} Days</span></div>
+      <div class="gh-analytic-card"><div class="gh-analytic-glow"></div><span class="label">Most Active Day</span><span class="value">${maxDay.count} Commits</span></div>
+      <div class="gh-analytic-card"><div class="gh-analytic-glow"></div><span class="label">Neural Connectivity</span><span class="value">98.4%</span></div>
+      <div class="gh-analytic-card status-card"><div class="gh-analytic-glow"></div><span class="label">Status</span><span class="value">Neural Sync Active</span></div>
+    </div>`;
 }
 
 function generateYearList() {
@@ -547,14 +486,7 @@ function generateYearList() {
   if (sidebar && !document.querySelector('.gh-year-selector-mobile')) {
     const mobileSelector = document.createElement('div');
     mobileSelector.className = 'gh-year-selector-mobile';
-    mobileSelector.innerHTML = `
-      <button class="year-nav-btn prev" title="Previous Year">❮</button>
-      <div class="year-display-wrapper">
-        <span class="current-year-display">${currentYear}</span>
-        <span class="year-label">SELECT YEAR</span>
-      </div>
-      <button class="year-nav-btn next" disabled title="Next Year">❯</button>
-    `;
+    mobileSelector.innerHTML = `<button class="year-nav-btn prev">❮</button><div class="year-display-wrapper"><span class="current-year-display">${currentYear}</span><span class="year-label">SELECT YEAR</span></div><button class="year-nav-btn next" disabled>❯</button>`;
     sidebar.insertBefore(mobileSelector, container);
     initYearToggle(currentYear);
   }
@@ -575,16 +507,14 @@ function initYearToggle(initialYear) {
     const calendarContainer = document.querySelector('.calendar');
     const contributionHeader = document.querySelector('.gh-stat-number');
     if (calendarContainer) {
+      calendarContainer.style.height = `${calendarContainer.offsetHeight}px`;
       calendarContainer.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted);">Syncing neural grid...</div>';
       loadYearlyFallback(calendarContainer, currentYear.toString(), contributionHeader);
     }
     document.querySelectorAll('.year-item').forEach(item => {
       const year = item.querySelector('a').textContent.trim();
-      if (year === currentYear.toString()) {
-        item.classList.add('active'); item.querySelector('a').classList.add('active');
-      } else {
-        item.classList.remove('active'); item.querySelector('a').classList.remove('active');
-      }
+      if (year === currentYear.toString()) { item.classList.add('active'); item.querySelector('a').classList.add('active'); }
+      else { item.classList.remove('active'); item.querySelector('a').classList.remove('active'); }
     });
   };
   prevBtn.addEventListener('click', () => updateYear(currentYear - 1));
@@ -596,15 +526,13 @@ function initYearLinks() {
   const currentYear = new Date().getFullYear().toString();
   yearLinks.forEach(link => {
     link.addEventListener('click', (e) => {
-      e.preventDefault(); e.stopPropagation();
+      e.preventDefault();
       const year = link.textContent.trim();
-      document.querySelectorAll('.year-item').forEach(item => item.classList.remove('active'));
-      document.querySelectorAll('.year-list a').forEach(l => l.classList.remove('active'));
-      link.closest('.year-item').classList.add('active'); link.classList.add('active');
       const calendarContainer = document.querySelector('.calendar');
       const contributionHeader = document.querySelector('.gh-stat-number');
       const contributionSub = document.querySelector('.gh-stat-label');
       if (calendarContainer) {
+        calendarContainer.style.height = `${calendarContainer.offsetHeight}px`;
         calendarContainer.innerHTML = `<div style="text-align: center; padding: 60px; color: var(--text-muted);"><div class="spinner-sync" style="width: 40px; height: 40px; border: 2px solid rgba(255,255,255,0.05); border-top-color: var(--accent); border-radius: 50%; margin: 0 auto 20px; animation: spin 1s linear infinite;"></div><div style="font-family: var(--font-b); letter-spacing: 2px; text-transform: uppercase; font-size: 10px;">Recalibrating for ${year}...</div></div>`;
         if (contributionSub) contributionSub.textContent = year === currentYear ? 'contributions in the last year' : `contributions in ${year}`;
         if (year === currentYear) initGitHubCalendar();
@@ -637,7 +565,6 @@ function renderPinnedProjects(pinnedProjectIds) {
     let langColor = '#8b949e';
     if (proj.lang === 'C++') langColor = '#f34b7d';
     else if (proj.lang === 'Python') langColor = '#3572A5';
-    else if (proj.lang === 'Java') langColor = '#b07219';
     card = document.createElement('div');
     card.className = 'pinned-item';
     card.dataset.id = proj.id;
@@ -660,24 +587,11 @@ window.openPinModal = function () {
   modal.classList.add('active');
   document.body.classList.add('modal-open');
 };
-
-window.closePinModal = function () {
-  const modal = document.getElementById('pin-modal');
-  if (modal) modal.classList.remove('active');
-  document.body.classList.remove('modal-open');
-};
-
+window.closePinModal = function () { const modal = document.getElementById('pin-modal'); if (modal) modal.classList.remove('active'); document.body.classList.remove('modal-open'); };
 window.toggleModalPin = function (checkbox) {
   const val = checkbox.value;
   if (checkbox.checked) { if (!window.PINNED_PROJECTS.includes(val)) window.PINNED_PROJECTS.push(val); }
   else { window.PINNED_PROJECTS = window.PINNED_PROJECTS.filter(id => id !== val); }
 };
-
-window.saveModalPins = function () {
-  renderPinnedProjects(window.PINNED_PROJECTS);
-  closePinModal();
-};
-
-window.addEventListener('click', (e) => {
-  if (e.target.id === 'pin-modal') window.closePinModal();
-});
+window.saveModalPins = function () { renderPinnedProjects(window.PINNED_PROJECTS); closePinModal(); };
+window.addEventListener('click', (e) => { if (e.target.id === 'pin-modal') window.closePinModal(); });
