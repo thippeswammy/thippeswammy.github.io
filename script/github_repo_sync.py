@@ -87,35 +87,71 @@ def extract_highlights(repo_name):
             except: pass
     return highlights
 
+def js_string_escape(s):
+    """Escapes single quotes for JS strings."""
+    if not s: return ""
+    return s.replace("'", "\\'").replace("\n", " ")
+
+def format_as_js_object(p):
+    """Formats a project dictionary into the specific JS style requested."""
+    highlights_str = ",".join([f"'{js_string_escape(h)}'" for h in p['highlights']])
+    tech_str = ",".join([f"'{js_string_escape(t)}'" for t in p['tech']])
+    is_private_str = "true" if p['isPrivate'] else "false"
+    
+    return f"""  {{ id:'{p['id']}', cluster:'{p['cluster']}', name:'{p['name']}', lang:'{p['lang']}',
+    tagline:'{js_string_escape(p['tagline'])}',
+    summary:'{js_string_escape(p['summary'])}',
+    highlights:[{highlights_str}],
+    tech:[{tech_str}],
+    github:'{p['github']}', isPrivate:{is_private_str} }}"""
+
 def generate_portfolio_js(meta_repos, log_callback):
-    log_callback("Building portfolio data...")
-    projects = []
-    for name, data in meta_repos.items():
+    log_callback("Building portfolio data (Matching Style)...")
+    js_objects = []
+    
+    # Sort repos by name for consistent output
+    sorted_names = sorted(meta_repos.keys(), key=lambda x: x.lower())
+
+    for name in sorted_names:
+        data = meta_repos[name]
         info = data.get("info", {})
         if not info: continue
+        
         topics = info.get("topics", [])
         cluster = 'others'
         for t in topics:
             if t in CLUSTER_MAP: cluster = CLUSTER_MAP[t]; break
+        
         highlights = extract_highlights(name)
-        if not highlights: highlights = [f"Language: {info.get('language', 'N/A')}", "Synced from GitHub"]
-        projects.append({
+        if not highlights: 
+            highlights = [f"Language: {info.get('language', 'N/A')}", "Synced from GitHub"]
+        
+        tagline = (info.get("description", "")[:60] + "...") if info.get("description") else f"Project {name}"
+        summary = info.get("description", "No description available.")
+
+        project = {
             "id": name.lower().replace(" ", "-"),
             "cluster": cluster,
             "name": name,
             "lang": info.get("language", "Mixed"),
-            "tagline": (info.get("description", "")[:60] + "...") if info.get("description") else f"Project {name}",
-            "summary": info.get("description", "No description available."),
+            "tagline": tagline,
+            "summary": summary,
             "highlights": highlights,
             "tech": topics[:5] if topics else [info.get("language")] if info.get("language") else ["Code"],
             "github": info.get("html_url", f"https://github.com/thippeswammy/{name}"),
             "isPrivate": info.get("private", False)
-        })
-    js_content = "export const projectsData = " + json.dumps(projects, indent=2) + ";"
+        }
+        js_objects.append(format_as_js_object(project))
+
+    header = "export const projectsData = [\n"
+    footer = "\n];"
+    js_content = header + ",\n\n".join(js_objects) + footer
+    
     try:
         os.makedirs(os.path.dirname(JS_DATA_FILE), exist_ok=True)
-        with open(JS_DATA_FILE, "w", encoding="utf-8") as f: f.write(js_content)
-        log_callback(f"SUCCESS: {len(projects)} projects exported.")
+        with open(JS_DATA_FILE, "w", encoding="utf-8") as f:
+            f.write(js_content)
+        log_callback(f"SUCCESS: {len(js_objects)} projects exported in custom style.")
         return True
     except Exception as e:
         log_callback(f"FAILED JS: {e}"); return False
@@ -190,7 +226,7 @@ class RepoSyncGUI:
 
         ttk.Separator(self.sidebar, orient="horizontal").pack(fill="x", pady=20)
         
-        # Metadata Only Option
+        # Options
         ttk.Label(self.sidebar, text="OPTIONS", font=("Segoe UI", 8, "bold"), foreground=COLOR_FORK).pack(anchor="w")
         self.meta_only_var = tk.BooleanVar(value=False)
         tk.Checkbutton(self.sidebar, text="Metadata Only (Fast)", variable=self.meta_only_var, bg=COLOR_SIDEBAR, font=("Segoe UI", 9)).pack(anchor="w", pady=5)
