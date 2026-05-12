@@ -229,16 +229,17 @@ function renderVerticalCalendar(container, data) {
   grid.className = 'gh-rotated-grid';
   grid.style.cssText = `
     display: grid;
-    grid-template-columns: 45px repeat(14, 1fr);
+    grid-template-columns: 45px repeat(7, 1fr) 12px repeat(7, 1fr);
     gap: 3px;
     align-items: center;
   `;
 
-  // Headers: Month | S M T W T F S | S M T W T F S
+  // Headers: Month | S M T W T F S | Divider | S M T W T F S
   const dayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-  const headerLabels = ['Month', ...dayLabels, ...dayLabels];
+  const headerLabels = ['Month', ...dayLabels, '', ...dayLabels];
   
   headerLabels.forEach((label, idx) => {
+    if (idx === 8) return; 
     const span = document.createElement('div');
     span.textContent = label;
     span.style.cssText = `
@@ -299,6 +300,17 @@ function renderVerticalCalendar(container, data) {
       grid.appendChild(mLabel);
     }
 
+    const divider = document.createElement('div');
+    divider.style.cssText = `
+      grid-column: 9;
+      grid-row: ${currentRow};
+      width: 1px;
+      height: 60%;
+      background: rgba(255,255,255,0.1);
+      justify-self: center;
+    `;
+    grid.appendChild(divider);
+
     week1.forEach(day => {
       const dDate = new Date(day.date);
       const dayOfWeek = dDate.getDay();
@@ -327,7 +339,7 @@ function renderVerticalCalendar(container, data) {
       dayRect.setAttribute('data-count', day.contributionCount);
       dayRect.style.cssText = `
         grid-row: ${currentRow};
-        grid-column: ${dayOfWeek + 9};
+        grid-column: ${dayOfWeek + 10};
         width: 100%; aspect-ratio: 1; border-radius: 2px;
       `;
       if (!window.contributionMap) window.contributionMap = {};
@@ -428,7 +440,6 @@ function loadYearlyFallback(container, year, header) {
             if (header) animateCountUp(header, stats.totalContributions);
             updateAnalytics(stats);
           } else {
-            // Raw HTML injection as absolute last resort
             container.innerHTML = `<div class="calendar-wrapper">${html}</div>`;
           }
         });
