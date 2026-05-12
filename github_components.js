@@ -139,9 +139,13 @@ function renderCalendar(container, data) {
 
     // Handle Month Labels
     let monthIdxToShow = -1;
-    week.forEach(day => {
-      if (new Date(day.date).getDate() === 1) monthIdxToShow = new Date(day.date).getMonth();
-    });
+    if (weekIdx === 0) {
+      monthIdxToShow = new Date(week[0].date).getMonth();
+    } else {
+      week.forEach(day => {
+        if (new Date(day.date).getDate() === 1) monthIdxToShow = new Date(day.date).getMonth();
+      });
+    }
 
     if (monthIdxToShow !== -1 && monthIdxToShow !== lastMonth) {
       lastMonth = monthIdxToShow;
@@ -350,23 +354,36 @@ function renderVerticalCalendar(container, data) {
   const calendarWrapper = document.createElement('div');
   calendarWrapper.className = 'gh-calendar-vertical';
 
-  // Day Headers (S M T W T F S)
-  const daysHeader = document.createElement('div');
-  daysHeader.className = 'gh-vertical-header';
-  ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach(d => {
-    const span = document.createElement('span');
-    span.textContent = d;
-    daysHeader.appendChild(span);
-  });
-  calendarWrapper.appendChild(daysHeader);
-
   const grid = document.createElement('div');
   grid.className = 'gh-vertical-grid';
+  grid.style.cssText = `
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    align-items: center;
+  `;
+
+  // Integrated Day Headers (S M T W T F S)
+  ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach((d, idx) => {
+    const span = document.createElement('div');
+    span.textContent = d;
+    span.style.cssText = `
+      text-align: center;
+      font-size: 10px;
+      color: var(--text-muted);
+      padding-bottom: 5px;
+      grid-row: 1;
+      grid-column: ${idx + 1};
+    `;
+    grid.appendChild(span);
+  });
 
   let currentMonth = -1;
+  let currentRow = 2;
 
-  flatDays.forEach(day => {
+  flatDays.forEach((day, index) => {
     const dDate = new Date(day.date);
+    const dayOfWeek = dDate.getDay();
     
     // Insert month header row if month changes
     if (dDate.getMonth() !== currentMonth) {
@@ -374,13 +391,22 @@ function renderVerticalCalendar(container, data) {
       const monthRow = document.createElement('div');
       monthRow.className = 'gh-vertical-month-row';
       monthRow.textContent = dDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+      monthRow.style.cssText = `
+        grid-column: 1 / span 7;
+        grid-row: ${currentRow};
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-muted);
+        padding: 10px 0 5px;
+        text-align: left;
+      `;
       grid.appendChild(monthRow);
+      currentRow++;
       
-      // Pad grid to align correctly with day of week
-      const dayOfWeek = dDate.getDay(); // 0 is Sunday
+      // Pad grid to align correctly with day of week using visibility: hidden
       for (let i = 0; i < dayOfWeek; i++) {
         const pad = document.createElement('div');
-        pad.className = 'ContributionCalendar-day empty';
+        pad.style.cssText = `visibility: hidden; grid-row: ${currentRow}; grid-column: ${i + 1}; width: 100%; aspect-ratio: 1;`;
         grid.appendChild(pad);
       }
     }
@@ -390,11 +416,16 @@ function renderVerticalCalendar(container, data) {
     dayRect.setAttribute('data-level', levelMap[day.contributionLevel] || '0');
     dayRect.setAttribute('data-date', day.date);
     dayRect.setAttribute('data-count', day.contributionCount);
+    dayRect.style.cssText = `grid-row: ${currentRow}; grid-column: ${dayOfWeek + 1}; width: 100%; aspect-ratio: 1; border-radius: 2px;`;
     
     if (!window.contributionMap) window.contributionMap = {};
     window.contributionMap[day.date] = day.contributionCount;
     
     grid.appendChild(dayRect);
+
+    if (dayOfWeek === 6) {
+      currentRow++;
+    }
   });
 
   calendarWrapper.appendChild(grid);
@@ -416,9 +447,12 @@ function setupCustomTooltips(container) {
       const date = dayEl.getAttribute('data-date');
       const count = dayEl.getAttribute('data-count');
       if (date) {
+        const dDate = new Date(date);
+        const formattedDate = dDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const textCount = (!count || count === '0') ? 'No contributions' : `${count} contribution${count === '1' ? '' : 's'}`;
         tooltip.innerHTML = `
-          <div style="font-weight:700; color:#fff; margin-bottom:4px;">${date}</div>
-          <div style="color:var(--text-muted); font-size:11px;">${count || 0} contributions</div>
+          <div style="font-weight:700; color:#fff; margin-bottom:4px;">${textCount}</div>
+          <div style="color:var(--text-muted); font-size:11px;">on ${formattedDate}</div>
         `;
         tooltip.style.display = 'block';
         const tooltipRect = tooltip.getBoundingClientRect();
@@ -437,8 +471,12 @@ function setupCustomTooltips(container) {
       const date = e.target.getAttribute('data-date');
       if (date && window.contributionMap && window.contributionMap[date] !== undefined) {
         const count = window.contributionMap[date];
+        const dDate = new Date(date);
+        const formattedDate = dDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const textCount = (!count || count == 0) ? 'No contributions' : `${count} contribution${count == 1 ? '' : 's'}`;
         tooltip.innerHTML = `
-          <strong>${count} contributions</strong> on ${date}
+          <div style="font-weight:700; color:#fff; margin-bottom:4px;">${textCount}</div>
+          <div style="color:var(--text-muted); font-size:11px;">on ${formattedDate}</div>
         `;
         tooltip.style.display = 'block';
         const touch = e.touches[0];
