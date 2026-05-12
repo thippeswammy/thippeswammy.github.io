@@ -12,7 +12,7 @@ import re
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 META_FILE = ".sync_meta.json"
 JS_DATA_FILE = "../web/projects_data.js"
-USER_AGENT = "GitHubRepoSync-Engine-v8"
+USER_AGENT = "GitHubRepoSync-Engine-v9"
 
 # Color Palette
 COLOR_BG = "#FFFFFF"
@@ -114,9 +114,8 @@ def format_as_js_object(p):
     github:'{p['github']}', isPrivate:{is_private_str} }}"""
 
 def generate_portfolio_js(meta_repos, log_callback):
-    log_callback("Building portfolio data (Preserving Header & Formatting)...")
+    log_callback("Building portfolio data (Preserving Header & CLUSTERS)...")
     
-    # 1. Prepare grouped data
     grouped_projects = {}
     sorted_names = sorted(meta_repos.keys(), key=lambda x: x.lower())
 
@@ -138,61 +137,51 @@ def generate_portfolio_js(meta_repos, log_callback):
 
         project = {
             "id": name.lower().replace(" ", "-").replace("_", "-"),
-            "cluster": cluster,
-            "name": name,
-            "lang": info.get("language", "Mixed"),
-            "tagline": tagline,
-            "summary": summary,
-            "highlights": highlights,
+            "cluster": cluster, "name": name, "lang": info.get("language", "Mixed"),
+            "tagline": tagline, "summary": summary, "highlights": highlights,
             "tech": topics[:5] if topics else [info.get("language")] if info.get("language") else ["Code"],
             "github": info.get("html_url", f"https://github.com/thippeswammy/{name}"),
             "isPrivate": info.get("private", False)
         }
-        
         if cluster not in grouped_projects: grouped_projects[cluster] = []
         grouped_projects[cluster].append(format_as_js_object(project))
 
-    # 2. Read existing header
+    # 2. Read existing file to preserve CLUSTERS
     header = ""
     try:
         if os.path.exists(JS_DATA_FILE):
             with open(JS_DATA_FILE, "r", encoding="utf-8") as f:
-                old_content = f.read()
-                # Find the start of window.PROJECTS
-                match = re.search(r'(?s).*?(window\.PROJECTS\s*=\s*\[)', old_content)
-                if match:
-                    header = match.group(1)
+                content = f.read()
+                # Find where PROJECTS start
+                split_point = content.find("window.PROJECTS = [")
+                if split_point != -1:
+                    header = content[:split_point] + "window.PROJECTS = ["
                 else:
-                    # Fallback to standard header
-                    header = "window.PROJECTS = ["
+                    header = content.strip() + "\n\nwindow.PROJECTS = [" if content else "window.PROJECTS = ["
         else:
             header = "window.PROJECTS = ["
-    except Exception as e:
-        log_callback(f"Warning: Could not read existing header: {e}")
+    except:
         header = "window.PROJECTS = ["
 
-    # 3. Combine with dividers
+    # 3. Build Body (Correctly handling dividers without trailing commas)
     output_body = []
-    # Cluster order
     order = ['robotics', 'vision', 'ai', 'web', 'tools', 'others']
     for cluster_id in order:
         if cluster_id in grouped_projects:
             label = CLUSTER_LABELS.get(cluster_id, cluster_id.upper())
             divider = f"\n  // ── {label} ────────────────────────────────────────────────────────────────"
-            output_body.append(divider)
-            output_body.append(",\n\n".join(grouped_projects[cluster_id]))
+            # Add divider then join projects
+            cluster_text = divider + "\n" + ",\n\n".join(grouped_projects[cluster_id])
+            output_body.append(cluster_text)
 
     js_content = header + "\n" + ",\n\n".join(output_body) + "\n];\n"
     
-    # 4. Final write
     try:
-        os.makedirs(os.path.dirname(JS_DATA_FILE), exist_ok=True)
-        with open(JS_DATA_FILE, "w", encoding="utf-8") as f:
-            f.write(js_content)
-        log_callback(f"SUCCESS: Portfolio updated with dividers and matching style.")
+        with open(JS_DATA_FILE, "w", encoding="utf-8") as f: f.write(js_content)
+        log_callback("SUCCESS: Portfolio updated (Header & CLUSTERS preserved).")
         return True
     except Exception as e:
-        log_callback(f"FAILED JS write: {e}"); return False
+        log_callback(f"FAILED JS: {e}"); return False
 
 def download_md_files(username, repo_obj, meta, log_callback):
     repo_name = repo_obj['name']
@@ -264,6 +253,7 @@ class RepoSyncGUI:
 
         ttk.Separator(self.sidebar, orient="horizontal").pack(fill="x", pady=20)
         
+        # Options
         ttk.Label(self.sidebar, text="OPTIONS", font=("Segoe UI", 8, "bold"), foreground=COLOR_FORK).pack(anchor="w")
         self.meta_only_var = tk.BooleanVar(value=False)
         tk.Checkbutton(self.sidebar, text="Metadata Only (Fast)", variable=self.meta_only_var, bg=COLOR_SIDEBAR, font=("Segoe UI", 9)).pack(anchor="w", pady=5)
@@ -273,6 +263,7 @@ class RepoSyncGUI:
 
         ttk.Separator(self.sidebar, orient="horizontal").pack(fill="x", pady=20)
         
+        # Portfolio Action
         ttk.Label(self.sidebar, text="AUTOMATION", font=("Segoe UI", 8, "bold"), foreground=COLOR_FORK).pack(anchor="w")
         self.build_btn = tk.Button(self.sidebar, text="BUILD PORTFOLIO DATA", command=self.build_portfolio, bg=COLOR_PRIVATE, fg="white", font=("Segoe UI", 9, "bold"), relief="flat", pady=8)
         self.build_btn.pack(fill="x", pady=10)
