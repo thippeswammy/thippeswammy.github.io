@@ -7,7 +7,14 @@
             },
             "etag": "W/\"31868202befaab025a33c59da9993e7dc0c6c677098c46c0daa19be0effb4e8a\"",
             "last_pushed": "2026-05-12T16:27:40Z",
-            "last_sync": "2026-05-12 22:52"
+            "last_sync": "2026-05-12 22:52",
+            "info": {
+                "description": null,
+                "language": "Python",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/my_bot",
+                "private": false
+            }
         },
         "VO2MAP": {
             "files": {
@@ -15,7 +22,14 @@
             },
             "etag": "W/\"db9d4a823c56647bee10d49c95febf8f4b3d43789785747f162297e1d8aafce4\"",
             "last_pushed": "2026-05-08T11:38:58Z",
-            "last_sync": "2026-05-12 22:52"
+            "last_sync": "2026-05-12 22:52",
+            "info": {
+                "description": null,
+                "language": "HTML",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/VO2MAP",
+                "private": false
+            }
         },
         "MultipleVo": {
             "files": {
@@ -34,7 +48,14 @@
             },
             "etag": "W/\"6661cc70f2183ea01defcfe2eb5d85066ba57a814ac96b8bdb0b76058b7f0eba\"",
             "last_pushed": "2026-05-08T11:36:20Z",
-            "last_sync": "2026-05-12 22:52"
+            "last_sync": "2026-05-12 22:52",
+            "info": {
+                "description": null,
+                "language": "HTML",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/MultipleVo",
+                "private": false
+            }
         },
         "ZED2i": {
             "files": {
@@ -168,7 +189,26 @@
             },
             "etag": "W/\"72eb07a9b00615befbba4afd7c7e86b4e747997722cf3176f0451f6b826ccf97\"",
             "last_pushed": "2026-05-05T14:11:33Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "ZED2i camera-based data collection and processing system for stereo vision, depth estimation, and positional tracking. Includes optimized pipelines for synchronized left-right image capture, depth data handling, threading for performance, and memory-efficient queue management for real-time applications.",
+                "language": "Jupyter Notebook",
+                "topics": [
+                    "autonomous-systems",
+                    "computer-vision",
+                    "data-collection",
+                    "depth-estimation",
+                    "multithreading",
+                    "perception",
+                    "python",
+                    "robotics",
+                    "sensor-fusion",
+                    "stereo-vision",
+                    "zed2i"
+                ],
+                "html_url": "https://github.com/thippeswammy/ZED2i",
+                "private": false
+            }
         },
         "rtabmap": {
             "files": {
@@ -182,7 +222,14 @@
             },
             "etag": "W/\"43979d2a3da4f32a550ca4b76105e3f9419839d4ec6c2f3c88784c5b332a91f6\"",
             "last_pushed": "2026-04-21T07:16:02Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": null,
+                "language": "C++",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/rtabmap",
+                "private": false
+            }
         },
         "MBD-dSPACE": {
             "files": {
@@ -192,7 +239,30 @@
             },
             "etag": "W/\"9ad3dc837dd7f4d275a15b9fd0e7f3428ef781fd41686569222ff637fc0335c4\"",
             "last_pushed": "2026-03-31T14:18:21Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "dSPACE SCALEXIO-based vehicle control system built with MATLAB/Simulink, operating without physical ECUs or sensors. All signals are generated and looped externally for behavioral modeling and control logic execution. SIL and HIL workflows validate system behavior by comparing simulated and real hardware responses.",
+                "language": "LiveScript",
+                "topics": [
+                    "automotive",
+                    "control-systems",
+                    "dspace",
+                    "ecu",
+                    "embedded-systems",
+                    "hil",
+                    "matlab",
+                    "mbd",
+                    "micro-auto-box-3",
+                    "model-based-design",
+                    "scalexio",
+                    "signal-simulation",
+                    "sil",
+                    "simulink",
+                    "vehicle-control"
+                ],
+                "html_url": "https://github.com/thippeswammy/MBD-dSPACE",
+                "private": false
+            }
         },
         "rtab_ws": {
             "files": {
@@ -203,7 +273,14 @@
             },
             "etag": "W/\"beff488aabd6692819f899519260926c8e5b19e1b6b0e52d6405f6a63139f0e2\"",
             "last_pushed": "2026-03-02T13:03:01Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": null,
+                "language": "Python",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/rtab_ws",
+                "private": false
+            }
         },
         "rtabmap_ros": {
             "files": {
@@ -215,7 +292,14 @@
             },
             "etag": "W/\"8558480db4a94e5332cfca82a680285567e80fff252ac33b434f0bff2585538e\"",
             "last_pushed": "2026-03-02T12:44:25Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": null,
+                "language": "C++",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/rtabmap_ros",
+                "private": false
+            }
         },
         "sdf_to_nav_mesh": {
             "files": {
@@ -224,7 +308,28 @@
             },
             "etag": "W/\"b58850703e30ac20a5dfdbfabdd9c718b327e3084580869037a432710027a810\"",
             "last_pushed": "2026-01-25T06:51:53Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "ROS 2-based tool for converting Gazebo SDF/World files into navigation mesh assets, generating structured .ply, .dae, and .h5 outputs with geometric and terrain metadata. Enables seamless integration with simulation and mesh-based navigation pipelines for autonomous systems.",
+                "language": "Python",
+                "topics": [
+                    "3d-geometry",
+                    "autonomous-systems",
+                    "gazebo",
+                    "hdf5",
+                    "mesh-navigation",
+                    "mesh-processing",
+                    "motion-planning",
+                    "path-planning",
+                    "robotics",
+                    "ros2",
+                    "sdf",
+                    "simulation",
+                    "trimesh"
+                ],
+                "html_url": "https://github.com/thippeswammy/sdf_to_nav_mesh",
+                "private": false
+            }
         },
         "ORB_SLAM3": {
             "files": {
@@ -237,7 +342,14 @@
             },
             "etag": "W/\"7d175c21eb25551371bbf528a08b1b03b27963358885a50a3f176bd10f3e35de\"",
             "last_pushed": "2026-01-19T17:19:54Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": null,
+                "language": "C++",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/ORB_SLAM3",
+                "private": false
+            }
         },
         "ORB_SLAM3_ROS2": {
             "files": {
@@ -245,7 +357,14 @@
             },
             "etag": "W/\"d88908b9c905b43d2a08e08089d5c32c61992c55b97d8fd5c7ddf29bb2ecd359\"",
             "last_pushed": "2025-11-15T12:25:59Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": null,
+                "language": "C++",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/ORB_SLAM3_ROS2",
+                "private": false
+            }
         },
         "ORB_SLAM2": {
             "files": {
@@ -255,19 +374,40 @@
             },
             "etag": "W/\"46422c7482bfd45b00fa411d6acc71003959b88ff6e5f78f0c9fbd12ff057160\"",
             "last_pushed": "2025-10-16T09:38:22Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "orb-slam2 implementation",
+                "language": "C++",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/ORB_SLAM2",
+                "private": false
+            }
         },
         "my_mcp_project": {
             "files": {},
             "etag": "W/\"7508dcb03c4caa1edbe19b94f2c7a6e903b983a2f07d5005cefd7c009cc39858\"",
             "last_pushed": "2025-10-08T13:43:59Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": null,
+                "language": "Python",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/my_mcp_project",
+                "private": false
+            }
         },
         "RoadTagByCameraGps": {
             "files": {},
             "etag": "W/\"8af7d214d640b2ad0cc7163fd994f08b65c64e7a1eaf71e0b2cfe8922d1769d5\"",
             "last_pushed": "2025-05-07T05:44:01Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": null,
+                "language": "Kotlin",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/RoadTagByCameraGps",
+                "private": false
+            }
         },
         "SpeechCalculator": {
             "files": {
@@ -275,7 +415,26 @@
             },
             "etag": "W/\"27a71ed0fc4269cf2b2e8fd127a31cf28c56c4baf50f7c4b79153e16e3f04600\"",
             "last_pushed": "2024-06-14T08:51:48Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "Voice-enabled Android calculator app that performs real-time mathematical computations using speech recognition. Built with Java in Android Studio, it converts spoken expressions into executable logic using custom parsing algorithms and priority-based evaluation for accurate results.",
+                "language": null,
+                "topics": [
+                    "android",
+                    "android-application",
+                    "android-studio",
+                    "calculator-app",
+                    "expression-parser",
+                    "google-play",
+                    "java",
+                    "mobile-app",
+                    "speech-recognition",
+                    "ui-ux",
+                    "voice-input"
+                ],
+                "html_url": "https://github.com/thippeswammy/SpeechCalculator",
+                "private": false
+            }
         },
         "TicTacToeGUI": {
             "files": {
@@ -283,7 +442,24 @@
             },
             "etag": "W/\"733caf21ef2387f28482d309e44a2ee9290b7cece48cff3e34379ffc6f11c00d\"",
             "last_pushed": "2024-06-14T06:37:18Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "A Java Swing-based Tic Tac Toe application featuring an AI opponent with strategy-driven decision making. Implements game state evaluation, win-condition logic, and interactive GUI design, demonstrating algorithmic thinking and event-driven programming.",
+                "language": "Java",
+                "topics": [
+                    "decision-making-algorithms",
+                    "event-driven-programming",
+                    "game-development",
+                    "game-logic",
+                    "gui",
+                    "java",
+                    "swing",
+                    "tic-tac-toe",
+                    "tic-tac-toe-game"
+                ],
+                "html_url": "https://github.com/thippeswammy/TicTacToeGUI",
+                "private": false
+            }
         },
         "Puzzle-game": {
             "files": {
@@ -291,7 +467,27 @@
             },
             "etag": "W/\"987950073e2143994f41bd3cb63e8a39c05653ae0d04d639efd868f8f5bb0966\"",
             "last_pushed": "2024-06-14T04:26:18Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "A Java Swing-based number puzzle game featuring dynamic grid generation, move validation, and interactive state updates. Supports multiple grid sizes (3\u00d73 to 6\u00d76) with randomized initialization and logic-driven gameplay, demonstrating problem-solving algorithms and GUI-based application design.",
+                "language": "Java",
+                "topics": [
+                    "algorithms",
+                    "application-design",
+                    "beginner-project",
+                    "game",
+                    "game-development",
+                    "grid-based-system",
+                    "gui",
+                    "interactive-app",
+                    "java",
+                    "problem-solving",
+                    "puzzle-game",
+                    "swing"
+                ],
+                "html_url": "https://github.com/thippeswammy/Puzzle-game",
+                "private": false
+            }
         },
         "Maze-game": {
             "files": {
@@ -299,7 +495,25 @@
             },
             "etag": "W/\"7671e0cfa1911920c1bf341d9a7aca8ea413afbeccebd38d17228a7650b3c2b0\"",
             "last_pushed": "2024-06-13T16:48:12Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "A maze navigation game developed in Java using Greenfoot, featuring enemy AI behaviors, collision handling, and dynamic gameplay elements such as speed boosts and level progression. Demonstrates object-oriented design, game state management, and interactive 2D environment modeling.",
+                "language": "Java",
+                "topics": [
+                    "2d-game",
+                    "collision-detection",
+                    "game",
+                    "game-development",
+                    "greenfoot",
+                    "interactive-systems",
+                    "java",
+                    "maze",
+                    "maze-game",
+                    "object-oriented-programming"
+                ],
+                "html_url": "https://github.com/thippeswammy/Maze-game",
+                "private": false
+            }
         },
         "Snake-GUI-game": {
             "files": {
@@ -307,7 +521,25 @@
             },
             "etag": "W/\"cbd0217159c2b76678c65193d0988c386da1925a49739f6e7767aa4289de6ccb\"",
             "last_pushed": "2024-06-13T16:35:34Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "A Java-based Snake game built with Swing, implementing real-time game loop logic, collision detection, and custom rendering. Demonstrates GUI design, event-driven programming, and efficient state management for interactive desktop applications.",
+                "language": "Java",
+                "topics": [
+                    "2d-game",
+                    "collision-detection",
+                    "desktop-application",
+                    "event-driven-programming",
+                    "game-development",
+                    "gui",
+                    "java",
+                    "real-time-systems",
+                    "snake-game",
+                    "swing"
+                ],
+                "html_url": "https://github.com/thippeswammy/Snake-GUI-game",
+                "private": false
+            }
         },
         "SuperMarioGame": {
             "files": {
@@ -315,7 +547,23 @@
             },
             "etag": "W/\"5347dee68a244bb83d011479fa9dc99adca7c1424b8a9d011e7d4401c03668cf\"",
             "last_pushed": "2024-02-03T21:37:15Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "A classic Flappy Bird clone developed using Greenfoot in Java, featuring obstacle navigation, scoring system, and smooth gameplay mechanics.",
+                "language": "Java",
+                "topics": [
+                    "2d-game",
+                    "arcade-game",
+                    "beginner-project",
+                    "flappy-bird",
+                    "game-development",
+                    "greenfoot",
+                    "java",
+                    "student-project"
+                ],
+                "html_url": "https://github.com/thippeswammy/SuperMarioGame",
+                "private": false
+            }
         },
         "SecureAppLocker": {
             "files": {
@@ -323,7 +571,25 @@
             },
             "etag": "W/\"3dbc487a2f10be8e3b9e5ad1f12d000fa85d7722c4d86a47a7ff11941549d3a8\"",
             "last_pushed": "2024-02-03T12:47:27Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "Java-based application locker system with login authentication, restricting access to protected applications and enabling secure execution upon successful user validation.",
+                "language": "Java",
+                "topics": [
+                    "access-control",
+                    "application-locker",
+                    "authentication",
+                    "desktop-app",
+                    "java",
+                    "login-system",
+                    "object-oriented-programming",
+                    "security",
+                    "system-design",
+                    "user-management"
+                ],
+                "html_url": "https://github.com/thippeswammy/SecureAppLocker",
+                "private": false
+            }
         },
         "MultiAppRunnerLoginAuth": {
             "files": {
@@ -331,7 +597,25 @@
             },
             "etag": "W/\"33048f5c4bf2c66b437ee0a70bcba8df0b1b8db8f46b3066696a1c0c7a48de91\"",
             "last_pushed": "2024-02-03T12:46:39Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "Java-based application launcher with integrated login authentication, controlling access to multiple functionalities based on user credentials.",
+                "language": "Java",
+                "topics": [
+                    "access-control",
+                    "application-launcher",
+                    "authentication",
+                    "console-app",
+                    "java",
+                    "login-system",
+                    "object-oriented-programming",
+                    "security",
+                    "system-design",
+                    "user-management"
+                ],
+                "html_url": "https://github.com/thippeswammy/MultiAppRunnerLoginAuth",
+                "private": false
+            }
         },
         "SimpleContactsManager": {
             "files": {
@@ -339,7 +623,25 @@
             },
             "etag": "W/\"18973bfae6576a63bfffc404fa7176a947915049f0735e489073f8134b293eb7\"",
             "last_pushed": "2024-02-03T12:45:13Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "Console-based contact and message management system in Java, supporting add, search, update, and delete operations with basic messaging functionality.",
+                "language": "Java",
+                "topics": [
+                    "beginner-project",
+                    "console-app",
+                    "contact-manager",
+                    "data-management",
+                    "design",
+                    "java",
+                    "messaging",
+                    "object-oriented-programming",
+                    "system",
+                    "user-input"
+                ],
+                "html_url": "https://github.com/thippeswammy/SimpleContactsManager",
+                "private": false
+            }
         },
         "TextBasedTicTacToe": {
             "files": {
@@ -347,7 +649,24 @@
             },
             "etag": "W/\"bb1e46248209e86679984c61793da9e4d06ebdb14aad04ec1233a706e3f70d50\"",
             "last_pushed": "2024-02-03T12:44:27Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "Console-based Tic Tac Toe game in Java featuring single-player (AI) and two-player modes with difficulty levels and basic game statistics tracking.",
+                "language": "Java",
+                "topics": [
+                    "beginner-project",
+                    "console-game",
+                    "game-development",
+                    "game-logic",
+                    "interactive-game",
+                    "java",
+                    "single-player",
+                    "tic-tac-toe",
+                    "two-player"
+                ],
+                "html_url": "https://github.com/thippeswammy/TextBasedTicTacToe",
+                "private": false
+            }
         },
         "NumberGuesserGame": {
             "files": {
@@ -355,7 +674,26 @@
             },
             "etag": "W/\"b5ed8c42e4fafceb47403eb73abd43729467cc0f98a4d09bacb68b3faee9d2ec\"",
             "last_pushed": "2024-02-03T12:39:42Z",
-            "last_sync": "2026-05-12 22:53"
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "Java-based number guessing game with multiple difficulty levels, AI-driven logic, and score tracking for interactive and competitive gameplay.",
+                "language": "Java",
+                "topics": [
+                    "beginner-project",
+                    "console-app",
+                    "game-design",
+                    "game-development",
+                    "gameplay",
+                    "interactive-game",
+                    "java",
+                    "logic",
+                    "number-guessing",
+                    "number-guessing-game",
+                    "scoring"
+                ],
+                "html_url": "https://github.com/thippeswammy/NumberGuesserGame",
+                "private": false
+            }
         }
     },
     "selected_repos": [
@@ -385,5 +723,5 @@
         "TextBasedTicTacToe",
         "NumberGuesserGame"
     ],
-    "last_sync": null
+    "last_sync": "2026-05-12 23:11"
 }
