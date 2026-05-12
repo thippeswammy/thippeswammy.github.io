@@ -12,7 +12,7 @@ import re
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 META_FILE = ".sync_meta.json"
 JS_DATA_FILE = "../web/projects_data.js"
-USER_AGENT = "GitHubRepoSync-Engine-v9"
+USER_AGENT = "GitHubRepoSync-Engine-v10"
 
 # Color Palette
 COLOR_BG = "#FFFFFF"
@@ -68,19 +68,29 @@ def handle_error(response, context, log_func=print):
 # --- API & Logic ---
 
 def fetch_repos(username):
-    url = "https://api.github.com/user/repos?per_page=100&type=all&sort=pushed" if GITHUB_TOKEN else f"https://api.github.com/users/{username}/repos?per_page=100"
-    try:
-        response = requests.get(url, headers=get_headers())
-        if response.status_code == 200:
-            repos = response.json()
-            if GITHUB_TOKEN: repos = [r for r in repos if r.get('owner', {}).get('login', '').lower() == username.lower()]
-            return repos
-        else:
-            handle_error(response, "Fetch")
-            return []
-    except Exception as e:
-        print(f"Connection error: {e}")
-        return []
+    """Fetches ALL repositories using pagination."""
+    all_repos = []
+    page = 1
+    while True:
+        url = "https://api.github.com/user/repos" if GITHUB_TOKEN else f"https://api.github.com/users/{username}/repos"
+        params = {"per_page": 100, "page": page, "type": "all", "sort": "pushed"}
+        try:
+            response = requests.get(url, headers=get_headers(), params=params)
+            if response.status_code == 200:
+                repos = response.json()
+                if not repos: break
+                if GITHUB_TOKEN:
+                    repos = [r for r in repos if r.get('owner', {}).get('login', '').lower() == username.lower()]
+                all_repos.extend(repos)
+                if len(repos) < 100: break
+                page += 1
+            else:
+                handle_error(response, "Fetch")
+                break
+        except Exception as e:
+            print(f"Connection error: {e}")
+            break
+    return all_repos
 
 def extract_highlights(repo_name):
     readme_paths = [os.path.join(repo_name, f) for f in ['README.md', 'readme.md', 'index.md']]
@@ -114,16 +124,16 @@ def format_as_js_object(p):
     github:'{p['github']}', isPrivate:{is_private_str} }}"""
 
 def generate_portfolio_js(meta_repos, log_callback):
-    log_callback("Building portfolio data (Preserving Header & CLUSTERS)...")
+    log_callback("Building portfolio data (Full Scan)...")
     
     grouped_projects = {}
-    sorted_names = sorted(meta_repos.keys(), key=lambda x: x.lower())
+    # Filter only those that have 'info' (meaning they were scanned at least once)
+    scanned_repos = {k: v for k, v in meta_repos.items() if v.get("info")}
+    sorted_names = sorted(scanned_repos.keys(), key=lambda x: x.lower())
 
     for name in sorted_names:
-        data = meta_repos[name]
+        data = scanned_repos[name]
         info = data.get("info", {})
-        if not info: continue
-        
         topics = info.get("topics", [])
         cluster = 'others'
         for t in topics:
@@ -146,31 +156,24 @@ def generate_portfolio_js(meta_repos, log_callback):
         if cluster not in grouped_projects: grouped_projects[cluster] = []
         grouped_projects[cluster].append(format_as_js_object(project))
 
-    # 2. Read existing file to preserve CLUSTERS
     header = ""
     try:
         if os.path.exists(JS_DATA_FILE):
             with open(JS_DATA_FILE, "r", encoding="utf-8") as f:
                 content = f.read()
-                # Find where PROJECTS start
                 split_point = content.find("window.PROJECTS = [")
-                if split_point != -1:
-                    header = content[:split_point] + "window.PROJECTS = ["
-                else:
-                    header = content.strip() + "\n\nwindow.PROJECTS = [" if content else "window.PROJECTS = ["
+                header = content[:split_point] + "window.PROJECTS = [" if split_point != -1 else "window.PROJECTS = ["
         else:
             header = "window.PROJECTS = ["
     except:
         header = "window.PROJECTS = ["
 
-    # 3. Build Body (Correctly handling dividers without trailing commas)
     output_body = []
     order = ['robotics', 'vision', 'ai', 'web', 'tools', 'others']
     for cluster_id in order:
         if cluster_id in grouped_projects:
             label = CLUSTER_LABELS.get(cluster_id, cluster_id.upper())
             divider = f"\n  // ── {label} ────────────────────────────────────────────────────────────────"
-            # Add divider then join projects
             cluster_text = divider + "\n" + ",\n\n".join(grouped_projects[cluster_id])
             output_body.append(cluster_text)
 
@@ -178,7 +181,7 @@ def generate_portfolio_js(meta_repos, log_callback):
     
     try:
         with open(JS_DATA_FILE, "w", encoding="utf-8") as f: f.write(js_content)
-        log_callback("SUCCESS: Portfolio updated (Header & CLUSTERS preserved).")
+        log_callback(f"SUCCESS: {len(scanned_repos)} projects exported.")
         return True
     except Exception as e:
         log_callback(f"FAILED JS: {e}"); return False
@@ -253,7 +256,6 @@ class RepoSyncGUI:
 
         ttk.Separator(self.sidebar, orient="horizontal").pack(fill="x", pady=20)
         
-        # Options
         ttk.Label(self.sidebar, text="OPTIONS", font=("Segoe UI", 8, "bold"), foreground=COLOR_FORK).pack(anchor="w")
         self.meta_only_var = tk.BooleanVar(value=False)
         tk.Checkbutton(self.sidebar, text="Metadata Only (Fast)", variable=self.meta_only_var, bg=COLOR_SIDEBAR, font=("Segoe UI", 9)).pack(anchor="w", pady=5)
@@ -263,7 +265,6 @@ class RepoSyncGUI:
 
         ttk.Separator(self.sidebar, orient="horizontal").pack(fill="x", pady=20)
         
-        # Portfolio Action
         ttk.Label(self.sidebar, text="AUTOMATION", font=("Segoe UI", 8, "bold"), foreground=COLOR_FORK).pack(anchor="w")
         self.build_btn = tk.Button(self.sidebar, text="BUILD PORTFOLIO DATA", command=self.build_portfolio, bg=COLOR_PRIVATE, fg="white", font=("Segoe UI", 9, "bold"), relief="flat", pady=8)
         self.build_btn.pack(fill="x", pady=10)
@@ -286,11 +287,25 @@ class RepoSyncGUI:
         self.sync_btn = tk.Button(footer, text="START SYNC ENGINE", command=self.start_sync, bg=COLOR_ACCENT, fg="white", font=("Segoe UI", 11, "bold"), relief="flat", pady=12)
         self.sync_btn.pack(fill="x", pady=(10, 0))
 
-    def initial_load(self): self.repos_data = fetch_repos(self.username); self.root.after(0, self.on_loaded)
+    def initial_load(self): 
+        self.log("Fetching repositories...")
+        self.repos_data = fetch_repos(self.username)
+        # Pre-populate meta with basic info so 'Build Portfolio' works immediately
+        for r in self.repos_data:
+            name = r['name']
+            if name not in self.meta["repos"]: self.meta["repos"][name] = {"files": {}}
+            self.meta["repos"][name]["info"] = {
+                "description": r.get("description"), "language": r.get("language"),
+                "topics": r.get("topics", []), "html_url": r.get("html_url"), "private": r.get("private", False)
+            }
+        save_meta(self.meta)
+        self.root.after(0, self.on_loaded)
+
     def on_loaded(self):
-        self.auth_label.config(text="Status: Authenticated" if GITHUB_TOKEN else "Status: Public Only", foreground=COLOR_SUCCESS if GITHUB_TOKEN else COLOR_FORK)
+        self.auth_label.config(text=f"Status: {len(self.repos_data)} Repos Found", foreground=COLOR_SUCCESS if GITHUB_TOKEN else COLOR_FORK)
         for r in self.repos_data: self.vars[r['name']] = tk.BooleanVar(value=r['name'] in self.meta.get("selected_repos", []))
         self.refresh_list()
+        self.log(f"Ready. {len(self.repos_data)} repositories loaded.")
 
     def refresh_list(self):
         for f in self.repo_frames: f.destroy()
@@ -320,7 +335,15 @@ class RepoSyncGUI:
         for v in self.vars.values(): v.set(False)
 
     def build_portfolio(self):
-        if not self.meta.get("repos"): return messagebox.showwarning("No Data", "Sync at least one repository first.")
+        # Refresh current repo list info into meta before building
+        for r in self.repos_data:
+            name = r['name']
+            if name not in self.meta["repos"]: self.meta["repos"][name] = {"files": {}}
+            self.meta["repos"][name]["info"] = {
+                "description": r.get("description"), "language": r.get("language"),
+                "topics": r.get("topics", []), "html_url": r.get("html_url"), "private": r.get("private", False)
+            }
+        save_meta(self.meta)
         threading.Thread(target=lambda: generate_portfolio_js(self.meta["repos"], self.log), daemon=True).start()
 
     def start_sync(self):
