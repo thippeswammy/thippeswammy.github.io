@@ -10,7 +10,7 @@ from datetime import datetime
 # --- Configuration & Constants ---
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 META_FILE = ".sync_meta.json"
-USER_AGENT = "GitHubRepoSync-Advanced-v3"
+USER_AGENT = "GitHubRepoSync-Advanced-v4"
 THEME_COLOR = "#212529"
 ACCENT_COLOR = "#0d6efd"
 SUCCESS_COLOR = "#198754"
@@ -54,11 +54,20 @@ def handle_error(response, context, log_func=print):
 # --- API Interaction ---
 
 def fetch_repos(username):
-    url = f"https://api.github.com/users/{username}/repos?per_page=100"
+    # If authenticated, use /user/repos to get private repos and more info
+    if GITHUB_TOKEN:
+        url = "https://api.github.com/user/repos?per_page=100&type=all&sort=pushed"
+    else:
+        url = f"https://api.github.com/users/{username}/repos?per_page=100"
+        
     try:
         response = requests.get(url, headers=get_headers())
         if response.status_code == 200:
-            return response.json()
+            repos = response.json()
+            # If authenticated, we might get repos where we are only a member, filter for owner
+            if GITHUB_TOKEN:
+                repos = [r for r in repos if r.get('owner', {}).get('login', '').lower() == username.lower()]
+            return repos
         else:
             handle_error(response, f"fetching repos for {username}")
             return []
@@ -71,24 +80,21 @@ def download_md_files(username, repo_obj, meta, progress_callback, log_callback)
     pushed_at = repo_obj['pushed_at']
     repo_meta = meta.get("repos", {}).get(repo_name, {"files": {}, "etag": None, "last_pushed": None})
     
-    # Optimization 1: Check pushed_at timestamp
     if repo_meta.get("last_pushed") == pushed_at:
         log_callback(f"Skipping {repo_name} - No changes since last sync.")
         return 0
     
     log_callback(f"Checking {repo_name}...")
     headers = get_headers(repo_meta.get("etag"))
-    
-    # 1. Get default branch (This call is cheap, but we can also use repo_obj)
     branch = repo_obj.get('default_branch', 'main')
     
-    # 2. Get recursive tree with ETag
-    tree_url = f"https://api.github.com/repos/{username}/{repo_name}/git/trees/{branch}?recursive=1"
+    # Use the owner login from the repo object itself
+    owner = repo_obj['owner']['login']
+    tree_url = f"https://api.github.com/repos/{owner}/{repo_name}/git/trees/{branch}?recursive=1"
     res = requests.get(tree_url, headers=headers)
     
     if res.status_code == 304:
         log_callback(f"  Unchanged (ETag Match).")
-        # Update timestamp even if no files changed to skip next time
         if repo_name not in meta["repos"]: meta["repos"][repo_name] = repo_meta
         meta["repos"][repo_name]["last_pushed"] = pushed_at
         return 0
@@ -118,9 +124,8 @@ def download_md_files(username, repo_obj, meta, progress_callback, log_callback)
             skipped += 1
             continue
             
-        # Download
         encoded_path = urllib.parse.quote(path)
-        raw_url = f"https://raw.githubusercontent.com/{username}/{repo_name}/{branch}/{encoded_path}"
+        raw_url = f"https://raw.githubusercontent.com/{owner}/{repo_name}/{branch}/{encoded_path}"
         res = requests.get(raw_url, headers=get_headers())
         
         if res.status_code == 200:
@@ -129,7 +134,6 @@ def download_md_files(username, repo_obj, meta, progress_callback, log_callback)
             with open(local_path, "w", encoding="utf-8") as f:
                 f.write(res.text)
             
-            # Update meta
             if "repos" not in meta: meta["repos"] = {}
             if repo_name not in meta["repos"]: meta["repos"][repo_name] = {"files": {}, "etag": None}
             meta["repos"][repo_name]["files"][path] = remote_sha
@@ -141,7 +145,6 @@ def download_md_files(username, repo_obj, meta, progress_callback, log_callback)
         
         progress_callback()
         
-    # Update Repo Meta with new ETag and Timestamp
     if repo_name not in meta["repos"]: meta["repos"][repo_name] = {"files": {}}
     meta["repos"][repo_name]["etag"] = new_etag
     meta["repos"][repo_name]["last_pushed"] = pushed_at
@@ -159,7 +162,7 @@ class AdvancedRepoSyncApp:
         self.username = username
         self.meta = load_meta()
         self.repos_data = fetch_repos(username)
-        self.all_repos = sorted([r['name'] for r in self.repos_data])
+        self.all_repos = sorted(self.repos_data, key=lambda x: x['name'].lower())
         self.vars = {}
         self.checkbuttons = []
         
@@ -168,7 +171,7 @@ class AdvancedRepoSyncApp:
 
     def setup_ui(self):
         self.root.title("GitHub Portfolio Sync Engine")
-        self.root.geometry("600x750")
+        self.root.geometry("600x850")
         self.root.configure(bg=BG_COLOR)
         
         style = ttk.Style()
@@ -180,7 +183,6 @@ class AdvancedRepoSyncApp:
         # Header
         header_frame = ttk.Frame(self.root, padding=20)
         header_frame.pack(fill="x")
-        
         ttk.Label(header_frame, text="Sync Engine", style="Header.TLabel").pack(side="left")
         
         auth_status = "Authenticated" if GITHUB_TOKEN else "Unauthenticated (Limited)"
@@ -188,50 +190,53 @@ class AdvancedRepoSyncApp:
         self.status_label = tk.Label(header_frame, text=auth_status, fg=auth_color, bg=BG_COLOR, font=("Segoe UI", 9, "italic"))
         self.status_label.pack(side="right")
 
-        # Search and Bulk Action
-        search_frame = ttk.Frame(self.root, padding=(20, 0))
-        search_frame.pack(fill="x")
-        
-        ttk.Label(search_frame, text="Search:").pack(side="left", padx=(0, 5))
+        # Filters and Search
+        controls_frame = ttk.Frame(self.root, padding=(20, 0))
+        controls_frame.pack(fill="x")
+
+        # Row 1: Search
+        search_row = ttk.Frame(controls_frame)
+        search_row.pack(fill="x", pady=(0, 10))
+        ttk.Label(search_row, text="Search:").pack(side="left", padx=(0, 5))
         self.search_var = tk.StringVar()
         self.search_var.trace_add("write", self.filter_repos)
-        self.search_entry = ttk.Entry(search_frame, textvariable=self.search_var)
+        self.search_entry = ttk.Entry(search_row, textvariable=self.search_var)
         self.search_entry.pack(side="left", fill="x", expand=True)
-        
-        ttk.Button(search_frame, text="Select All", command=self.select_all).pack(side="left", padx=5)
-        ttk.Button(search_frame, text="Clear", command=self.clear_all).pack(side="left")
 
-        # Repo List with Scrollbar
+        # Row 2: Type Filters
+        filter_row = ttk.Frame(controls_frame)
+        filter_row.pack(fill="x", pady=(0, 10))
+        ttk.Label(filter_row, text="Filter:").pack(side="left", padx=(0, 5))
+        self.type_filter = tk.StringVar(value="all")
+        for text, val in [("All", "all"), ("Sources Only", "source"), ("Forks Only", "fork")]:
+            ttk.Radiobutton(filter_row, text=text, value=val, variable=self.type_filter, 
+                            command=self.filter_repos).pack(side="left", padx=10)
+
+        # Row 3: Bulk Actions
+        action_row = ttk.Frame(controls_frame)
+        action_row.pack(fill="x")
+        ttk.Button(action_row, text="Select All Visible", command=self.select_all).pack(side="left", padx=(0, 5))
+        ttk.Button(action_row, text="Clear All", command=self.clear_all).pack(side="left")
+
+        # Repo List
         list_container = ttk.Frame(self.root, padding=20)
         list_container.pack(fill="both", expand=True)
-        
         self.canvas = tk.Canvas(list_container, bg="white", highlightthickness=0)
         self.scrollbar = ttk.Scrollbar(list_container, orient="vertical", command=self.canvas.yview)
         self.scrollable_frame = tk.Frame(self.canvas, bg="white")
-
-        self.scrollable_frame.bind(
-            "<Configure>",
-            lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all"))
-        )
-
+        self.scrollable_frame.bind("<Configure>", lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")))
         self.canvas_window = self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
         self.canvas.configure(yscrollcommand=self.scrollbar.set)
-        
         self.canvas.pack(side="left", fill="both", expand=True)
         self.scrollbar.pack(side="right", fill="y")
-        
-        # Mouse wheel support
         self.canvas.bind_all("<MouseWheel>", lambda e: self.canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
-
         self.root.bind("<Configure>", self.on_resize)
 
-        # Populate Repos
         self.render_repo_list()
 
         # Log Area
         log_frame = ttk.Frame(self.root, padding=(20, 10))
-        log_frame.pack(fill="both", expand=False) # Fixed: Removed height=150
-        
+        log_frame.pack(fill="both", expand=False)
         ttk.Label(log_frame, text="Activity Log", font=("Segoe UI", 9, "bold")).pack(anchor="w")
         self.log_text = tk.Text(log_frame, height=8, font=("Consolas", 9), bg="#f1f3f5", state="disabled")
         self.log_text.pack(fill="both", expand=True)
@@ -244,7 +249,6 @@ class AdvancedRepoSyncApp:
         # Bottom Actions
         bottom_frame = ttk.Frame(self.root, padding=20)
         bottom_frame.pack(fill="x")
-        
         self.sync_btn = tk.Button(bottom_frame, text="START SYNC ENGINE", command=self.start_sync_thread, 
                                  bg=ACCENT_COLOR, fg="white", font=("Segoe UI", 11, "bold"), 
                                  relief="flat", pady=10)
@@ -253,29 +257,49 @@ class AdvancedRepoSyncApp:
     def on_resize(self, event):
         self.canvas.itemconfig(self.canvas_window, width=max(event.width - 60, 100))
 
-    def render_repo_list(self, filter_text=""):
+    def render_repo_list(self, *args):
         for cb in self.checkbuttons:
             cb.destroy()
         self.checkbuttons = []
 
-        for repo in self.all_repos:
-            if filter_text.lower() in repo.lower():
-                if repo not in self.vars:
-                    self.vars[repo] = tk.BooleanVar()
-                
-                cb = tk.Checkbutton(self.scrollable_frame, text=repo, variable=self.vars[repo], 
-                                   bg="white", font=("Segoe UI", 10), anchor="w", 
-                                   activebackground=BG_COLOR)
-                cb.pack(fill="x", padx=10, pady=2)
-                self.checkbuttons.append(cb)
+        filter_text = self.search_var.get().lower()
+        filter_type = self.type_filter.get()
+
+        for repo_obj in self.all_repos:
+            repo_name = repo_obj['name']
+            is_fork = repo_obj.get('fork', False)
+            is_private = repo_obj.get('private', False)
+            
+            # Filter logic
+            if filter_text not in repo_name.lower(): continue
+            if filter_type == "source" and is_fork: continue
+            if filter_type == "fork" and not is_fork: continue
+
+            if repo_name not in self.vars:
+                self.vars[repo_name] = tk.BooleanVar()
+            
+            label_text = f"{repo_name} {'(Fork)' if is_fork else ''} {'[Private]' if is_private else ''}"
+            cb_color = "#6c757d" if is_fork else THEME_COLOR
+            if is_private: cb_color = SUCCESS_COLOR # Highlight private repos in green
+            
+            cb = tk.Checkbutton(self.scrollable_frame, text=label_text, variable=self.vars[repo_name], 
+                               bg="white", font=("Segoe UI", 10), anchor="w", 
+                               fg=cb_color, activebackground=BG_COLOR)
+            cb.pack(fill="x", padx=10, pady=2)
+            self.checkbuttons.append(cb)
 
     def filter_repos(self, *args):
-        self.render_repo_list(self.search_var.get())
+        self.render_repo_list()
 
     def select_all(self):
-        for repo in self.all_repos:
-            if self.search_var.get().lower() in repo.lower():
-                self.vars[repo].set(True)
+        filter_text = self.search_var.get().lower()
+        filter_type = self.type_filter.get()
+        for repo_obj in self.all_repos:
+            name = repo_obj['name']
+            is_fork = repo_obj.get('fork', False)
+            if filter_text in name.lower():
+                if filter_type == "all" or (filter_type == "source" and not is_fork) or (filter_type == "fork" and is_fork):
+                    self.vars[name].set(True)
 
     def clear_all(self):
         for var in self.vars.values():
@@ -306,7 +330,6 @@ class AdvancedRepoSyncApp:
             return
         
         selected_repos = [r for r in self.repos_data if r['name'] in selected_names]
-        
         self.save_preferences()
         self.sync_btn.config(state="disabled", text="SYNCING...")
         self.progress_var.set(0)
@@ -318,25 +341,17 @@ class AdvancedRepoSyncApp:
     def run_sync(self, selected_repos):
         total_repos = len(selected_repos)
         total_files = 0
-        
         self.log(f"--- Starting Sync for {total_repos} repositories ---")
         
         for i, repo_obj in enumerate(selected_repos):
-            repo_name = repo_obj['name']
-            self.log(f"[{i+1}/{total_repos}] Processing {repo_name}...")
-            
-            def update_progress():
-                pass
-                
-            files_updated = download_md_files(self.username, repo_obj, self.meta, update_progress, self.log)
+            self.log(f"[{i+1}/{total_repos}] Processing {repo_obj['name']}...")
+            files_updated = download_md_files(self.username, repo_obj, self.meta, lambda: None, self.log)
             total_files += files_updated
-            
             self.progress_var.set(((i + 1) / total_repos) * 100)
             
         self.meta["last_sync"] = datetime.utcnow().isoformat()
         save_meta(self.meta)
         self.log(f"--- Sync Complete. {total_files} files updated. ---")
-        
         self.root.after(0, lambda: self.finish_sync(total_files))
 
     def finish_sync(self, count):
@@ -345,7 +360,6 @@ class AdvancedRepoSyncApp:
 
 if __name__ == "__main__":
     GITHUB_USER = "thippeswammy"
-    
     root = tk.Tk()
     app = AdvancedRepoSyncApp(root, GITHUB_USER)
     root.mainloop()
