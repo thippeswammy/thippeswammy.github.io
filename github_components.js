@@ -105,10 +105,10 @@ function renderCalendar(container, data) {
   const masterGrid = document.createElement('div');
   masterGrid.style.cssText = `
     display: grid;
-    grid-template-columns: 32px repeat(${totalWeeks}, 13px);
-    grid-template-rows: 20px repeat(7, 13px);
-    column-gap: 2px;
-    row-gap: 2px;
+    grid-template-columns: 30px repeat(${totalWeeks}, 11px);
+    grid-template-rows: 15px repeat(7, 11px);
+    column-gap: 3px;
+    row-gap: 3px;
     align-items: center;
   `;
 
@@ -116,39 +116,40 @@ function renderCalendar(container, data) {
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   let lastMonth = -1;
 
-  // 1. Add Day Labels (Col 1, Rows 2-8)
-  ['', 'Mon', '', 'Wed', '', 'Fri', ''].forEach((day, idx) => {
-    if (day) {
-      const label = document.createElement('span');
-      label.textContent = day;
-      label.style.cssText = `
-        grid-row: ${idx + 2};
-        grid-column: 1;
-        font-size: 10px;
-        color: var(--text-muted);
-        text-align: right;
-        padding-right: 4px;
-      `;
-      masterGrid.appendChild(label);
-    }
+  // 1. Add Day Labels (Mon=Row 3, Wed=Row 5, Fri=Row 7)
+  const dayConfig = [
+    { label: 'Mon', row: 3 },
+    { label: 'Wed', row: 5 },
+    { label: 'Fri', row: 7 }
+  ];
+
+  dayConfig.forEach(cfg => {
+    const span = document.createElement('span');
+    span.textContent = cfg.label;
+    span.style.cssText = `
+      grid-column: 1;
+      grid-row: ${cfg.row};
+      font-size: 9px;
+      color: var(--text-muted);
+      align-self: center;
+      padding-right: 4px;
+    `;
+    masterGrid.appendChild(span);
   });
 
   // 2. Populate Grid with Months and Days
   data.contributions.forEach((week, weekIdx) => {
     const colIdx = weekIdx + 2;
 
-    // Handle Month Labels
+    // Handle Month Labels: GitHub labels a week if its first day (Sunday) starts a new month.
+    const monthIdx = new Date(week[0].date).getMonth();
     let monthIdxToShow = -1;
-    if (weekIdx === 0) {
-      monthIdxToShow = new Date(week[0].date).getMonth();
-    } else {
-      week.forEach(day => {
-        if (new Date(day.date).getDate() === 1) monthIdxToShow = new Date(day.date).getMonth();
-      });
+    if (monthIdx !== lastMonth) {
+      monthIdxToShow = monthIdx;
+      lastMonth = monthIdx;
     }
 
-    if (monthIdxToShow !== -1 && monthIdxToShow !== lastMonth) {
-      lastMonth = monthIdxToShow;
+    if (monthIdxToShow !== -1) {
       const mLabel = document.createElement('span');
       mLabel.textContent = monthNames[monthIdxToShow];
       mLabel.style.cssText = `
@@ -379,7 +380,7 @@ function renderVerticalCalendar(container, data) {
   });
 
   let currentMonth = -1;
-  let currentRow = 2;
+  let currentRow = 2; // Row 1 is reserved for day headers (S M T W T F S)
 
   flatDays.forEach((day, index) => {
     const dDate = new Date(day.date);
@@ -387,6 +388,11 @@ function renderVerticalCalendar(container, data) {
     
     // Insert month header row if month changes
     if (dDate.getMonth() !== currentMonth) {
+      // Ensure the month header starts on a fresh row
+      if (index > 0 && dayOfWeek !== 0) {
+        currentRow++;
+      }
+      
       currentMonth = dDate.getMonth();
       const monthRow = document.createElement('div');
       monthRow.className = 'gh-vertical-month-row';
