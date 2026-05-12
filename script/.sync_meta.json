@@ -1,0 +1,1725 @@
+{
+    "repos": {
+        "my_bot": {
+            "files": {
+                "my_bot/LICENSE.md": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+                "my_bot/README.md": "d2f2f8848621221cfca6d190aa5861a6192e8149"
+            },
+            "etag": "W/\"31868202befaab025a33c59da9993e7dc0c6c677098c46c0daa19be0effb4e8a\"",
+            "last_pushed": "2026-05-12T16:27:40Z",
+            "last_sync": "2026-05-12 22:52",
+            "info": {
+                "description": null,
+                "language": "Python",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/my_bot",
+                "private": false
+            }
+        },
+        "VO2MAP": {
+            "files": {
+                "submission/readme.md": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            "etag": "W/\"db9d4a823c56647bee10d49c95febf8f4b3d43789785747f162297e1d8aafce4\"",
+            "last_pushed": "2026-05-08T11:38:58Z",
+            "last_sync": "2026-05-12 22:52",
+            "info": {
+                "description": null,
+                "language": "HTML",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/VO2MAP",
+                "private": false
+            }
+        },
+        "MultipleVo": {
+            "files": {
+                "NotWorking/VOLDOR/README.md": "d328f6cb01d2ad685ac12743eda27b165108d3a2",
+                "NotWorking/Visual-Odometry-opticalFlowModel/README.md": "730093d875711c995b715779fee2b9b626b2dd09",
+                "can_interface_ros2_setup.md": "50cb3359764d903a157b4d24e6810a94472d661c",
+                "notUsefull/DeepMatchVO/README.md": "ff17f8ca24430aee6124edbbab048100be93e326",
+                "notUsefull/DeepMatchVO/ckpt/README.md": "61b929bfb32e39c2dd0189b0b41aa73e43c3fc5e",
+                "working/DF-VisualOdometry/README.md": "d4bd27d0225ce684ed6757f7375d828d5e57bd17",
+                "working/Stereo-Odometry-SOFT/LICENSE.md": "d05330a4163edbdc714b0a357590af93ab1ea9cf",
+                "working/Stereo-Odometry-SOFT/README.md": "61db3404bb41ae3448db4896d2b882f4dd0275b2",
+                "working/Stereo-Odometry-SOFT/data/readme.md": "e6131bec46d880d21b7528e42c9cf9cdb412e39b",
+                "working/kitti-odom-eval/README.md": "34e5e1cb341dd74929a0503f3bedc66caa9d6143",
+                "working/visual-odometry(opticalFlow_dense)/README.md": "ae514d64f33bdf67434d4bca6aa5ee430dde1ac7",
+                "working/vo_mono_camera(Taeyoung96)/README.md": "1c7ab3012d9cea83baff23860097516aaec697e6"
+            },
+            "etag": "W/\"6661cc70f2183ea01defcfe2eb5d85066ba57a814ac96b8bdb0b76058b7f0eba\"",
+            "last_pushed": "2026-05-08T11:36:20Z",
+            "last_sync": "2026-05-12 22:52",
+            "info": {
+                "description": null,
+                "language": "HTML",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/MultipleVo",
+                "private": false
+            }
+        },
+        "ZED2i": {
+            "files": {
+                "README.md": "c4ae6b43375511f074d998a87af0b8ef023d1693",
+                "default/code/NotWorking/ZedCalibration-master/README.md": "53650dfc5f286c653a671e148212f3f5abc7761d",
+                "default/code/NotWorking/zed-opencv-native-python-master/README.md": "e456ef2250989ea48787003f3f0784db7a243b51",
+                "default/code/NotWorking/zed-opencv-native-python-master/cpp/README.md": "6dc044f09224b8be4a1dfa06c45dd7f5fb7b2ba7",
+                "default/code/Working/README.md": "96cc9a0127619adca81ef82e00aafcef70779d9c",
+                "default/code/Working/ZedSdk/body tracking/README.md": "ea2d531732d17131250177bb1d031d090c54d249",
+                "default/code/Working/ZedSdk/body tracking/body tracking/README.md": "ff1d62244c8a2943ff85bfda35eafa37b6af8acd",
+                "default/code/Working/ZedSdk/body tracking/body tracking/cpp/README.md": "bbee5bca7dc956de0d43559a52780bc0fb450a44",
+                "default/code/Working/ZedSdk/body tracking/body tracking/csharp/README.md": "c834b754348b525050acd0c3221c83d2ab22c717",
+                "default/code/Working/ZedSdk/body tracking/body tracking/python/README.md": "da7972432b1f934ed99e014cb1cee20106eaab1d",
+                "default/code/Working/ZedSdk/body tracking/export/JSON export/cpp/README.md": "3b612aa1978aa013d89ad08cd366f34a7d9a4fbc",
+                "default/code/Working/ZedSdk/body tracking/export/fbx export/cpp/README.md": "38d8a1690b492b508ee5131c33829b239966c144",
+                "default/code/Working/ZedSdk/body tracking/integrations/README.md": "64295638a32a77d875906e7cd9c0a3ed0c3e069b",
+                "default/code/Working/ZedSdk/camera control/README.md": "8ec62ebb1ac2e855cf9335764ae7b2fd59a09631",
+                "default/code/Working/ZedSdk/camera control/cpp/README.md": "f06eba108a2f8cbd5001eef61f95d3bd49ad5afd",
+                "default/code/Working/ZedSdk/camera control/csharp/README.md": "45e031583adbb3b762c2ddf84303e67adb2bed32",
+                "default/code/Working/ZedSdk/camera control/python/README.md": "6d40ee838f3b302bdf8ab80139a1b0c6c6c131e0",
+                "default/code/Working/ZedSdk/camera streaming/README.md": "0018d8b1f0743c6441e2542fe2d3df6f3e3bef91",
+                "default/code/Working/ZedSdk/camera streaming/receiver/README.md": "0f229773b5c31d872b9715376132ffb3ac0de055",
+                "default/code/Working/ZedSdk/camera streaming/receiver/cpp/README.md": "b18bb87a237c198f29729f2e6d3cf4d8d32501e3",
+                "default/code/Working/ZedSdk/camera streaming/receiver/python/README.md": "869800c728317a1a6d1d8c47097acb19899b96ad",
+                "default/code/Working/ZedSdk/camera streaming/sender/README.md": "9ea451666faf4b766dc9ca8c4db45f36f1503c7a",
+                "default/code/Working/ZedSdk/camera streaming/sender/cpp/README.md": "ff1e19d08805d97e456e103e5be33a22c750594b",
+                "default/code/Working/ZedSdk/camera streaming/sender/python/README.md": "b661d88cf71b7feb943e3f5c64be0553f50ede68",
+                "default/code/Working/ZedSdk/depth sensing/README.md": "db1ce09c53a6921eb418a60566e6f1a3117d5747",
+                "default/code/Working/ZedSdk/depth sensing/depth sensing/README.md": "b20f94728d795860bd07bb68eda985c2f3bcc98c",
+                "default/code/Working/ZedSdk/depth sensing/depth sensing/cpp/README.md": "dfc5d6aaf95c8006806e6bb2370b4cdd70c50437",
+                "default/code/Working/ZedSdk/depth sensing/depth sensing/csharp/README.md": "8191313c7c57bf3f8b6d22880695c9ce26abf83b",
+                "default/code/Working/ZedSdk/depth sensing/depth sensing/python/README.md": "56291846ab1180ca1d5cad93e6b384085856de3c",
+                "default/code/Working/ZedSdk/depth sensing/image refocus/cpp/README.md": "2c3bd874013d03b4ad4080e91f85fbc3baff1719",
+                "default/code/Working/ZedSdk/depth sensing/manual region of interest/README.md": "eb34b43d0b783874f46baf5b00c293299f102082",
+                "default/code/Working/ZedSdk/depth sensing/multi camera/README.md": "7d6c33f00f090f409db15a18c1f40d7b7e5482ef",
+                "default/code/Working/ZedSdk/depth sensing/multi camera/cpp/README.md": "537abb06b702408ac5b7defe604905a24753ef5f",
+                "default/code/Working/ZedSdk/fusion/README.md": "f62b569e481d579823455a41209afe666d0f8fdc",
+                "default/code/Working/ZedSdk/geotracking/README.md": "0e8c74a4e0f9596a54e1af4e2906c5c2d7ae0c97",
+                "default/code/Working/ZedSdk/geotracking/live geotracking/README.md": "25ce846f487f67f76870fccf1defc960a49019d2",
+                "default/code/Working/ZedSdk/geotracking/playback/README.md": "761bf5fbe2661324c740d80e6569e4218a6fc03f",
+                "default/code/Working/ZedSdk/geotracking/recording/README.md": "34c50e45ef77c59cdf6511cf4cf9f3044548901d",
+                "default/code/Working/ZedSdk/object detection/README.md": "13e1a3ce118890133ea10f5e26e74e305cd13ae5",
+                "default/code/Working/ZedSdk/object detection/birds eye viewer/README.md": "c3446e94254fba119fdc4430f8672f43c0d227c0",
+                "default/code/Working/ZedSdk/object detection/birds eye viewer/cpp/README.md": "ecfe18d497c3fccfb60837a902b7affbd3b477c1",
+                "default/code/Working/ZedSdk/object detection/birds eye viewer/csharp/README.md": "4bb3d995167a84767bf148d6c84104e168efb275",
+                "default/code/Working/ZedSdk/object detection/birds eye viewer/python/README.md": "57a20527ea97305d9530f4c37e1c38c676f714d1",
+                "default/code/Working/ZedSdk/object detection/concurrent detections/README.md": "7fa5b95fbbb97736b1bfb40e6ed34d42217179f0",
+                "default/code/Working/ZedSdk/object detection/concurrent detections/cpp/README.md": "b8d99028108b2a04e507b2abbf77ffb2ea589209",
+                "default/code/Working/ZedSdk/object detection/custom detector/cpp/opencv_dnn_yolov4/README.md": "94b7672fb8996f643634074f384b30730b60e788",
+                "default/code/Working/ZedSdk/object detection/custom detector/cpp/tensorrt_yolov5-v6-v8_onnx/README.md": "2f5d97b508ad701ada839c818519f21733765319",
+                "default/code/Working/ZedSdk/object detection/custom detector/cpp/tensorrt_yolov5_v5.0/README.md": "edf7ba90d9ddf8386dff12d7ef792b72b7ae85f5",
+                "default/code/Working/ZedSdk/object detection/custom detector/cpp/tensorrt_yolov5_v6.0/README.md": "78bdb0b744f53de64af01fc8075ccc585f4f98fc",
+                "default/code/Working/ZedSdk/object detection/custom detector/python/pytorch_yolov5/README.md": "e7adcb03f7a0602c670cc8afd2d857372a649748",
+                "default/code/Working/ZedSdk/object detection/custom detector/python/pytorch_yolov8/README.md": "d5cd6a8324f5658e77d6ec43b3e697ceaee4935c",
+                "default/code/Working/ZedSdk/object detection/image viewer/README.md": "0d8961f39ae0b77048afa05012ed6b85b058ba81",
+                "default/code/Working/ZedSdk/object detection/image viewer/cpp/README.md": "794ff4e71c21b4cb3bc4f901ff42ea95a02e8441",
+                "default/code/Working/ZedSdk/object detection/image viewer/csharp/README.md": "e74847dc48d94e7fb9b89ac6e4b1d97e94e56c08",
+                "default/code/Working/ZedSdk/object detection/image viewer/python/README.md": "64931e7ba60f275f17992f4c2aeadc8489c76c1d",
+                "default/code/Working/ZedSdk/plane detection/README.md": "3e2ac35196bb019ea41018287b4906df7c3090f5",
+                "default/code/Working/ZedSdk/plane detection/plane detection/README.md": "eec6b989e2c7e315419a45956b3b074a857a58eb",
+                "default/code/Working/ZedSdk/plane detection/plane detection/cpp/README.md": "8a0073e69cb942686b0ec1ccf8aa7e4d3180c1a7",
+                "default/code/Working/ZedSdk/plane detection/plane detection/csharp/README.md": "fa65db3ba5eae1b7f3aa83c41f896e29372d3775",
+                "default/code/Working/ZedSdk/plane detection/plane detection/python/README.md": "3fa43018d1d25cabbe83d6a82e997980b75c3eb0",
+                "default/code/Working/ZedSdk/positional tracking/README.md": "0689c24e664debc95e0d1b9c22a00821574e3060",
+                "default/code/Working/ZedSdk/positional tracking/export/fbx/cpp/README.md": "4e895d6438af44dcffe9ef65d21f2064d195906a",
+                "default/code/Working/ZedSdk/positional tracking/positional tracking/README.md": "fe9079d251c776132b4d646ab6122196f852db5c",
+                "default/code/Working/ZedSdk/positional tracking/positional tracking/cpp/README.md": "3d5ec3ca7c06e0671b18c8c0ea7c93b50a1093db",
+                "default/code/Working/ZedSdk/positional tracking/positional tracking/csharp/README.md": "cbe9b37383def85dadc07c1c0613b42c14003962",
+                "default/code/Working/ZedSdk/positional tracking/positional tracking/python/README.md": "c19fce655b15819e63cebfda70ca29a8a465647a",
+                "default/code/Working/ZedSdk/recording/README.md": "465d7fa69e209facff1c5f624a50a640876d8e6e",
+                "default/code/Working/ZedSdk/recording/export/README.md": "f81ac0b6b36a0f3b1af9d5b914b449621b5c8bc3",
+                "default/code/Working/ZedSdk/recording/export/svo/README.md": "80f400f8d7889ac8528cf4f308ce5961ca7ce033",
+                "default/code/Working/ZedSdk/recording/export/svo/cpp/README.md": "685ec150dad1e6dfcbd120dfa44c6220a979116d",
+                "default/code/Working/ZedSdk/recording/export/svo/csharp/README.md": "31afcc36efe566d3b4b25d038c6ed1f37646539a",
+                "default/code/Working/ZedSdk/recording/export/svo/python/README.md": "4e5164fdf96f7d6ef8b0c5e81cd8b03bc5170f1e",
+                "default/code/Working/ZedSdk/recording/playback/README.md": "ee5fc16d5878d89bcdcc1f095a4abcfd98c9b950",
+                "default/code/Working/ZedSdk/recording/playback/mono/cpp/README.md": "0821bcf6c2c296b547a42daa8da481fa8a1e4ef6",
+                "default/code/Working/ZedSdk/recording/playback/mono/csharp/README.md": "ae57310aaaa70bc0b5f296cb0ca41f25a7f8ee25",
+                "default/code/Working/ZedSdk/recording/playback/mono/python/README.md": "59e9b0067abe083408f9fc70856e15fd81f6f37c",
+                "default/code/Working/ZedSdk/recording/playback/multi camera/cpp/README.md": "0a7b639858186f07942adcc2e9dcb794f8313e26",
+                "default/code/Working/ZedSdk/recording/recording/mono/README.md": "b4bde4c653ac19f8792e66b8323be1c29d59bd42",
+                "default/code/Working/ZedSdk/recording/recording/mono/cpp/README.md": "d3d32d1a3dc901935892b8cf2084b1225e386bbb",
+                "default/code/Working/ZedSdk/recording/recording/mono/csharp/README.md": "23392fb0995b2465449c1779c6a402dd5eb6e0ee",
+                "default/code/Working/ZedSdk/recording/recording/mono/python/README.md": "d86234bb444a822a64206ef8ac43c0a895a7c240",
+                "default/code/Working/ZedSdk/spatial mapping/spatial mapping/README.md": "a0a30b56e55108e1c34579c20e03f32dde844577",
+                "default/code/Working/ZedSdk/spatial mapping/spatial mapping/csharp/README.md": "ca4c8aec70870b523409fb8c8f7993201a8bab5e",
+                "default/code/Working/ZedSdk/spatial mapping/spatial mapping/python/README.md": "8e23b45a57af659b6ba73aeb10586d0fda13917c",
+                "default/code/Working/ZedSdk/tutorials/tutorial 1 - hello ZED/README.md": "e9e4445b2e200ba8cfa1d85004ea2bfd0c6a2d70",
+                "default/code/Working/ZedSdk/tutorials/tutorial 1 - hello ZED/c/README.md": "1109f30cbf024ca25b188cb0cea9c30b8b465ecd",
+                "default/code/Working/ZedSdk/tutorials/tutorial 1 - hello ZED/cpp/README.md": "39758727f73a08989c5aa98428e2de9cc31761b5",
+                "default/code/Working/ZedSdk/tutorials/tutorial 1 - hello ZED/csharp/README.md": "4910e598f2cbfc12f1a4e8c5afedfe97a1727c26",
+                "default/code/Working/ZedSdk/tutorials/tutorial 1 - hello ZED/python/README.md": "15693de283e3d75ecab4668ba755e33a21c72bac",
+                "default/code/Working/ZedSdk/tutorials/tutorial 2 - image capture/README.md": "b1bf30d769b3c4b7927c62401d3869fd64f94fb8",
+                "default/code/Working/ZedSdk/tutorials/tutorial 2 - image capture/cpp/README.md": "042fa18855136fbd33beb7c5a0e6a64f9a091002",
+                "default/code/Working/ZedSdk/tutorials/tutorial 2 - image capture/csharp/README.md": "745dccc3aff1a9afff66051663825b057e198c60",
+                "default/code/Working/ZedSdk/tutorials/tutorial 2 - image capture/python/README.md": "57e4b60e0af056cca53347923e54230947ff97a8",
+                "default/code/Working/ZedSdk/tutorials/tutorial 3 - depth sensing/README.md": "7d88db8031b0d4d24bae1fd0cfa4c4056c20fd15",
+                "default/code/Working/ZedSdk/tutorials/tutorial 3 - depth sensing/cpp/README.md": "144e53df290c5191ebba5e130c283b88ed17c283",
+                "default/code/Working/ZedSdk/tutorials/tutorial 3 - depth sensing/csharp/README.md": "a87bec7039b5ea64dc17abda7d984d4278e707ed",
+                "default/code/Working/ZedSdk/tutorials/tutorial 3 - depth sensing/python/README.md": "f41291952f7ba001d2b589692aedbce9ebe838b9",
+                "default/code/Working/ZedSdk/tutorials/tutorial 4 - positional tracking/README.md": "18b8cec08b4f41a6611c807e536807bf6e04b71e",
+                "default/code/Working/ZedSdk/tutorials/tutorial 4 - positional tracking/cpp/README.md": "c63065eb4db2d76b8f5ed79d825f84169ab93cf1",
+                "default/code/Working/ZedSdk/tutorials/tutorial 4 - positional tracking/csharp/README.md": "30b26c33e880e2cea49cd128d915d809b0f73483",
+                "default/code/Working/ZedSdk/tutorials/tutorial 4 - positional tracking/python/README.md": "b6724e417ab7b3354e712e0ebcef07242561c330",
+                "default/code/Working/ZedSdk/tutorials/tutorial 5 - spatial mapping/README.md": "6b8cf439a3e5c2675d7e8f536ff8790b8c2aca9a",
+                "default/code/Working/ZedSdk/tutorials/tutorial 5 - spatial mapping/cpp/README.md": "c4ee4ff5be780f73822eb9f7129d08d276e07af8",
+                "default/code/Working/ZedSdk/tutorials/tutorial 5 - spatial mapping/csharp/README.md": "416c7ff5b735bd50439134c2ba456be60df1ce67",
+                "default/code/Working/ZedSdk/tutorials/tutorial 5 - spatial mapping/python/README.md": "69ebd40a17501396605347160ffe623c588cd847",
+                "default/code/Working/ZedSdk/tutorials/tutorial 6 - object detection/README.md": "70b45915706e1d2cd84149890ec1d3abe7d045ec",
+                "default/code/Working/ZedSdk/tutorials/tutorial 6 - object detection/cpp/README.md": "23b6b102e7c4eaa74c8b12c699eaa3ab4c1a2c97",
+                "default/code/Working/ZedSdk/tutorials/tutorial 6 - object detection/csharp/README.md": "2afaef9397a97588795d2e630e7dbfed28c3b985",
+                "default/code/Working/ZedSdk/tutorials/tutorial 6 - object detection/python/README.md": "1882e76714e75f3dff6d5c73e4854566344a5316",
+                "default/code/Working/ZedSdk/tutorials/tutorial 7 - sensor data/README.md": "aae7b31ac097434910f8128e67a52559f5fbe967",
+                "default/code/Working/ZedSdk/tutorials/tutorial 7 - sensor data/cpp/README.md": "3697dde3ccafc6c86803d8f806ea52466de0e4dc",
+                "default/code/Working/ZedSdk/tutorials/tutorial 7 - sensor data/csharp/README.md": "45976f90ebf6c104e7eb98a1d13d21870ddf88d7",
+                "default/code/Working/ZedSdk/tutorials/tutorial 7 - sensor data/python/README.md": "bd296a2eb592645311aee564d0604f3e9b6394b3",
+                "default/code/Working/ZedSdk/tutorials/tutorial 8 - body tracking/README.md": "1d71ebf37da993d85e462f327edafeaab2c90df6",
+                "default/code/Working/ZedSdk/tutorials/tutorial 8 - body tracking/cpp/README.md": "a95eada48a96e6dbab085c03cebe8a4da880f333",
+                "default/code/Working/ZedSdk/tutorials/tutorial 8 - body tracking/csharp/README.md": "a45e7d08d69973b56b2a450d01405edcdfbba7eb",
+                "default/code/Working/ZedSdk/tutorials/tutorial 8 - body tracking/python/README.md": "fdcc7170e1d5f6f9ad1d99850d16ad4ce48483fe",
+                "default/code/Working/ZedSdk/tutorials/tutorial 9 - geotracking/cpp/README.md": "c30ac4b79a321bff1f03bda6b8dbae54b871cef2",
+                "default/code/Working/ZedSdk/tutorials/tutorial 9 - geotracking/python/README.md": "4d42701b34f9650a5d6c9b7faa780f90d65a154c",
+                "default/code/Working/samsang/collectionData/README.md": "4ff231e55731ac62822c74b66879e3614197cfac",
+                "default/dump/ZedCalibration-master/README.md": "53650dfc5f286c653a671e148212f3f5abc7761d",
+                "default/dump/zed-opencv-native-master/README.md": "7f9eb32ffd71d90069b1338f65c59598f618192c",
+                "default/dump/zed-opencv-native-master/cpp/README.md": "6dc044f09224b8be4a1dfa06c45dd7f5fb7b2ba7",
+                "default/dump/zed-opencv-native-master/python/README.md": "2fbc48d8cc087241fccdd6c3107ff37b1da73a06",
+                "default/dump/zed-opencv-native-python-master/README.md": "e456ef2250989ea48787003f3f0784db7a243b51",
+                "stereoImageProcessing/code/Depth-Using-Stereo-main/README.md": "585451816e08b68ab948289026e4f84dab0c9cd6",
+                "stereoImageProcessing/code/StereoCameraFindingDepth/README.md": "69815fc3e858ec240a1232f53a50d495aef452e8"
+            },
+            "etag": "W/\"72eb07a9b00615befbba4afd7c7e86b4e747997722cf3176f0451f6b826ccf97\"",
+            "last_pushed": "2026-05-05T14:11:33Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "ZED2i camera-based data collection and processing system for stereo vision, depth estimation, and positional tracking. Includes optimized pipelines for synchronized left-right image capture, depth data handling, threading for performance, and memory-efficient queue management for real-time applications.",
+                "language": "Jupyter Notebook",
+                "topics": [
+                    "autonomous-systems",
+                    "computer-vision",
+                    "data-collection",
+                    "depth-estimation",
+                    "multithreading",
+                    "perception",
+                    "python",
+                    "robotics",
+                    "sensor-fusion",
+                    "stereo-vision",
+                    "zed2i"
+                ],
+                "html_url": "https://github.com/thippeswammy/ZED2i",
+                "private": false
+            }
+        },
+        "rtabmap": {
+            "files": {
+                "README.md": "a0978e79f14316802a896f6c7c0aa96e84b488b0",
+                "archive/2010-LoopClosure/README.md": "ca18c8018b955c000965ada02e6f9d29151a6d8d",
+                "archive/2022-IlluminationInvariant/README.md": "c9d58bbe80251708b26b076bac2de46eb845593c",
+                "corelib/src/optimizer/ceres/pose_graph_2d/README.md": "b5ff987e3db11d45e0be8cbbf39d9015102c894a",
+                "corelib/src/optimizer/ceres/pose_graph_3d/README.md": "badc1ec8ea44b85986adf46e891f8ad825901cb7",
+                "docker/README.md": "ccec6c94e08f0f93fa8c2846b9163155a926aa0f",
+                "docker/jfr2018/README.md": "b6f78f97666b0c3a5bc11ba9ce3c7e98ee3cf58d"
+            },
+            "etag": "W/\"43979d2a3da4f32a550ca4b76105e3f9419839d4ec6c2f3c88784c5b332a91f6\"",
+            "last_pushed": "2026-04-21T07:16:02Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": null,
+                "language": "C++",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/rtabmap",
+                "private": false
+            }
+        },
+        "MBD-dSPACE": {
+            "files": {
+                "README.md": "8cbc9c1cfca1bd91af67ab91383975794dd3fbd8",
+                "VehicalBehavioralModeling/README.md": "d23acf502c478bece84351309c601d2a3ada0570",
+                "vehicleController/README.md": "55891318369810bfa74da7e7116b36b0e92de55d"
+            },
+            "etag": "W/\"9ad3dc837dd7f4d275a15b9fd0e7f3428ef781fd41686569222ff637fc0335c4\"",
+            "last_pushed": "2026-03-31T14:18:21Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "dSPACE SCALEXIO-based vehicle control system built with MATLAB/Simulink, operating without physical ECUs or sensors. All signals are generated and looped externally for behavioral modeling and control logic execution. SIL and HIL workflows validate system behavior by comparing simulated and real hardware responses.",
+                "language": "LiveScript",
+                "topics": [
+                    "automotive",
+                    "control-systems",
+                    "dspace",
+                    "ecu",
+                    "embedded-systems",
+                    "hil",
+                    "matlab",
+                    "mbd",
+                    "micro-auto-box-3",
+                    "model-based-design",
+                    "scalexio",
+                    "signal-simulation",
+                    "sil",
+                    "simulink",
+                    "vehicle-control"
+                ],
+                "html_url": "https://github.com/thippeswammy/MBD-dSPACE",
+                "private": false
+            }
+        },
+        "rtab_ws": {
+            "files": {
+                "INSTALL.md": "5f792de9ed02ba16be707088322036eac2de1c09",
+                "evaluation_plan.md": "83a71fbd72443f73ccee3f3024e5ab3d2308882f",
+                "evaluation_plan_new.md": "58981ae48d74223aad8158c92b0d39bc74d45a1f",
+                "src/evaluation_plan.md": "83a71fbd72443f73ccee3f3024e5ab3d2308882f"
+            },
+            "etag": "W/\"beff488aabd6692819f899519260926c8e5b19e1b6b0e52d6405f6a63139f0e2\"",
+            "last_pushed": "2026-03-02T13:03:01Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": null,
+                "language": "Python",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/rtab_ws",
+                "private": false
+            }
+        },
+        "rtabmap_ros": {
+            "files": {
+                "README.md": "de5a217695b56c73c9d718ace9ff0a3ada443f84",
+                "docker/README.md": "6714f6143c639838acd1f2f86dcefc8fd3edaf6d",
+                "docker/jazzy/superpoint/README.md": "09311cb01fae3af25dc30d19b378c0476f5abaf1",
+                "rtabmap_demos/README.md": "4f37769cc97b948ac6cf9039c163b05b91815eec",
+                "rtabmap_launch/README.md": "449543b6e6b42fa774df9128f8bb6958380e9f8a"
+            },
+            "etag": "W/\"8558480db4a94e5332cfca82a680285567e80fff252ac33b434f0bff2585538e\"",
+            "last_pushed": "2026-03-02T12:44:25Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": null,
+                "language": "C++",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/rtabmap_ros",
+                "private": false
+            }
+        },
+        "sdf_to_nav_mesh": {
+            "files": {
+                "README.md": "9b988d7f0bc51954e24ae4120b47938e26830a7b",
+                "UserGuide.md": "af25a7497a005d07904c4cd977b32a6e629b7644"
+            },
+            "etag": "W/\"b58850703e30ac20a5dfdbfabdd9c718b327e3084580869037a432710027a810\"",
+            "last_pushed": "2026-01-25T06:51:53Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "ROS 2-based tool for converting Gazebo SDF/World files into navigation mesh assets, generating structured .ply, .dae, and .h5 outputs with geometric and terrain metadata. Enables seamless integration with simulation and mesh-based navigation pipelines for autonomous systems.",
+                "language": "Python",
+                "topics": [
+                    "3d-geometry",
+                    "autonomous-systems",
+                    "gazebo",
+                    "hdf5",
+                    "mesh-navigation",
+                    "mesh-processing",
+                    "motion-planning",
+                    "path-planning",
+                    "robotics",
+                    "ros2",
+                    "sdf",
+                    "simulation",
+                    "trimesh"
+                ],
+                "html_url": "https://github.com/thippeswammy/sdf_to_nav_mesh",
+                "private": false
+            }
+        },
+        "ORB_SLAM3": {
+            "files": {
+                "Changelog.md": "9bb9889f72f0a9ffc37f80f48d1c0863d4317c11",
+                "Dependencies.md": "4578a2940f38190464070fef1dd2db61125c5a0f",
+                "Examples/REAMDME.md": "1966480a4fa038364b41bd647380f983669d3f58",
+                "Examples_old/REAMDME.md": "508d666436862b3656970cf23a62e5dd6118434d",
+                "README.md": "0ca3a9f2d3e602b919c4529b671427bc32701dc6",
+                "useme.md": "7e4da26b586ac47a614b7bf00b6e9729c457f80a"
+            },
+            "etag": "W/\"7d175c21eb25551371bbf528a08b1b03b27963358885a50a3f176bd10f3e35de\"",
+            "last_pushed": "2026-01-19T17:19:54Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": null,
+                "language": "C++",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/ORB_SLAM3",
+                "private": false
+            }
+        },
+        "ORB_SLAM3_ROS2": {
+            "files": {
+                "README.md": "41f6ccc65b73a751c0b258c67cdfd366c9fa3425"
+            },
+            "etag": "W/\"d88908b9c905b43d2a08e08089d5c32c61992c55b97d8fd5c7ddf29bb2ecd359\"",
+            "last_pushed": "2025-11-15T12:25:59Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": null,
+                "language": "C++",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/ORB_SLAM3_ROS2",
+                "private": false
+            }
+        },
+        "ORB_SLAM2": {
+            "files": {
+                "Dependencies.md": "733d3600a666f9a1eee1a6c5d1555904b0f18b0e",
+                "INSTALL.md": "c5c446d38001d195b2f2d96fa39e98ce1f2df39e",
+                "README.md": "acf42ee7e0c1d452cc2d4d0bb7a4da0cafa6a253"
+            },
+            "etag": "W/\"46422c7482bfd45b00fa411d6acc71003959b88ff6e5f78f0c9fbd12ff057160\"",
+            "last_pushed": "2025-10-16T09:38:22Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "orb-slam2 implementation",
+                "language": "C++",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/ORB_SLAM2",
+                "private": false
+            }
+        },
+        "my_mcp_project": {
+            "files": {},
+            "etag": "W/\"7508dcb03c4caa1edbe19b94f2c7a6e903b983a2f07d5005cefd7c009cc39858\"",
+            "last_pushed": "2025-10-08T13:43:59Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": null,
+                "language": "Python",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/my_mcp_project",
+                "private": false
+            }
+        },
+        "RoadTagByCameraGps": {
+            "files": {},
+            "etag": "W/\"8af7d214d640b2ad0cc7163fd994f08b65c64e7a1eaf71e0b2cfe8922d1769d5\"",
+            "last_pushed": "2025-05-07T05:44:01Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": null,
+                "language": "Kotlin",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/RoadTagByCameraGps",
+                "private": false
+            }
+        },
+        "SpeechCalculator": {
+            "files": {
+                "README.md": "6f77f59b5ba2b0a7a8b6d743600d504c4f64c288"
+            },
+            "etag": "W/\"27a71ed0fc4269cf2b2e8fd127a31cf28c56c4baf50f7c4b79153e16e3f04600\"",
+            "last_pushed": "2024-06-14T08:51:48Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "Voice-enabled Android calculator app that performs real-time mathematical computations using speech recognition. Built with Java in Android Studio, it converts spoken expressions into executable logic using custom parsing algorithms and priority-based evaluation for accurate results.",
+                "language": null,
+                "topics": [
+                    "android",
+                    "android-application",
+                    "android-studio",
+                    "calculator-app",
+                    "expression-parser",
+                    "google-play",
+                    "java",
+                    "mobile-app",
+                    "speech-recognition",
+                    "ui-ux",
+                    "voice-input"
+                ],
+                "html_url": "https://github.com/thippeswammy/SpeechCalculator",
+                "private": false
+            }
+        },
+        "TicTacToeGUI": {
+            "files": {
+                "README.md": "4baf3c23c3cdf94d0a4de363be598631e38f19d3"
+            },
+            "etag": "W/\"733caf21ef2387f28482d309e44a2ee9290b7cece48cff3e34379ffc6f11c00d\"",
+            "last_pushed": "2024-06-14T06:37:18Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "A Java Swing-based Tic Tac Toe application featuring an AI opponent with strategy-driven decision making. Implements game state evaluation, win-condition logic, and interactive GUI design, demonstrating algorithmic thinking and event-driven programming.",
+                "language": "Java",
+                "topics": [
+                    "decision-making-algorithms",
+                    "event-driven-programming",
+                    "game-development",
+                    "game-logic",
+                    "gui",
+                    "java",
+                    "swing",
+                    "tic-tac-toe",
+                    "tic-tac-toe-game"
+                ],
+                "html_url": "https://github.com/thippeswammy/TicTacToeGUI",
+                "private": false
+            }
+        },
+        "Puzzle-game": {
+            "files": {
+                "README.md": "1bb35b7a746d49e59d74ac28c2bca00520b165c9"
+            },
+            "etag": "W/\"987950073e2143994f41bd3cb63e8a39c05653ae0d04d639efd868f8f5bb0966\"",
+            "last_pushed": "2024-06-14T04:26:18Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "A Java Swing-based number puzzle game featuring dynamic grid generation, move validation, and interactive state updates. Supports multiple grid sizes (3\u00d73 to 6\u00d76) with randomized initialization and logic-driven gameplay, demonstrating problem-solving algorithms and GUI-based application design.",
+                "language": "Java",
+                "topics": [
+                    "algorithms",
+                    "application-design",
+                    "beginner-project",
+                    "game",
+                    "game-development",
+                    "grid-based-system",
+                    "gui",
+                    "interactive-app",
+                    "java",
+                    "problem-solving",
+                    "puzzle-game",
+                    "swing"
+                ],
+                "html_url": "https://github.com/thippeswammy/Puzzle-game",
+                "private": false
+            }
+        },
+        "Maze-game": {
+            "files": {
+                "README.md": "b233eb9ac7fab8169007c8cf0d48d2e2fed1c311"
+            },
+            "etag": "W/\"7671e0cfa1911920c1bf341d9a7aca8ea413afbeccebd38d17228a7650b3c2b0\"",
+            "last_pushed": "2024-06-13T16:48:12Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "A maze navigation game developed in Java using Greenfoot, featuring enemy AI behaviors, collision handling, and dynamic gameplay elements such as speed boosts and level progression. Demonstrates object-oriented design, game state management, and interactive 2D environment modeling.",
+                "language": "Java",
+                "topics": [
+                    "2d-game",
+                    "collision-detection",
+                    "game",
+                    "game-development",
+                    "greenfoot",
+                    "interactive-systems",
+                    "java",
+                    "maze",
+                    "maze-game",
+                    "object-oriented-programming"
+                ],
+                "html_url": "https://github.com/thippeswammy/Maze-game",
+                "private": false
+            }
+        },
+        "Snake-GUI-game": {
+            "files": {
+                "README.md": "f6a6a2271ae5b0f64d26ad2337ffcd16db0d4702"
+            },
+            "etag": "W/\"cbd0217159c2b76678c65193d0988c386da1925a49739f6e7767aa4289de6ccb\"",
+            "last_pushed": "2024-06-13T16:35:34Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "A Java-based Snake game built with Swing, implementing real-time game loop logic, collision detection, and custom rendering. Demonstrates GUI design, event-driven programming, and efficient state management for interactive desktop applications.",
+                "language": "Java",
+                "topics": [
+                    "2d-game",
+                    "collision-detection",
+                    "desktop-application",
+                    "event-driven-programming",
+                    "game-development",
+                    "gui",
+                    "java",
+                    "real-time-systems",
+                    "snake-game",
+                    "swing"
+                ],
+                "html_url": "https://github.com/thippeswammy/Snake-GUI-game",
+                "private": false
+            }
+        },
+        "SuperMarioGame": {
+            "files": {
+                "README.md": "c87f4b087cd007bde3333d3eb4580c6647d15440"
+            },
+            "etag": "W/\"5347dee68a244bb83d011479fa9dc99adca7c1424b8a9d011e7d4401c03668cf\"",
+            "last_pushed": "2024-02-03T21:37:15Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "A classic Flappy Bird clone developed using Greenfoot in Java, featuring obstacle navigation, scoring system, and smooth gameplay mechanics.",
+                "language": "Java",
+                "topics": [
+                    "2d-game",
+                    "arcade-game",
+                    "beginner-project",
+                    "flappy-bird",
+                    "game-development",
+                    "greenfoot",
+                    "java",
+                    "student-project"
+                ],
+                "html_url": "https://github.com/thippeswammy/SuperMarioGame",
+                "private": false
+            }
+        },
+        "SecureAppLocker": {
+            "files": {
+                "README.md": "9b5bfdfe4d731237b9a1a0f3b3063276be805e4a"
+            },
+            "etag": "W/\"3dbc487a2f10be8e3b9e5ad1f12d000fa85d7722c4d86a47a7ff11941549d3a8\"",
+            "last_pushed": "2024-02-03T12:47:27Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "Java-based application locker system with login authentication, restricting access to protected applications and enabling secure execution upon successful user validation.",
+                "language": "Java",
+                "topics": [
+                    "access-control",
+                    "application-locker",
+                    "authentication",
+                    "desktop-app",
+                    "java",
+                    "login-system",
+                    "object-oriented-programming",
+                    "security",
+                    "system-design",
+                    "user-management"
+                ],
+                "html_url": "https://github.com/thippeswammy/SecureAppLocker",
+                "private": false
+            }
+        },
+        "MultiAppRunnerLoginAuth": {
+            "files": {
+                "README.md": "e438d3029c4003971b305dbb011f1fb0222af3f3"
+            },
+            "etag": "W/\"33048f5c4bf2c66b437ee0a70bcba8df0b1b8db8f46b3066696a1c0c7a48de91\"",
+            "last_pushed": "2024-02-03T12:46:39Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "Java-based application launcher with integrated login authentication, controlling access to multiple functionalities based on user credentials.",
+                "language": "Java",
+                "topics": [
+                    "access-control",
+                    "application-launcher",
+                    "authentication",
+                    "console-app",
+                    "java",
+                    "login-system",
+                    "object-oriented-programming",
+                    "security",
+                    "system-design",
+                    "user-management"
+                ],
+                "html_url": "https://github.com/thippeswammy/MultiAppRunnerLoginAuth",
+                "private": false
+            }
+        },
+        "SimpleContactsManager": {
+            "files": {
+                "README.md": "59fa1260e2f1a55ef84dd8d61da1a7babcbcaa0c"
+            },
+            "etag": "W/\"18973bfae6576a63bfffc404fa7176a947915049f0735e489073f8134b293eb7\"",
+            "last_pushed": "2024-02-03T12:45:13Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "Console-based contact and message management system in Java, supporting add, search, update, and delete operations with basic messaging functionality.",
+                "language": "Java",
+                "topics": [
+                    "beginner-project",
+                    "console-app",
+                    "contact-manager",
+                    "data-management",
+                    "design",
+                    "java",
+                    "messaging",
+                    "object-oriented-programming",
+                    "system",
+                    "user-input"
+                ],
+                "html_url": "https://github.com/thippeswammy/SimpleContactsManager",
+                "private": false
+            }
+        },
+        "TextBasedTicTacToe": {
+            "files": {
+                "README.md": "47c4fe17ef9dde2c82155f59f77cce6e1e58cd7e"
+            },
+            "etag": "W/\"bb1e46248209e86679984c61793da9e4d06ebdb14aad04ec1233a706e3f70d50\"",
+            "last_pushed": "2024-02-03T12:44:27Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "Console-based Tic Tac Toe game in Java featuring single-player (AI) and two-player modes with difficulty levels and basic game statistics tracking.",
+                "language": "Java",
+                "topics": [
+                    "beginner-project",
+                    "console-game",
+                    "game-development",
+                    "game-logic",
+                    "interactive-game",
+                    "java",
+                    "single-player",
+                    "tic-tac-toe",
+                    "two-player"
+                ],
+                "html_url": "https://github.com/thippeswammy/TextBasedTicTacToe",
+                "private": false
+            }
+        },
+        "NumberGuesserGame": {
+            "files": {
+                "README.md": "5ec1400a49da3ecb64de25cf51193f42dbb9c729"
+            },
+            "etag": "W/\"b5ed8c42e4fafceb47403eb73abd43729467cc0f98a4d09bacb68b3faee9d2ec\"",
+            "last_pushed": "2024-02-03T12:39:42Z",
+            "last_sync": "2026-05-12 22:53",
+            "info": {
+                "description": "Java-based number guessing game with multiple difficulty levels, AI-driven logic, and score tracking for interactive and competitive gameplay.",
+                "language": "Java",
+                "topics": [
+                    "beginner-project",
+                    "console-app",
+                    "game-design",
+                    "game-development",
+                    "gameplay",
+                    "interactive-game",
+                    "java",
+                    "logic",
+                    "number-guessing",
+                    "number-guessing-game",
+                    "scoring"
+                ],
+                "html_url": "https://github.com/thippeswammy/NumberGuesserGame",
+                "private": false
+            }
+        },
+        "thippeswammy.github.io": {
+            "files": {},
+            "info": {
+                "description": null,
+                "language": "HTML",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/thippeswammy.github.io",
+                "private": false
+            }
+        },
+        "JarvisControlSystem": {
+            "files": {
+                "MANUAL_TESTING_GUIDE.md": "e4b9ea803a1a4c8a7f34ed052d8d63382e9e9830",
+                "README.md": "54ea15a0be73e7256f03bc7925515736916ba8db",
+                "jarvis/llm/prompts/system_instructions.md": "edc91858e7e2ef9b8f999c751eb91ca2327f79bb",
+                "jarvis_context.md": "5b882aeee4d4560b659800568aca17cba82d3332",
+                "skill/Jarvis v2 + v2.1 \u2014 FullImplementationPlan.md": "adf2dbb21eb0c6003c8fb42399bbe9d5ca703ba6",
+                "skill/Jarvis v2 + v2.1 \u2014 FullImplementationPlan_copy_2.md": "f25c84a578837b586b83f964daf3680fbe74814c",
+                "skill/JarvisAISystem _implementation_plan.md": "f03804a7b6ac2774126e230396f43bbfe43adf61",
+                "skill/Jarvis_v2.1_robustness_plan.md": "cd1f935350cfb3bb074c4f7b227f038296f5e25a",
+                "skill/Jarvis_v2_implementation_plan.md": "9784bf329e42e2c0e26fbe81ba94b7ae637d9a7e",
+                "skill/Recursive Learning, Direct Execution, & UI Spidering Plan.md": "d6cb8e493f21a6abcbc812dfd649c94950bb8b1a",
+                "skill/Self_Learning_Semantic_Macros_implementation_plan.md": "5c90ffd896893de9e35ab0c841946a915f74d2fc",
+                "test.md": "ba67de942c2ba7107cc10062af68c3e0199b7e33"
+            },
+            "info": {
+                "description": "Jarvis Control System is an autonomous AI desktop agent for Windows 10/11, inspired by Iron Man's J.A.R.V.I.S. It lets you control apps, windows, and system settings through natural language \u2014 typed, spoken, or sent via Telegram. architecture, it's state-aware and self-verifying, with self-learning macros and pluggable LLM backends (Ollama, OpenAI)",
+                "language": "HTML",
+                "topics": [
+                    "ai",
+                    "ai-assistant",
+                    "automation-tools",
+                    "autonomous-agent",
+                    "desktop-automation",
+                    "human-computer-interaction",
+                    "iron-man",
+                    "jarvis",
+                    "natural-language",
+                    "natural-language-processing",
+                    "self-learning",
+                    "smart-assistant",
+                    "system-control",
+                    "telegram-bot",
+                    "voice-assistant",
+                    "voice-control",
+                    "window-management",
+                    "workflow-automation"
+                ],
+                "html_url": "https://github.com/thippeswammy/JarvisControlSystem",
+                "private": false
+            },
+            "etag": "W/\"40f1ba9f95e4fc07a8554971fe381b95e6b54a65bcdb3ffb228d1ee86aa2630f\"",
+            "last_pushed": "2026-05-11T19:31:16Z",
+            "last_sync": "2026-05-12 23:31"
+        },
+        "Deep-Learning-Specialization": {
+            "files": {},
+            "info": {
+                "description": null,
+                "language": "Jupyter Notebook",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/Deep-Learning-Specialization",
+                "private": false
+            },
+            "etag": "W/\"9726e98308b2711f7d8b6658e0792ed79d26601e0fa588edd3226cd9abb339b6\"",
+            "last_pushed": "2026-05-08T18:38:39Z",
+            "last_sync": "2026-05-12 23:31"
+        },
+        "MatlabModels": {
+            "files": {
+                "README.md": "88049ead30785cb4badbb568ac13aef1ca6e32f6"
+            },
+            "info": {
+                "description": "MATLAB and Simulink models for embedded systems, automotive behavioral modeling, sensor interfacing, real-time control, and hardware integration using Arduino, Raspberry Pi, STM32, and dSPACE.",
+                "language": null,
+                "topics": [
+                    "arduino",
+                    "automotive",
+                    "automotive-engineering",
+                    "behavioral-modeling",
+                    "dashboard",
+                    "embedded-systems",
+                    "hardware-in-the-loop",
+                    "matlab",
+                    "raspberry-pi",
+                    "real-time-systems",
+                    "sensor-interfacing",
+                    "simulink",
+                    "vehicle-control"
+                ],
+                "html_url": "https://github.com/thippeswammy/MatlabModels",
+                "private": false
+            },
+            "etag": "W/\"e559193bb14a675df221cede93b9e0a48dc5f8220421e8055db118b99bee2bff\"",
+            "last_pushed": "2026-05-08T11:01:33Z",
+            "last_sync": "2026-05-12 23:31"
+        },
+        "EceProject": {
+            "files": {
+                "Arduino Uno/FaceDetection/README.md": "79724a598030ea3e55acf3c65bc27bca098ce7f0",
+                "Arduino Uno/FireDetectionByColor/README.md": "09c1ef65e70b3a8d50e094d31dbd6c5b3445d0f4",
+                "Arduino Uno/FireTracking/README.md": "b51ef0111ad88ec58b9c99b299bfea7cc7acf6dc",
+                "Arduino Uno/GestureControlledLED/README.md": "cd49f16f1bfccdf850e37cfd06b3d2b9458a8283",
+                "Arduino Uno/HandGestureLED/README.md": "2b94fed94ef9be38b13390a950762d6e92abbae9",
+                "Arduino Uno/README.md": "567f6f038c613a6af971951c0c5cf10b31b9c9e1",
+                "Arduino Uno/SingleFaceTracking/README.md": "e1fc22f8caedd138bab1adc9adef6f2934f0a9cf",
+                "README.md": "ff251c469003563f39bcb89187e847955ddca015"
+            },
+            "info": {
+                "description": "Integrated Electronics and Computer Engineering project workspace covering computer vision, embedded systems, and robotics. Features Arduino-based control systems, stereo camera processing, IoT development with ESP8266 and Raspberry Pi, and experimental modules for real-time applications and rapid prototyping.",
+                "language": "Python",
+                "topics": [
+                    "arduino",
+                    "computer-vision",
+                    "electronics",
+                    "embedded-systems",
+                    "esp8266",
+                    "iot",
+                    "prototyping",
+                    "raspberry-pi",
+                    "robotics",
+                    "sensor-integration",
+                    "stereo-camera"
+                ],
+                "html_url": "https://github.com/thippeswammy/EceProject",
+                "private": false
+            },
+            "etag": "W/\"52c786785fdc7f725a4cc8747c41cbb8853ad89496fe2a18f108750d35a019a2\"",
+            "last_pushed": "2026-05-05T16:09:38Z",
+            "last_sync": "2026-05-12 23:31"
+        },
+        "FaceRecognition": {
+            "files": {
+                "FaceRecognitionByTraining/README.md": "e54d364dd7e9cadcc9794d09beca7e20f2685634",
+                "FaceRecognitionWithAutoTagging/README.md": "ab8d94821cf8a4527a0fff5658e5fee08f01fe09",
+                "README.md": "0e9bb2f5a30b2802626538f291a742f5459aa3de",
+                "brain/project_architecture.md": "b1eed59ba2ca66d8722a31d882b34ae0c79db2b3"
+            },
+            "info": {
+                "description": "Dual-engine Face Recognition System with dynamic auto-tagging (one-shot learning + depth sensing) and static YOLOv8-based detection + classification for real-time and secure environments.",
+                "language": "Python",
+                "topics": [
+                    "autotagging",
+                    "classification",
+                    "computer-vision",
+                    "deep-learning",
+                    "deeplearning",
+                    "detection",
+                    "edge-computing",
+                    "face-recognition",
+                    "face-recognition-python",
+                    "intel-realsense",
+                    "kalman-filter",
+                    "one-shot-learning",
+                    "opencv",
+                    "real-time-detection",
+                    "recognition",
+                    "sensor-fusion",
+                    "yolo",
+                    "yolov8"
+                ],
+                "html_url": "https://github.com/thippeswammy/FaceRecognition",
+                "private": false
+            },
+            "etag": "W/\"e9cd9df6344c6347fbbecbce81b93a7cc510d84dacdcc575a13608c3f7f74e6f\"",
+            "last_pushed": "2026-04-07T14:29:25Z",
+            "last_sync": "2026-05-12 23:31"
+        },
+        "elevation_mapping_cupy": {
+            "files": {},
+            "info": {
+                "description": "Elevation Mapping on GPU.",
+                "language": null,
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/elevation_mapping_cupy",
+                "private": false
+            }
+        },
+        "LaneMappingTool": {
+            "files": {
+                "README.md": "dab86887f6afb44dd64594eb9af7075f2fd23107",
+                "RELEASE_NOTES_v2.0.0.md": "7d758dc1330d3f22f35b01b68637844bb36ebc4b",
+                "analysis/README.md": "e6d27462cb83729c3a362762adb038c2c4567631",
+                "analysis/recorded_data/new_smooth_analysis/Analysis_Report.md": "ac8e81bc3a69982a97f4f273a340a703bb9688d7",
+                "analysis/recorded_data/smoothed_run/analysis_report.md": "eece534bc7317e4c9ddcad33c12040e42094eadb",
+                "analysis/recording/README.md": "385fc109b91c7bd5d0026120f987026c6c460d26",
+                "utils/README.md": "ae119a3eae625524228302a6cf0864e18f77d0d8",
+                "web/backend/README.md": "7be8690ac6a53c3e36b0e0165a871f4d21e7e2f8",
+                "web/frontend/README.md": "03aedfe0bbf4f0d627b1a7cf351b49aae7d5616e"
+            },
+            "info": {
+                "description": "End-to-end lane mapping and refinement system for autonomous vehicles, transforming noisy recorded paths into structured graph-based networks with spline smoothing, junction logic, and bidirectional navigation. Designed for real-world deployment with integrated visualization, editing, and analysis workflows.",
+                "language": "Python",
+                "topics": [
+                    "adas",
+                    "autonomous-buggy",
+                    "autonomous-driving",
+                    "data-visualization",
+                    "flask",
+                    "graph-based-navigation",
+                    "lane-editing",
+                    "lane-mapping",
+                    "lane-smoothing",
+                    "robotics",
+                    "sdv",
+                    "spline-interpolation",
+                    "trajectory-optimization",
+                    "vehicle-navigation",
+                    "web-application"
+                ],
+                "html_url": "https://github.com/thippeswammy/LaneMappingTool",
+                "private": false
+            },
+            "etag": "W/\"9b0c18be32fe8ef47963f2caf13804d96d020c09d31537a51f725d64fa8ed2f2\"",
+            "last_pushed": "2026-03-26T19:02:49Z",
+            "last_sync": "2026-05-12 23:31"
+        },
+        "kitti-odom-eval": {
+            "files": {},
+            "info": {
+                "description": "KITTI Odometry Evaluation Toolbox",
+                "language": "Python",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/kitti-odom-eval",
+                "private": false
+            }
+        },
+        "co-tracker": {
+            "files": {},
+            "info": {
+                "description": "CoTracker is a model for tracking any point (pixel) on a video.",
+                "language": "Jupyter Notebook",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/co-tracker",
+                "private": false
+            }
+        },
+        "ros2-depth-anything-v3-trt": {
+            "files": {},
+            "info": {
+                "description": "ROS2 TensorRT Node for Monocular Metric Depth estimation and Point Cloud generation from camera images with Depth Anything V3",
+                "language": "C++",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/ros2-depth-anything-v3-trt",
+                "private": false
+            }
+        },
+        "SuperGluePretrainedNetwork": {
+            "files": {},
+            "info": {
+                "description": "SuperGlue: Learning Feature Matching with Graph Neural Networks (CVPR 2020, Oral)",
+                "language": "Python",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/SuperGluePretrainedNetwork",
+                "private": false
+            }
+        },
+        "mesh_navigation_tutorials": {
+            "files": {},
+            "info": {
+                "description": "Tutorials for using our mesh navigation software ",
+                "language": "Python",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/mesh_navigation_tutorials",
+                "private": false
+            }
+        },
+        "mesh_navigation": {
+            "files": {},
+            "info": {
+                "description": "The Mesh Navigation Stack: Efficient Mobile Robot Navigation in Uneven Terrain",
+                "language": null,
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/mesh_navigation",
+                "private": false
+            }
+        },
+        "move_base_flex": {
+            "files": {},
+            "info": {
+                "description": "Move Base Flex: A Highly Flexible Navigation Framework",
+                "language": null,
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/move_base_flex",
+                "private": false
+            }
+        },
+        "mesh_tools": {
+            "files": {},
+            "info": {
+                "description": "Tools and Messages for Annotated 3D Triangle Meshes in ROS",
+                "language": null,
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/mesh_tools",
+                "private": false
+            }
+        },
+        "3d_robot": {
+            "files": {
+                "elevation_mapping_cupy/AGENTS.md": "6966e57a68b9abec0247aa339de204499a277c49",
+                "elevation_mapping_cupy/README.md": "720c864c78e746dfdc57dbb2bd5cf610eea5bf8c",
+                "elevation_mapping_cupy/TODO.md": "6526f4d8783537c87fa2402dabae638e6f4edd5f",
+                "elevation_mapping_cupy/docs/layout_alignment_plan.md": "b0588d609b10164bfb0d94f8c2d6dfc0b92d5567",
+                "elevation_mapping_cupy/elevation_mapping_cupy/README.md": "671de64346f593c869f5611e95c80223f2452a84",
+                "elevation_mapping_cupy/index_refacto_plan.md": "0b777f0f1b88c95e5e7665bb02997730c40c6b36",
+                "lidarslam_ros2/README.md": "2483c91ab365e95694982f917055e557b52a7635",
+                "lidarslam_ros2/Thirdparty/ndt_omp_ros2/README.md": "9b9c67b7cb3be02a741f2e9d4b01848aa2ce3367",
+                "lvr2/README.md": "1453947eea4e66ce8898af60ca9d3ad22812ce42",
+                "lvr2/examples/scan_projects/README.md": "c3d91a6f2050dc727f5881a9694fe3b3540f3086",
+                "lvr2/examples/scan_projects/compression/README.md": "96907236ca70b2ea8112dadf47bd6eee2ac25536",
+                "lvr2/examples/scan_projects/loadpartial/README.md": "77922e5b24f442cc9710792e6566ae6a31f42e52",
+                "lvr2/examples/scan_projects/schema/README.md": "e44e16c011f57d18b58d4deab745760f5d84cde3",
+                "lvr2/examples/scan_projects/simple/README.md": "17e3ccf55626a65c38a5fcbe5fe43729e383ba58",
+                "lvr2/ext/CTPL/README.md": "9f0c2b6343d61efd1fb1ca027f84b085eae08885",
+                "lvr2/ext/HighFive/CHANGELOG.md": "0b84382258736dd314fab3fd5ee6157701074b52",
+                "lvr2/ext/HighFive/README.md": "0dbd6587ff337f609d6703202d3dfd991682b6ca",
+                "lvr2/ext/kintinuous/LICENSE.md": "0b27f29ca25cdd3fda4b4ca30dd1d32a012fe70e",
+                "lvr2/ext/kintinuous/README.md": "2d74ceccee4043db1a74d3869a673580c35459ba",
+                "lvr2/ext/spdlog/README.md": "bc52fdf78f720f53b8bccc59b9e5762989f67fea",
+                "lvr2/ext/spdmon/README.md": "85d5a42b867150d2c540842e301874f733e01a2b",
+                "lvr2/migration_guide.md": "3f80b4c4bcf2edd190708017a772309d3862c0e9",
+                "lvr2/packaging_notes.md": "ff9e266dd52bb871920744ddb3f3ce2a0f4b6367",
+                "lvr2/src/tools/lvr2_ground_level_extractor/README.md": "2448fddba3a6220360d46636c25230a72184578d",
+                "lvr2/src/tools/lvr2_hdf5togeotiff/README.md": "02b6f484c909dfac073cd4fbbca75fdd7164f6b7",
+                "lvr2/src/tools/lvr2_largescale_reconstruct/README.md": "de91c76c25c46615174601f838c271b209a8d93f",
+                "lvr2/src/tools/lvr2_largescale_reconstruct_mpi/README.md": "de91c76c25c46615174601f838c271b209a8d93f",
+                "mesh_navigation/README.md": "334d0787f4d89caae8c70ec8a6383779e1e8e710",
+                "mesh_tools/README.md": "99c99085b7fa0c77acee0df24fb68ad019e63ea4",
+                "mesh_tools/label_manager/README.md": "c3db3b6a4aa05e99e45583493065c6ac6a266d01",
+                "mesh_tools/mesh_msgs/README.md": "7552071546dc7906379e6a351e92454aaed7bb2c",
+                "mesh_tools/mesh_msgs_conversions/README.md": "78a0d8b61c502ca3304112865a8b99acdca30506",
+                "mesh_tools/mesh_msgs_transform/README.md": "6adaf25c37533056f0004ebc56cc6df5dc0694d4",
+                "mesh_tools/rviz_mesh_tools_plugins/README.md": "c434d2f139c88a3ca901e97d665273a4441bf8c5",
+                "move_base_flex/README.md": "65abd7aef6e3058f09791e3f186184f3b42eeee5",
+                "move_base_flex/mbf_abstract_core/README.md": "e00872fdf5d6c4add815809bac2ac0381e702145",
+                "move_base_flex/mbf_abstract_nav/README.md": "d89d1b13412235d5771da69a820f336a9a4ff83e",
+                "move_base_flex/mbf_msgs/README.md": "536cce6fe0374e7f2d35f8d8727c7695d350975f",
+                "move_base_flex/mbf_simple_core/README.md": "b424ae3f354cb7ce3b5d41adb8516c38df2e815b",
+                "move_base_flex/mbf_simple_nav/README.md": "198539e2305111a29050a0bccb6ae0abb64ab1f4",
+                "terrain_nav_bringup/README.md": "45476ed89f45e6cd6a5cdd117a77e43668284c4e",
+                "terrain_nav_bringup/ecosystem_overview.md": "40ee501ed9c73ba0cf91832dc7bc5289c2ddde23",
+                "terrain_nav_bringup/pipeline_guide.md": "117dca7d335b7f7ccca31b49b63f121e5f2a39eb"
+            },
+            "info": {
+                "description": null,
+                "language": "C++",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/3d_robot",
+                "private": false
+            },
+            "etag": "W/\"a55288c2325a807343a77da88060496b9ef5826ffed0cc618a8c85dda4bcf561\"",
+            "last_pushed": "2026-01-06T13:25:31Z",
+            "last_sync": "2026-05-12 23:32"
+        },
+        "lidarslam_ros2": {
+            "files": {},
+            "info": {
+                "description": "ROS 2 package of 3D lidar slam using ndt/gicp registration and pose-optimization",
+                "language": null,
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/lidarslam_ros2",
+                "private": false
+            }
+        },
+        "ndt_omp_ros2": {
+            "files": {},
+            "info": {
+                "description": "ROS2 porting of ndt_omp",
+                "language": null,
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/ndt_omp_ros2",
+                "private": false
+            }
+        },
+        "dddmr_navigation": {
+            "files": {},
+            "info": {
+                "description": "dddmr_navigation is the 3D navigation solution for mobile robots includes mapping/localization/perception/path planning/controller/move base",
+                "language": null,
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/dddmr_navigation",
+                "private": false
+            }
+        },
+        "lvm2": {
+            "files": {},
+            "info": {
+                "description": "Mirror of upstream LVM2 repository",
+                "language": null,
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/lvm2",
+                "private": false
+            }
+        },
+        "DROID_slam": {
+            "files": {
+                "README.md": "1572d1ca1c523d703ac5eba6d67059dcabab0d60",
+                "install.md": "e9f665a37b777369192bb162b69782b8c2f53285",
+                "thirdparty/tartanair_tools/README.md": "509e35b7c913397f905ca1e68d7c8ef6d302d5b9",
+                "thirdparty/tartanair_tools/data_type.md": "a0416f5cd1687bbcd5a067b6d77f30b07b6a91a7",
+                "thirdparty/vision/CODE_OF_CONDUCT.md": "b91e23b17c023f10a34c7973c6f8614eed61ad1f",
+                "thirdparty/vision/CONTRIBUTING_MODELS.md": "82845e6579aaddc4aca10f36bf95a3862811be64",
+                "thirdparty/vision/examples/python/README.md": "b6597959e378f316e348e052ef4da79d09799beb",
+                "thirdparty/vision/packaging/README.md": "3ceac53030e7b89d1df93e03be86d18c667f49e6",
+                "thirdparty/vision/references/classification/README.md": "da5cd98867de85b6c6e6d2f9dbc73750e8a63646",
+                "thirdparty/vision/references/detection/README.md": "d9af26523a5932fd4532656b904b5772042f2cba",
+                "thirdparty/vision/references/optical_flow/README.md": "a7ac0223739ab76bffe1999bd701dd74f37ee93b",
+                "thirdparty/vision/references/segmentation/README.md": "2c7391c8380b445f927d07748e007368b1ff19f8",
+                "thirdparty/vision/references/similarity/README.md": "770c0f65b7d8196f1d7129d48fd97fdb6cc15610",
+                "thirdparty/vision/references/video_classification/README.md": "cbd303275e5e82667b730c8e6a523159f2de3827"
+            },
+            "info": {
+                "description": "Deep visual SLAM system based on DROID-SLAM, extended for monocular, stereo, and RGB-D camera setups with multi-GPU inference, ARM64 (Jetson) support, and real-time trajectory reconstruction and evaluation.",
+                "language": "Python",
+                "topics": [
+                    "3d-reconstruction",
+                    "arm64",
+                    "computer-vision",
+                    "deep-learning",
+                    "droid-slam",
+                    "jetson",
+                    "lenovo-se70",
+                    "monocular",
+                    "multi-gpu",
+                    "nvidia-jetson-xavier-nx",
+                    "rgbd",
+                    "robotics",
+                    "slam",
+                    "stereo",
+                    "trajectory-estimation",
+                    "visual-odometry",
+                    "visual-slam",
+                    "vslam"
+                ],
+                "html_url": "https://github.com/thippeswammy/DROID_slam",
+                "private": false
+            },
+            "etag": "W/\"8967c5af777255829c0204d5702f9301fad235f2a36e1ff7d1ed3969cb7a8b03\"",
+            "last_pushed": "2025-11-09T20:45:24Z",
+            "last_sync": "2026-05-12 23:32"
+        },
+        "DataVisualizationEditingTool": {
+            "files": {},
+            "info": {
+                "description": null,
+                "language": "Python",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/DataVisualizationEditingTool",
+                "private": false
+            }
+        },
+        "ultralytics": {
+            "files": {},
+            "info": {
+                "description": "Ultralytics YOLO \ud83d\ude80",
+                "language": null,
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/ultralytics",
+                "private": false
+            }
+        },
+        "LidarScanSegment": {
+            "files": {},
+            "info": {
+                "description": null,
+                "language": "Python",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/LidarScanSegment",
+                "private": false
+            }
+        },
+        "DPVO": {
+            "files": {
+                "DPRetrieval/pybind11/.github/pull_request_template.md": "54b7f5100d3bdfbf58a825347745ae24462c1a3c",
+                "DPViewer/pybind11/.github/pull_request_template.md": "54b7f5100d3bdfbf58a825347745ae24462c1a3c",
+                "README.md": "bfe34c35ff67c54f92729f0898edff57109f624c",
+                "README_version2.md": "68f0e33bd73edd83446810bde443052e43b77c97"
+            },
+            "info": {
+                "description": "DPVO re-implementation",
+                "language": "C++",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/DPVO",
+                "private": false
+            },
+            "etag": "W/\"cc1e2b20cdf1faeb7aae459468760bd7eeea131197e0bc65eea9456216398a6d\"",
+            "last_pushed": "2025-07-12T06:28:52Z",
+            "last_sync": "2026-05-12 23:32"
+        },
+        "ADAS-for-Indian-Road-Vehicle": {
+            "files": {
+                "README.md": "be6d4b4516b0fac25236c9db21e2793ca632cf7e",
+                "RoadSegment/README.md": "fb7ffbe1880fd65e7e8b10d6354ad6169fe48797",
+                "utils/README.md": "c942a30b1514baa1df9cc3758bf30c840f01e467",
+                "utils/evaluation/README.md": "97ac78ea68ca77888db9bc30870c128f533a069d"
+            },
+            "info": {
+                "description": "ADAS system for Indian road scenarios using YOLOv8-Seg for road segmentation, object detection, and instance segmentation, trained on diverse real-world datasets with superpixel refinement and real-time inference capabilities.",
+                "language": "Python",
+                "topics": [
+                    "adas",
+                    "autonomous-driving",
+                    "computer-vision",
+                    "computer-vision-project",
+                    "dataset",
+                    "deep-learning",
+                    "indian-roads",
+                    "instance-segmentation",
+                    "opencv",
+                    "perception",
+                    "real-time-systems",
+                    "road-segmentation",
+                    "segmentation",
+                    "yolov8"
+                ],
+                "html_url": "https://github.com/thippeswammy/ADAS-for-Indian-Road-Vehicle",
+                "private": false
+            },
+            "etag": "W/\"7729b5a6af6577ce4ffac5c2eb385d18a5604cdd35ffb6f46ef29aaaec85adb0\"",
+            "last_pushed": "2025-06-14T04:50:06Z",
+            "last_sync": "2026-05-12 23:32"
+        },
+        "Carla": {
+            "files": {
+                "README.md": "c71c0409c105a8861e5599f55ba09af2c0a74a10",
+                "carla/README.md": "727cc58f66d078ad6757efe864dbfdc8323b244c"
+            },
+            "info": {
+                "description": "CARLA simulator-based autonomous driving and traffic scenario development repository. Includes scripts for traffic generation, simulation control, testing, and experimentation with vehicle behavior, perception, and environment interaction using Python and C++.",
+                "language": "Python",
+                "topics": [
+                    "autonomous-driving",
+                    "carla",
+                    "computer-vision",
+                    "path-planning",
+                    "perception",
+                    "robotics",
+                    "self-driving",
+                    "simulation",
+                    "simulation-environment",
+                    "traffic-simulation",
+                    "vehicle-control"
+                ],
+                "html_url": "https://github.com/thippeswammy/Carla",
+                "private": false
+            },
+            "etag": "W/\"079bb04a10ab84f022471a4cca3838d0c311d047d019e8a1bfe753366f5278dd\"",
+            "last_pushed": "2025-03-16T13:53:37Z",
+            "last_sync": "2026-05-12 23:32"
+        },
+        "Arduino": {
+            "files": {
+                "ArduinoLcdWithI2c/README.md": "b1dbdbe9f528c63d0815fa277565a1592ba7302d",
+                "ArduinoLcdWithoutI2c/README.md": "0270a0be320d67a79afb7a834812a62e1a07d0b7",
+                "CAN_Communication/README.md": "f616a53ae32bc0370fd046c29efc8945a90fb2db",
+                "FaceTrackingSystem/README.md": "890ee87ba1809f4ed37a3ae117809ef2a9d46efb",
+                "ObstacleAvoidanceCar/README.md": "846cbd86cb997e21a2728d916606cfa9bb39d3ac",
+                "README.md": "2299379159077e111a3bf9e42aaa1c6cab8e9f2e",
+                "SmartWaterManager/README.md": "1ed06f335cf1c8360707a3dc66ffd0f111234369",
+                "TrafficSignal/README.md": "cf014ab16b81d55e60fd91c5344839a2233a255a",
+                "UltrasonicObjectCounter/README.md": "4b1bfc0175af87290caa62fb86e9da321b6ca38b",
+                "servo_control/README.md": "b21a68c9565d393806ed0debf413a81c24b33d15"
+            },
+            "info": {
+                "description": "Collection of Arduino-based embedded system projects including smart automation, robotics, sensor integration, and communication systems. Covers implementations like obstacle avoidance cars, CAN communication, face tracking, traffic control, and IoT-based water management.",
+                "language": "C++",
+                "topics": [
+                    "arduino",
+                    "automation",
+                    "can-communication",
+                    "electronics",
+                    "embedded-systems",
+                    "face-tracking",
+                    "iot",
+                    "microcontroller",
+                    "obstacle-avoidance",
+                    "python",
+                    "robotics",
+                    "sensor-integration",
+                    "smart-systems"
+                ],
+                "html_url": "https://github.com/thippeswammy/Arduino",
+                "private": false
+            },
+            "etag": "W/\"bf625485897eaa3034c360a1193feaaad55501c516d86fef35ad3efb48865df7\"",
+            "last_pushed": "2025-02-01T18:33:46Z",
+            "last_sync": "2026-05-12 23:32"
+        },
+        "AR-Cube-Drop": {
+            "files": {
+                "README.md": "f4d38e560706de102f5c7452e640b982f3463fbd"
+            },
+            "info": {
+                "description": "Augmented Reality application built with Unity ARFoundation for interactive cube placement, enabling real-time object spawning and automated AR scene capture after user interaction.",
+                "language": "C#",
+                "topics": [
+                    "3d-interaction",
+                    "arcore",
+                    "arfoundation",
+                    "augmented-reality",
+                    "computer-graphics",
+                    "csharp",
+                    "interactive-app",
+                    "mobile-ar",
+                    "real-time-rendering",
+                    "unity",
+                    "unity3d"
+                ],
+                "html_url": "https://github.com/thippeswammy/AR-Cube-Drop",
+                "private": false
+            },
+            "etag": "W/\"d61aea43f6ec09d4088ea67bc9827e4660d7a7c7ec374c9e340d2417a5994af0\"",
+            "last_pushed": "2025-01-25T13:07:42Z",
+            "last_sync": "2026-05-12 23:32"
+        },
+        "sam2": {
+            "files": {},
+            "info": {
+                "description": "The repository provides code for running inference with the Meta Segment Anything Model 2 (SAM 2), links for downloading the trained model checkpoints, and example notebooks that show how to use the model.",
+                "language": null,
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/sam2",
+                "private": false
+            }
+        },
+        "dSPACE": {
+            "files": {
+                "README.md": "2efea119d6f40ffe6da2b20af538d44451ec3113"
+            },
+            "info": {
+                "description": null,
+                "language": "LiveScript",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/dSPACE",
+                "private": false
+            },
+            "etag": "W/\"f396b5c5f3178042785397975e107f13b03bed6fca4d024507c05ec122f151fe\"",
+            "last_pushed": "2024-10-31T13:14:14Z",
+            "last_sync": "2026-05-12 23:32"
+        },
+        "3D-Car-racing-game": {
+            "files": {
+                "README.md": "887a70cab3450a6fe9ff5ef8aedda050aabdaa9d"
+            },
+            "info": {
+                "description": "3D car racing game developed in Unity featuring multiple vehicles, dynamic environments, navigation guidance, sound effects, and adaptive screen scaling with optional character control.",
+                "language": null,
+                "topics": [
+                    "3d-game",
+                    "3d-unity-game",
+                    "car",
+                    "car-game",
+                    "car-racing",
+                    "cross-platform",
+                    "csharp",
+                    "game-design",
+                    "game-development",
+                    "gameplay",
+                    "interactive-game",
+                    "physics-based",
+                    "simulation",
+                    "unity",
+                    "unity3d"
+                ],
+                "html_url": "https://github.com/thippeswammy/3D-Car-racing-game",
+                "private": false
+            },
+            "etag": "W/\"31ffb876708749dd27f8fe2966b05f6e1071eb4601f181d2296589a37b4534b5\"",
+            "last_pushed": "2024-06-14T13:52:04Z",
+            "last_sync": "2026-05-12 23:32"
+        },
+        "LoginSystemWithAdvanceGUI": {
+            "files": {
+                "README.md": "35bc16a592972b9e15eefa968723daef6564d053"
+            },
+            "info": {
+                "description": "An enhanced Java Swing-based authentication system with structured login/registration workflows, improved GUI design, and modular handling of user interactions. Demonstrates event-driven architecture, input validation, and scalable desktop application design.",
+                "language": "Java",
+                "topics": [
+                    "access-control",
+                    "authentication",
+                    "desktop-application",
+                    "event-driven-programming",
+                    "gui",
+                    "java",
+                    "login-system",
+                    "modular-design",
+                    "swing",
+                    "system",
+                    "ui-design"
+                ],
+                "html_url": "https://github.com/thippeswammy/LoginSystemWithAdvanceGUI",
+                "private": false
+            },
+            "etag": "W/\"e5889dc02a1bcdfb8b822c1215a818060dd0d5acba9374ebb6eb9c702a518814\"",
+            "last_pushed": "2024-06-14T07:58:54Z",
+            "last_sync": "2026-05-12 23:32"
+        },
+        "LoginSystemWithGUI": {
+            "files": {
+                "README.md": "384b87c371c71317dce8e3621059c07f81669998"
+            },
+            "info": {
+                "description": "A Java Swing-based authentication system implementing user login workflows, input validation, and GUI-driven interaction. Demonstrates event-driven programming, basic access control logic, and desktop application design.",
+                "language": "Java",
+                "topics": [
+                    "access-control",
+                    "authentication",
+                    "desktop-application",
+                    "event-driven-programming",
+                    "gui",
+                    "java",
+                    "login-system",
+                    "security-basics",
+                    "swing",
+                    "swing-gui"
+                ],
+                "html_url": "https://github.com/thippeswammy/LoginSystemWithGUI",
+                "private": false
+            },
+            "etag": "W/\"c8349354646033f06ae40d3ee9a07f3dceb5891af3b54fc16d427d776e02fb47\"",
+            "last_pushed": "2024-06-14T07:58:06Z",
+            "last_sync": "2026-05-12 23:32"
+        },
+        "ChainReactionGame": {
+            "files": {
+                "README.md": "20caa33972aedfa578cf80275610a949048770db"
+            },
+            "info": {
+                "description": "A grid-based strategic multiplayer game implemented in Java using Greenfoot, featuring chain-reaction mechanics, turn-based gameplay, and state-driven grid updates. Demonstrates algorithmic propagation logic, game state management, and interactive system design.",
+                "language": "Java",
+                "topics": [
+                    "algorithmic-logic",
+                    "chain-reaction",
+                    "chain-reaction-game",
+                    "game-development",
+                    "greenfoot",
+                    "grid-based-system",
+                    "interactive-systems",
+                    "java",
+                    "multiplayer-game",
+                    "state-management",
+                    "strategy-game"
+                ],
+                "html_url": "https://github.com/thippeswammy/ChainReactionGame",
+                "private": false
+            },
+            "etag": "W/\"291da08eea957cc82fd1afcd417f740136e56c27ea65a8bccf35998645f22916\"",
+            "last_pushed": "2024-06-14T07:27:42Z",
+            "last_sync": "2026-05-12 23:32"
+        },
+        "Flappy-bird-game": {
+            "files": {
+                "README.md": "290683dc45e905ecfb728a0c8017f62fc588b032"
+            },
+            "info": {
+                "description": "Classic Flappy Bird-style game built in Java using Greenfoot, featuring obstacle navigation, score tracking, and interactive gameplay mechanics.",
+                "language": "Java",
+                "topics": [
+                    "2d-game",
+                    "beginner-project",
+                    "flappy-bird",
+                    "game-development",
+                    "gameplay",
+                    "greenfoot",
+                    "interactive-game",
+                    "java",
+                    "object-oriented-programming",
+                    "scoring"
+                ],
+                "html_url": "https://github.com/thippeswammy/Flappy-bird-game",
+                "private": false
+            },
+            "etag": "W/\"5ce4db76bfa407f6d16e0cd340d203dbed89fefe63c91b3cfee5e053d74573c8\"",
+            "last_pushed": "2024-06-13T16:53:28Z",
+            "last_sync": "2026-05-12 23:32"
+        },
+        "ImageProcessingCourse": {
+            "files": {
+                "README.md": "5f6f1c1cb017af776c2206030f746f7829cb3896"
+            },
+            "info": {
+                "description": "Implementation of core concepts from \"Image and Video Processing: From Mars to Hollywood with a Stop at the Hospital\", covering fundamental image processing techniques such as filtering, transformations, and analysis using Python and OpenCV.",
+                "language": "Python",
+                "topics": [
+                    "applied-computer-vision",
+                    "beginner-to-intermediate",
+                    "computer-vision",
+                    "course",
+                    "digital-image-processing",
+                    "feature-extraction",
+                    "image-filtering",
+                    "image-processing",
+                    "opencv",
+                    "python",
+                    "signal-processing",
+                    "video-processing"
+                ],
+                "html_url": "https://github.com/thippeswammy/ImageProcessingCourse",
+                "private": false
+            },
+            "etag": "W/\"2cd4729b6b537d161e48316972b97771f02bd6a656591c0f262fad6ced2174d8\"",
+            "last_pushed": "2024-06-10T07:05:15Z",
+            "last_sync": "2026-05-12 23:32"
+        },
+        "NeetCodeProblems": {
+            "files": {},
+            "info": {
+                "description": null,
+                "language": "Java",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/NeetCodeProblems",
+                "private": false
+            }
+        },
+        "BrickGame": {
+            "files": {
+                "README.md": "1b7828bf90f476208da6576a4cb3b926c6bad58b"
+            },
+            "info": {
+                "description": "2D brick breaker game built in Java using Greenfoot, featuring ball physics, paddle control, and interactive brick destruction gameplay.",
+                "language": "Java",
+                "topics": [
+                    "2d-game",
+                    "beginner-project",
+                    "brick-breaker",
+                    "game-development",
+                    "gameplay",
+                    "greenfoot",
+                    "interactive-game",
+                    "java",
+                    "object-oriented-programming",
+                    "physics-based"
+                ],
+                "html_url": "https://github.com/thippeswammy/BrickGame",
+                "private": false
+            },
+            "etag": "W/\"61b89e9416c1c43ee879bc0b29027c9154124d6fedd24647e816fa7bdf4d2cbe\"",
+            "last_pushed": "2024-02-03T21:02:00Z",
+            "last_sync": "2026-05-12 23:32"
+        },
+        "BallonBlastGame": {
+            "files": {
+                "README.md": "9bb5befb9a509ac7240c48fb6b2def9761babdce"
+            },
+            "info": {
+                "description": "2D balloon shooting game built in Java using Greenfoot, featuring projectile mechanics, scoring system, and interactive gameplay with multiple targets.",
+                "language": "Java",
+                "topics": [
+                    "2d-game",
+                    "game-development",
+                    "gameplay",
+                    "greenfoot",
+                    "interactive-game-beginner-project",
+                    "java",
+                    "object-oriented-programming",
+                    "scoring",
+                    "shooting-game"
+                ],
+                "html_url": "https://github.com/thippeswammy/BallonBlastGame",
+                "private": false
+            },
+            "etag": "W/\"3e97df9e10469e8d75a45fd7ad2fa210ccaf9c92130bc2ef1558f860c2a17b17\"",
+            "last_pushed": "2024-02-03T20:58:38Z",
+            "last_sync": "2026-05-12 23:32"
+        },
+        "DownShooterGame": {
+            "files": {
+                "README.md": "d94c7f0d55d21194cf83abeac7226dbe73aacf17"
+            },
+            "info": {
+                "description": "2D top-down shooter game built in Java using Greenfoot, featuring enemy AI, boss battles, player controls, health system, and score-based gameplay mechanics.",
+                "language": "Java",
+                "topics": [
+                    "2d-game",
+                    "beginner-project",
+                    "game-design",
+                    "game-development",
+                    "gameplay",
+                    "greenfoot",
+                    "interactive-game",
+                    "java",
+                    "object-oriented-programming",
+                    "shooter-game"
+                ],
+                "html_url": "https://github.com/thippeswammy/DownShooterGame",
+                "private": false
+            },
+            "etag": "W/\"bf2fb51dc4fb8aeef9e128a0b51423732ec7921b25841f94315b0ad9951c1a42\"",
+            "last_pushed": "2024-02-03T20:51:25Z",
+            "last_sync": "2026-05-12 23:32"
+        },
+        "CalculatorGuiApp": {
+            "files": {
+                "README.md": "0e4ae080e3fd361e77fb2f70f36ecf6ead12ff8d"
+            },
+            "info": {
+                "description": "Java GUI-based calculator application built with NetBeans, supporting standard arithmetic operations with an interactive interface and reusable calculation logic.",
+                "language": "Java",
+                "topics": [
+                    "arithmetic",
+                    "beginner-project",
+                    "calculator",
+                    "desktop-app",
+                    "gui",
+                    "interactive-app",
+                    "java",
+                    "netbeans",
+                    "object-oriented-programming",
+                    "swing",
+                    "user-interface"
+                ],
+                "html_url": "https://github.com/thippeswammy/CalculatorGuiApp",
+                "private": false
+            },
+            "etag": "W/\"e636ff1903131e7397dc8398e38771a422fd50cc157b0888f05bace1261bd658\"",
+            "last_pushed": "2024-02-03T17:55:23Z",
+            "last_sync": "2026-05-12 23:32"
+        },
+        "BasicMathCalculatorApp": {
+            "files": {
+                "README.md": "5173f779831d2862c643f800d8ec575cc246ae66"
+            },
+            "info": {
+                "description": "Java Swing-based calculator application for performing basic arithmetic operations with a simple user interface and interactive input handling.",
+                "language": "Java",
+                "topics": [
+                    "arithmetic",
+                    "basic-app",
+                    "beginner-project",
+                    "calculator",
+                    "desktop-app",
+                    "java",
+                    "object-oriented-programming",
+                    "swing",
+                    "swing-gui",
+                    "user-interface"
+                ],
+                "html_url": "https://github.com/thippeswammy/BasicMathCalculatorApp",
+                "private": false
+            },
+            "etag": "W/\"9c612c8d25494bccb439fbb700410488d267ee21645e28f8d540427a0583ea93\"",
+            "last_pushed": "2024-02-03T12:43:25Z",
+            "last_sync": "2026-05-12 23:32"
+        },
+        "HandCricketGame": {
+            "files": {
+                "README.md": "997f88a6f28ebe93528b277766958a23d2f55d84"
+            },
+            "info": {
+                "description": "Java-based hand cricket game with interactive gameplay, user input-driven mechanics, and score tracking, simulating a digital cricket match experience.",
+                "language": "Java",
+                "topics": [
+                    "beginner-project",
+                    "console-app",
+                    "cricket-game",
+                    "game-development",
+                    "game-logic",
+                    "gameplay",
+                    "hand-cricket",
+                    "interactive-game",
+                    "java",
+                    "scoring",
+                    "user-input"
+                ],
+                "html_url": "https://github.com/thippeswammy/HandCricketGame",
+                "private": false
+            },
+            "etag": "W/\"0fb82a7d7eb15397d1c03d5c4b4db7e90f584d1e0866d5c25df14c81b9a81b18\"",
+            "last_pushed": "2024-02-03T12:42:07Z",
+            "last_sync": "2026-05-12 23:32"
+        }
+    },
+    "selected_repos": [
+        "my_bot",
+        "JarvisControlSystem",
+        "Deep-Learning-Specialization",
+        "VO2MAP",
+        "MultipleVo",
+        "MatlabModels",
+        "EceProject",
+        "ZED2i",
+        "rtabmap",
+        "FaceRecognition",
+        "MBD-dSPACE",
+        "LaneMappingTool",
+        "rtab_ws",
+        "rtabmap_ros",
+        "sdf_to_nav_mesh",
+        "ORB_SLAM3",
+        "3d_robot",
+        "ORB_SLAM3_ROS2",
+        "DROID_slam",
+        "ORB_SLAM2",
+        "my_mcp_project",
+        "DPVO",
+        "ADAS-for-Indian-Road-Vehicle",
+        "RoadTagByCameraGps",
+        "Carla",
+        "Arduino",
+        "AR-Cube-Drop",
+        "dSPACE",
+        "3D-Car-racing-game",
+        "SpeechCalculator",
+        "LoginSystemWithAdvanceGUI",
+        "LoginSystemWithGUI",
+        "ChainReactionGame",
+        "TicTacToeGUI",
+        "Puzzle-game",
+        "Flappy-bird-game",
+        "Maze-game",
+        "Snake-GUI-game",
+        "ImageProcessingCourse",
+        "SuperMarioGame",
+        "BrickGame",
+        "BallonBlastGame",
+        "DownShooterGame",
+        "CalculatorGuiApp",
+        "SecureAppLocker",
+        "MultiAppRunnerLoginAuth",
+        "SimpleContactsManager",
+        "TextBasedTicTacToe",
+        "BasicMathCalculatorApp",
+        "HandCricketGame",
+        "NumberGuesserGame"
+    ],
+    "last_sync": "2026-05-12 23:32"
+}
