@@ -100,6 +100,13 @@ window.PROJECTS = [
     tech:['ai','autonomous-agent','llm','automation'],
     github:'https://github.com/thippeswammy/JarvisControlSystem', isPrivate:false },
 
+  { id:'autoseg', cluster:'ai', name:'AutoSegmentor', lang:'Python',
+  tagline:'Auto-labeling ecosystem for AI datasets',
+  summary:'Integrates Meta\'s SAM2 with CoTracker to convert raw videos into structured YOLO datasets with minimal human input. Features a PyQt5 GUI and async GPU processing.',
+  highlights:['SAM2 real-time mask propagation','CoTracker for complex scene keypoints','Interactive PyQt5 GUI with zoom & undo','One-click YOLO v8/v11 dataset export with augmentation'],
+  tech:['Python','SAM2','PyTorch','PyQt5','CUDA'],
+  github:'https://github.com/thippeswammy/AutoSegmentor', isPrivate:false },
+
   { id:'adas-for-indian-road-vehicle', cluster:'vision', name:'ADAS-for-Indian-Road-Vehicle', lang:'Python',
     tagline:'YOLOv8 road segmentation for Indian driving scenarios.',
     summary:'Instance segmentation of vehicles and pedestrians with real-time inference and superpixel refinement.',
