@@ -138,14 +138,14 @@ window.PROJECTS = [
     tagline:'TensorRT Monocular Depth estimation node.',
     summary:'Real-time metric depth and point cloud generation from single camera feeds using Depth Anything V3.',
     tech:['cpp','tensorrt','ros2','depth-estimation'],
-    github:'https://github.com/thippeswammy/ros2-depth-anything-v3-trt', isPrivate:false },
+    github:'https://github.com/thippeswammy/ros2-depth-anything-v3-trt', isPrivate:false, hidden:true },
 
   { id:'carla', cluster:'vision', name:'Carla', lang:'Python',
     tagline:'CARLA simulator for AV development',
     summary:'CARLA-based autonomous driving dev repo with traffic generation, scenario control, vehicle behavior testing, and perception experimentation.',
     highlights:['Traffic generation & NPC control','Ego-vehicle perception & control','Sensor suite simulation (cam, LiDAR, radar)','Python + C++ hybrid scripts'],
     tech:['python','cpp','carla','autonomous-driving','simulation'],
-    github:'https://github.com/thippeswammy/Carla', isPrivate:false },
+    github:'https://github.com/thippeswammy/Carla', isPrivate:false, hidden:true },
 
   { id:'zed2i', cluster:'vision', name:'ZED2i', lang:'Python',
     tagline:'Stereo vision & depth intelligence',
@@ -397,7 +397,7 @@ window.PROJECTS = [
     summary:'MCP server implementation for integrating local tools and resources with LLM backends for AI agent workflows with extensible plugin architecture.',
     highlights:['MCP server implementation','Tool & resource provider integration','LLM context management pipeline','Extensible plugin architecture'],
     tech:['python','mcp','ai-agents'],
-    github:'https://github.com/thippeswammy/my_mcp_project', isPrivate:false },
+    github:'https://github.com/thippeswammy/my_mcp_project', isPrivate:false, hidden:true },
 
   { id:'rosrec', cluster:'others', name:'ROSDataRecorder', lang:'Python',
     tagline:'ROS multi-sensor data recording & comparison',
@@ -411,13 +411,13 @@ window.PROJECTS = [
     summary:'Custom Python tool for editing, annotating, and visualizing sensor data and trajectory datasets with interactive plotting and export capabilities.',
     highlights:['Interactive plot annotation & editing','Multi-dataset overlay visualization','Custom color mapping & filtering','CSV/NumPy data export pipeline'],
     tech:['python','matplotlib','numpy'],
-    github:'https://github.com/thippeswammy/DataVisualizationEditingTool', isPrivate:true },
+    github:'https://github.com/thippeswammy/DataVisualizationEditingTool', isPrivate:true, hidden:true },
 
   { id:'lidar', cluster:'others', name:'LidarScanSegment', lang:'Python',
     tagline:'LiDAR point cloud scan segmentation',
     summary:'Python LiDAR scan segmentation tool for autonomous vehicle perception — ground removal, Euclidean cluster extraction, and label export.',
     highlights:['Ground plane removal (RANSAC)','Euclidean cluster extraction','Scan-level label assignment','ROS bag & PCL file input support'],
     tech:['python','pcl','ros'],
-    github:'https://github.com/thippeswammy/LidarScanSegment', isPrivate:true },
+    github:'https://github.com/thippeswammy/LidarScanSegment', isPrivate:true, hidden:true },
 
 ];
