@@ -349,6 +349,7 @@ window.openPinModal = function () {
   if (!modal || !listContainer) return;
   listContainer.innerHTML = '';
   window.PROJECTS.forEach(proj => {
+    if (proj.hidden) return;
     const item = document.createElement('div'); item.className = 'pin-checkbox-item';
     item.innerHTML = `<input type="checkbox" id="pin-check-${proj.id}" value="${proj.id}" ${window.PINNED_PROJECTS.includes(proj.id) ? 'checked' : ''} onchange="window.toggleModalPin(this)"><label class="pin-checkbox-label" for="pin-check-${proj.id}"><span class="pin-checkbox-title">${proj.name}</span><span class="pin-checkbox-desc">${proj.summary}</span></label>`;
     listContainer.appendChild(item);

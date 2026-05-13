@@ -930,6 +930,7 @@
       // Identify any projects with clusters not in CLUSTERS
       const definedClusterIds = window.CLUSTERS.map(c => c.id);
       const otherProjects = window.PROJECTS.filter(p => {
+        if (p.hidden) return false;
         const matchesSearch = searchQuery === '' || 
           p.name.toLowerCase().includes(searchQuery) || 
           p.summary.toLowerCase().includes(searchQuery) ||
@@ -961,6 +962,7 @@
           filteredProjects = otherProjects;
         } else {
           filteredProjects = window.PROJECTS.filter(p => {
+            if (p.hidden) return false;
             if (p.cluster !== cluster.id) return false;
             
             const matchesSearch = searchQuery === '' || 
