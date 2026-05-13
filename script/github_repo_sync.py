@@ -11,7 +11,7 @@ import re
 # --- Configuration & Constants ---
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 META_FILE = ".sync_meta.json"
-JS_DATA_FILE = "../web/projects_data.js"
+JS_DATA_FILE = "../projects_data.js"
 USER_AGENT = "GitHubRepoSync-Engine-v10"
 
 # Color Palette
@@ -24,22 +24,25 @@ COLOR_WARNING = "#FFC107"
 COLOR_FORK = "#6C757D"
 COLOR_PRIVATE = "#6610F2"
 
-# Cluster Mapping
+# Cluster Mapping (Maps GitHub topics to UI Cluster IDs)
 CLUSTER_MAP = {
-    'robotics': 'robotics', 'ros2': 'robotics', 'ros': 'robotics', 'slam': 'robotics', 'navigation': 'robotics',
-    'computer-vision': 'vision', 'opencv': 'vision', 'image-processing': 'vision',
-    'web-development': 'web', 'react': 'web', 'gui': 'web',
-    'deep-learning': 'ai', 'machine-learning': 'ai', 'ai': 'ai'
+    'robotics': 'robotics', 'ros2': 'robotics', 'ros': 'robotics', 'slam': 'robotics', 'navigation': 'robotics', 'autonomous-driving': 'robotics',
+    'computer-vision': 'ai', 'opencv': 'ai', 'image-processing': 'ai', 'detection': 'ai', 'segmentation': 'ai',
+    'deep-learning': 'ai', 'machine-learning': 'ai', 'ai': 'ai', 'neural-networks': 'ai',
+    'web-development': 'apps', 'react': 'apps', 'html': 'apps', 'javascript': 'apps', 'flask': 'apps',
+    'game': 'games', 'unity': 'games', 'greenfoot': 'games', 'pygame': 'games',
+    'embedded': 'embedded', 'arduino': 'embedded', 'stm32': 'embedded', 'electronics': 'embedded', 'iot': 'embedded',
+    'tool': 'tools', 'research': 'tools', 'automation': 'tools', 'utility': 'tools'
 }
 
-# Cluster Divider Mapping
+# Cluster Divider Mapping (For the generated JS comments)
 CLUSTER_LABELS = {
-    'robotics': 'ROBOTICS',
-    'vision': 'COMPUTER VISION',
-    'ai': 'AI & MACHINE LEARNING',
-    'web': 'WEB DEVELOPMENT',
-    'tools': 'DEV TOOLS & RESEARCH',
-    'others': 'OTHER PROJECTS'
+    'robotics': 'ROBOTICS & AUTONOMOUS SYSTEMS',
+    'ai': 'AI & COMPUTER VISION',
+    'games': 'GAMES & INTERACTIVE',
+    'embedded': 'EMBEDDED & HARDWARE',
+    'apps': 'APPS & SOFTWARE',
+    'tools': 'DEV TOOLS & RESEARCH'
 }
 
 # --- Helper Functions ---
@@ -169,7 +172,7 @@ def generate_portfolio_js(meta_repos, log_callback):
         header = "window.PROJECTS = ["
 
     output_body = []
-    order = ['robotics', 'vision', 'ai', 'web', 'tools', 'others']
+    order = ['robotics', 'ai', 'games', 'embedded', 'apps', 'tools']
     for cluster_id in order:
         if cluster_id in grouped_projects:
             label = CLUSTER_LABELS.get(cluster_id, cluster_id.upper())
