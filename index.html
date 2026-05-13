@@ -927,28 +927,56 @@
       
       let totalVisible = 0;
 
-      window.CLUSTERS.forEach((cluster) => {
+      // Identify any projects with clusters not in CLUSTERS
+      const definedClusterIds = window.CLUSTERS.map(c => c.id);
+      const otherProjects = window.PROJECTS.filter(p => {
+        const matchesSearch = searchQuery === '' || 
+          p.name.toLowerCase().includes(searchQuery) || 
+          p.summary.toLowerCase().includes(searchQuery) ||
+          (p.tech && p.tech.some(t => t.toLowerCase().includes(searchQuery)));
+        
+        const matchesTech = activeTechFilter === 'all' || 
+          (p.tech && p.tech.includes(activeTechFilter));
+
+        return matchesSearch && matchesTech && !definedClusterIds.includes(p.cluster);
+      });
+
+      const clustersToRender = [...window.CLUSTERS];
+      if (otherProjects.length > 0 && activeClusterFilter === 'all') {
+        clustersToRender.push({
+          id: 'unassigned',
+          label: 'OTHERS',
+          full: 'Miscellaneous Projects',
+          css: '#94a3b8'
+        });
+      }
+
+      clustersToRender.forEach((cluster) => {
         // Skip cluster if cluster filter is active and doesn't match
         if (activeClusterFilter !== 'all' && activeClusterFilter !== cluster.id) return;
 
-        // Filter projects for this cluster based on search and tech filter
-        const filteredProjects = window.PROJECTS.filter(p => {
-          if (p.cluster !== cluster.id) return false;
-          
-          const matchesSearch = searchQuery === '' || 
-            p.name.toLowerCase().includes(searchQuery) || 
-            p.summary.toLowerCase().includes(searchQuery) ||
-            (p.tech && p.tech.some(t => t.toLowerCase().includes(searchQuery)));
-          
-          const matchesTech = activeTechFilter === 'all' || 
-            (p.tech && p.tech.includes(activeTechFilter));
+        // Filter projects for this cluster
+        let filteredProjects;
+        if (cluster.id === 'unassigned') {
+          filteredProjects = otherProjects;
+        } else {
+          filteredProjects = window.PROJECTS.filter(p => {
+            if (p.cluster !== cluster.id) return false;
             
-          return matchesSearch && matchesTech;
-        });
+            const matchesSearch = searchQuery === '' || 
+              p.name.toLowerCase().includes(searchQuery) || 
+              p.summary.toLowerCase().includes(searchQuery) ||
+              (p.tech && p.tech.some(t => t.toLowerCase().includes(searchQuery)));
+            
+            const matchesTech = activeTechFilter === 'all' || 
+              (p.tech && p.tech.includes(activeTechFilter));
+              
+            return matchesSearch && matchesTech;
+          });
+        }
 
         if (filteredProjects.length > 0) {
           totalVisible += filteredProjects.length;
-          const clusterIndex = window.CLUSTERS.indexOf(cluster);
 
           // Create Nav Link
           const navLink = document.createElement('a');
@@ -967,8 +995,6 @@
             <h3 class="cluster-title" style="color: ${cluster.css}">${cluster.full}</h3>
           `;
           section.appendChild(header);
-
-
 
           const grid = document.createElement('div');
           grid.className = 'grid';
