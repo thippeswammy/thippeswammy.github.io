@@ -5,12 +5,12 @@
 window.CLUSTERS = [
   { id: 'vision', label: 'AI & CV', full: 'AI & Computer Vision', color: 0x3b82f6, css: '#3b82f6', emoji: '👁️' },
   { id: 'robotics', label: 'ROBOTICS', full: 'Robotics & Autonomous Systems', color: 0x06b6d4, css: '#06b6d4', emoji: '🤖' },
-  { id: 'embedded', label: 'EMBEDDED', full: 'Embedded & Hardware', color: 0xf97316, css: '#0xf97316', emoji: '🔌' },
-  { id: 'software', label: 'SOFTWARE', full: 'Desktop Applications', color: 0x10b981, css: '#0x10b981', emoji: '💻' },
-  { id: 'mobile', label: 'MOBILE & AR', full: 'Mobile & Augmented Reality', color: 0x8b5cf6, css: '#0x8b5cf6', emoji: '📱' },
-  { id: 'games', label: 'GAMES', full: 'Games & Interactive', color: 0xd946ef, css: '#0xd946ef', emoji: '🎮' },
-  { id: 'research', label: 'RESEARCH', full: 'Research & Dev Tools', color: 0xec4899, css: '#0xec4899', emoji: '🔬' },
-  { id: 'others', label: 'OTHERS', full: 'Miscellaneous & Sandbox', color: 0x64748b, css: '#0x64748b', emoji: '📂' },
+  { id: 'embedded', label: 'EMBEDDED', full: 'Embedded & Hardware', color: 0xf97316, css: '#f97316', emoji: '🔌' },
+  { id: 'software', label: 'SOFTWARE', full: 'Desktop Applications', color: 0x10b981, css: '#10b981', emoji: '💻' },
+  { id: 'mobile', label: 'MOBILE & AR', full: 'Mobile & Augmented Reality', color: 0x8b5cf6, css: '#8b5cf6', emoji: '📱' },
+  { id: 'games', label: 'GAMES', full: 'Games & Interactive', color: 0xd946ef, css: '#d946ef', emoji: '🎮' },
+  { id: 'research', label: 'RESEARCH', full: 'Research & Dev Tools', color: 0xec4899, css: '#ec4899', emoji: '🔬' },
+  { id: 'others', label: 'OTHERS', full: 'Miscellaneous & Sandbox', color: 0x64748b, css: '#64748b', emoji: '📂' },
 ];
 
 window.PINNED_PROJECTS = [
