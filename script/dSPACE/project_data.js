@@ -1,0 +1,23 @@
+  {
+    id: 'dspace',
+    cluster: 'embedded',
+    name: 'dSPACE',
+    lang: '',
+    tagline: 'dSPACE project',
+    summary: 'dSPACE project repository.',
+    highlights: [],
+    tech: [],
+    github: 'https://github.com/thippeswammy/dSPACE',
+    demo: '',
+    docs: '',
+    paper: '',
+    isPrivate: false,
+    status: 'completed',
+    year: '',
+    team: 'solo',
+    platform: [],
+    datasets: [],
+    thumbnail: '',
+    images: [],
+    metrics: {}
+  }
