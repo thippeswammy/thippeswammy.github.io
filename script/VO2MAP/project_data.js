@@ -1,0 +1,23 @@
+  {
+    id: 'vo2map',
+    cluster: 'robotics',
+    name: 'VO2MAP',
+    lang: '',
+    tagline: 'VO2MAP Project',
+    summary: 'Visual Odometry to Map (VO2MAP) project.',
+    highlights: [],
+    tech: [],
+    github: 'https://github.com/thippeswammy/VO2MAP',
+    demo: '',
+    docs: '',
+    paper: '',
+    isPrivate: false,
+    status: 'completed',
+    year: '',
+    team: 'solo',
+    platform: [],
+    datasets: [],
+    thumbnail: '',
+    images: [],
+    metrics: {}
+  }

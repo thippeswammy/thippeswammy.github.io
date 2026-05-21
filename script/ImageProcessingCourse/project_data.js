@@ -1,0 +1,23 @@
+  {
+    id: 'imageprocessingcourse',
+    cluster: 'vision',
+    name: 'ImageProcessingCourse',
+    lang: '',
+    tagline: 'Image Processing Course',
+    summary: 'Repository for an Image Processing Course.',
+    highlights: [],
+    tech: ['Image Processing'],
+    github: 'https://github.com/thippeswammy/ImageProcessingCourse',
+    demo: '',
+    docs: '',
+    paper: '',
+    isPrivate: false,
+    status: 'completed',
+    year: '',
+    team: 'solo',
+    platform: [],
+    datasets: [],
+    thumbnail: '',
+    images: [],
+    metrics: {}
+  }
