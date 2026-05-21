@@ -20,6 +20,7 @@
     :root {
       --bg: #06060f;
       --bg-light: #0a0c1a;
+      --header-height: 100px;
       --glass: rgba(18, 22, 45, 0.65);
       --glass-hover: rgba(26, 31, 60, 0.85);
       --border: rgba(255, 255, 255, 0.08);
@@ -212,7 +213,7 @@
       align-items: center;
       text-align: center;
       padding: 0 20px;
-      margin-top: 100px;
+      margin-top: calc(var(--header-height) + 40px);
     }
 
     /* Sections */
@@ -670,7 +671,7 @@
       .header-search-bar .filter-select { min-width: unset; width: 100%; }
       .clear-filters-btn { width: 100%; }
       
-      .hero { margin-top: 140px; min-height: 40vh; }
+      .hero { margin-top: calc(var(--header-height) + 20px); min-height: 40vh; }
       .hero h2 { font-size: 2.2rem; }
       .grid { grid-template-columns: 1fr; }
       section.cluster { padding: 60px 20px; }
@@ -846,35 +847,63 @@
     // 2. Smart Header Logic
     let lastScrollY = window.scrollY;
     const headerEl = document.getElementById('header');
+
+    // Dynamically calculate header height to prevent text overlap
+    const updateHeaderHeight = () => {
+      if (headerEl) {
+        // Adding the top offset (20px) and a bit of padding to the actual height
+        const height = headerEl.offsetHeight;
+        document.documentElement.style.setProperty('--header-height', `${height + 20}px`);
+      }
+    };
+
+    // Calculate once on load and whenever window resizes or DOM finishes
+    window.addEventListener('load', updateHeaderHeight);
+    window.addEventListener('resize', updateHeaderHeight);
+    // Call it immediately just in case
+    updateHeaderHeight();
+
     document.body.insertAdjacentHTML('afterbegin', '<div class="progress-container"><div id="scroll-progress" class="progress-bar"></div></div>');
     const progressIndicator = document.getElementById('scroll-progress');
 
+    let scrollTicking = false;
     window.addEventListener('scroll', () => {
-      const currentScrollY = window.scrollY;
-      
-      // Progress Bar update
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (currentScrollY / totalHeight) * 100;
-      progressIndicator.style.width = `${progress}%`;
+      if (!scrollTicking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
 
-      // Hide/Show Header on scroll direction
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        headerEl.classList.add('nav-hidden');
-      } else {
-        headerEl.classList.remove('nav-hidden');
+          // Progress Bar update
+          const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+          const progress = (currentScrollY / totalHeight) * 100;
+          progressIndicator.style.width = `${progress}%`;
+
+          // Hide/Show Header on scroll direction (with threshold to prevent jitter)
+          // Always show at the very top (currentScrollY <= 20)
+          if (currentScrollY <= 20) {
+            headerEl.classList.remove('nav-hidden');
+          } else if (Math.abs(currentScrollY - lastScrollY) > 5) {
+            if (currentScrollY > lastScrollY && currentScrollY > 100) {
+              headerEl.classList.add('nav-hidden');
+            } else {
+              headerEl.classList.remove('nav-hidden');
+            }
+          }
+
+          // Header background blur intensity
+          if (currentScrollY > 50) {
+            headerEl.style.background = 'rgba(10, 12, 26, 0.95)';
+            headerEl.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
+          } else {
+            headerEl.style.background = 'var(--glass)';
+            headerEl.style.boxShadow = 'none';
+          }
+
+          lastScrollY = currentScrollY;
+          scrollTicking = false;
+        });
+        scrollTicking = true;
       }
-      
-      // Header background blur intensity
-      if (currentScrollY > 50) {
-        headerEl.style.background = 'rgba(10, 12, 26, 0.95)';
-        headerEl.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
-      } else {
-        headerEl.style.background = 'var(--glass)';
-        headerEl.style.boxShadow = 'none';
-      }
-      
-      lastScrollY = currentScrollY;
-    });
+    }, { passive: true });
 
     const navContainer = document.getElementById('nav-links');
     const mainContainer = document.getElementById('portfolio-main');
@@ -1148,6 +1177,9 @@
         navContainer.classList.toggle("active");
         if (headerSearchBar) headerSearchBar.classList.toggle("active");
         mobileMenuToggle.classList.toggle("active");
+
+        // Recalculate header height when menu toggles, wait a tick for layout changes
+        setTimeout(updateHeaderHeight, 50);
       });
     }
 
