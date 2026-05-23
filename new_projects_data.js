@@ -61,6 +61,36 @@ window.PROJECTS = [
   },
 
 {
+    id: 'autoseg',
+    cluster: 'vision',
+    name: 'AutoSegmentor',
+    lang: 'Python',
+    tagline: 'State-of-the-art AI auto-labeling and segmentation dataset creation suite',
+    summary: 'An end-to-end AI-powered auto-labeling and segmentation ecosystem. Integrates Meta AI\'s Segment Anything Model 2 (SAM2) and CoTracker keypoint tracking within a responsive PyQt5 multi-window desktop interface. It propagates frame annotations over complex video files to create pixel-perfect masks, which are then compiled into fully augmented, YOLOv8/v11-compatible object detection and instance segmentation datasets.',
+    highlights: [
+      'Meta SAM2 integration for real-time temporal mask propagation across video sequences',
+      'CoTracker and Lucas-Kanade trackers for high-accuracy keypoint and optical flow tracking',
+      'Fully featured PyQt5 interactive canvas with precise foreground/background points, zoom, and undo/redo systems',
+      'Multi-threaded, asynchronous background ML inference to maintain GUI responsiveness',
+      'Seamless YOLO format dataset exporter with integrated copy-paste and visual data augmentations'
+    ],
+    tech: ['Python', 'PyQt5', 'PyTorch', 'SAM2', 'CoTracker', 'CUDA', 'YOLOv8', 'OpenCV'],
+    github: 'https://github.com/thippeswammy/AutoSegmentor',
+    demo: 'https://drive.google.com/file/d/1Y19lwf_IIuzwVe-3j9vX0uicV_iWbrHZ/view?usp=sharing',
+    docs: 'script/AutoSegmentor/README.md',
+    paper: '',
+    isPrivate: false,
+    status: 'completed',
+    year: '2026',
+    team: 'solo',
+    platform: ['Windows', 'Linux', 'CUDA'],
+    datasets: ['Custom Videos'],
+    thumbnail: '',
+    images: ['assets/AutoSegmenter_1080.gif'],
+    metrics: {}
+  },
+
+{
     id: 'facerecognition',
     cluster: 'vision',
     name: 'FaceRecognition',
@@ -314,6 +344,37 @@ window.PROJECTS = [
     datasets: [],
     thumbnail: '',
     images: ['docs/media/main_repo.png', 'docs/media/convex_approximation.gif'],
+    metrics: {}
+  },
+
+{
+    id: 'infratrackadas',
+    cluster: 'robotics',
+    name: 'InfratrackAdas',
+    lang: 'Python',
+    tagline: 'Offline-capable monocular-first road infrastructure auditing and behavioral intelligence system',
+    summary: 'An advanced offline-capable road intelligence system that performs static infrastructure audits, road quality assessments, and dynamic vehicle/pedestrian tracking. Driven by sequential rosbag playback, it fuses SLAM visual odometry and GPS sensors to build a time-indexed Temporal Knowledge Graph (TKG) of the environment, triggering asynchronous VLM queries (Qwen-VL-2B) for detailed defect and anomaly reporting.',
+    highlights: [
+      'Static infrastructure auditing against expected OSM definitions and municipal rules',
+      'Road quality assessment identifying potholes and surface cracks using SegFormer and VLM severity ratings',
+      'Dynamic behavioral monitoring with YOLOv8n object detection and ByteTrack trajectory tracking',
+      'Time-indexed Temporal Knowledge Graph (TKG) built with NetworkX to register entities and spatial-temporal states',
+      'Monocular visual odometry drift correction using EasyOCR sign triangulation',
+      'Interactive HTML Folium-based visualization with Google Maps overlays and heatmaps'
+    ],
+    tech: ['Python', 'ROS 2', 'RTAB-Map', 'YOLOv8', 'SegFormer', 'MiDaS', 'EasyOCR', 'Qwen-VL', 'NetworkX', 'Folium'],
+    github: 'https://github.com/thippeswammy/InfratrackAdas',
+    demo: '',
+    docs: 'script/InfratrackAdas/project.md',
+    paper: '',
+    isPrivate: false,
+    status: 'active',
+    year: '2026',
+    team: 'solo',
+    platform: ['ROS 2', 'Linux', 'CUDA'],
+    datasets: ['KITTI', 'nuScenes', 'CARLA'],
+    thumbnail: '',
+    images: [],
     metrics: {}
   },
 
@@ -598,6 +659,36 @@ window.PROJECTS = [
     team: 'solo',
     platform: ['Ubuntu 22.04', 'ROS 2 Humble'],
     datasets: [],
+    thumbnail: '',
+    images: [],
+    metrics: {}
+  },
+
+{
+    id: 'semantic_robot_perception',
+    cluster: 'robotics',
+    name: 'semantic-robot-perception',
+    lang: 'C++',
+    tagline: 'ROS 2 mobile robot navigation stack with real-time 3D spatial semantic mapping',
+    summary: 'A comprehensive ROS 2 Humble & Gazebo simulation stack for differential drive robots. Combines an optimized, physics-stabilized URDF model with a complete 3D spatial semantic mapping and perception suite. Using open-vocabulary YOLO-World and LiDAR range sweeps, the system performs camera pinhole inverse depth projection to build a persistent 3D database of environment objects, visualized dynamically in RViz.',
+    highlights: [
+      'Autonomous SLAM navigation using Nav2 and physical physics stabilization in Gazebo',
+      'Open-vocabulary object recognition using YOLO-World and spatial centroid tracking',
+      'Real-time LiDAR-camera fusion for pinhole inverse depth projection',
+      'Dynamic 3D database of semantic obstacles with orientation, count, and confidence metrics',
+      'Interactive RViz3D visualization with custom MarkerArray nodes and live camera overlays'
+    ],
+    tech: ['C++', 'Python', 'ROS 2 Humble', 'Gazebo', 'YOLO-World', 'SLAM', 'LiDAR', 'RViz'],
+    github: 'https://github.com/thippeswammy/semantic-robot-perception',
+    demo: '',
+    docs: 'script/semantic-robot-perception/README.md',
+    paper: '',
+    isPrivate: false,
+    status: 'completed',
+    year: '2026',
+    team: 'solo',
+    platform: ['ROS 2 Humble', 'Linux'],
+    datasets: ['Gazebo Simulated Worlds'],
     thumbnail: '',
     images: [],
     metrics: {}
@@ -1108,6 +1199,36 @@ window.PROJECTS = [
     datasets: [],
     thumbnail: '',
     images: ['https://github.com/thippeswammy/SpeechCalculator/assets/73697198/0030fa19-0252-4b09-a098-6440351012de'],
+    metrics: {}
+  },
+
+{
+    id: 'connect2park',
+    cluster: 'mobile',
+    name: 'Smart Car Parking System',
+    lang: 'Java',
+    tagline: 'Real-time parking space finder and booking application using Android and Firebase',
+    summary: 'An advanced, real-time smart parking management application built on Android. It allows drivers to dynamically search, book, and navigate to vacant parking slots using Google Maps API. It integrates Firebase Firestore for live synchronization of slot occupancy, secure payment gateway APIs, and support for IoT sensor arrays and AI-based parking lot camera updates.',
+    highlights: [
+      'Real-time slot availability tracking with live Firebase Firestore database synchronization',
+      'Secure in-app parking reservation and transaction processing',
+      'Google Maps API integration for location searches and turn-by-turn navigation',
+      'Analytics dashboard for parking managers to monitor occupancy rates and revenues',
+      'Optional support for physical IoT slot sensors and automated AI camera detections'
+    ],
+    tech: ['Java', 'Android Studio', 'Firebase Firestore', 'Firebase Auth', 'Google Maps API', 'IoT'],
+    github: 'https://github.com/thippeswammy/SmartParking',
+    demo: '',
+    docs: 'script/connect2park/README.md',
+    paper: '',
+    isPrivate: false,
+    status: 'completed',
+    year: '2025',
+    team: 'solo',
+    platform: ['Android'],
+    datasets: [],
+    thumbnail: '',
+    images: [],
     metrics: {}
   },
 
