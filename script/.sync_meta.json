@@ -1052,9 +1052,9 @@
                 "html_url": "https://github.com/thippeswammy/RoadTagByCameraGps",
                 "private": false
             },
-            "etag": "W/\"8af7d214d640b2ad0cc7163fd994f08b65c64e7a1eaf71e0b2cfe8922d1769d5\"",
+            "etag": "W/\"9cc5229b70e5adf946da922a731bb83e9fa9e6d8a14d91e231a405666b308026\"",
             "last_pushed": "2025-05-07T05:44:01Z",
-            "last_sync": "2026-05-23 01:13"
+            "last_sync": "2026-05-23 19:30"
         },
         "Carla": {
             "files": {
@@ -1445,7 +1445,7 @@
         },
         "ImageProcessingCourse": {
             "files": {
-                "README.md": "5f6f1c1cb017af776c2206030f746f7829cb3896"
+                "README.md": "e16b152684df2d5c3820eaf6d6e822e25b77f2c1"
             },
             "info": {
                 "description": "Implementation of core concepts from \"Image and Video Processing: From Mars to Hollywood with a Stop at the Hospital\", covering fundamental image processing techniques such as filtering, transformations, and analysis using Python and OpenCV.",
@@ -1467,9 +1467,9 @@
                 "html_url": "https://github.com/thippeswammy/ImageProcessingCourse",
                 "private": false
             },
-            "etag": "W/\"2cd4729b6b537d161e48316972b97771f02bd6a656591c0f262fad6ced2174d8\"",
-            "last_pushed": "2024-06-10T07:05:15Z",
-            "last_sync": "2026-05-23 01:14"
+            "etag": "W/\"564c1a5e724bf72f57866eaf351427ed74976eca3d46d681f9d6963e3d0d25b5\"",
+            "last_pushed": "2026-05-22T19:59:39Z",
+            "last_sync": "2026-05-23 19:30"
         },
         "SuperMarioGame": {
             "files": {
@@ -1781,13 +1781,272 @@
             "etag": "W/\"b5ed8c42e4fafceb47403eb73abd43729467cc0f98a4d09bacb68b3faee9d2ec\"",
             "last_pushed": "2024-02-03T12:39:42Z",
             "last_sync": "2026-05-23 01:14"
+        },
+        "AutoSegmentor": {
+            "files": {
+                "DatasetManager/README.md": "4514f136e4df98cef26c7b8af59a898747268e5f",
+                "DatasetManager/SyntheticEngine/README.md": "9c42c17ad87a4b8f30b249771477c3c8f8a9e7b6",
+                "DatasetManager/SyntheticEngine/backgrounds/README.md": "d3d60bdf563a0432c6d5e184c6b52837564cb061",
+                "DatasetManager/SyntheticEngine/docs/augmentation_visual_guide.md": "7d936703d454ae1e42a361702ef37fe43b7730df",
+                "DatasetManager/YolovDatasetManager/README.md": "eebc356302a96ccb6bab1e6ca17f3b9bc270562c",
+                "README.md": "82a28829ca9c68abd41486578ba531deb48dce3e",
+                "docs/architecture_and_workflow.md": "aa545eefc9e34122606244f6f8415ee85231b131",
+                "external/segment_anything_2/CODE_OF_CONDUCT.md": "08b500a221857ec3f451338e80b4a9ab1173a1af",
+                "external/segment_anything_2/INSTALL.md": "5ef1d4dc751e299a43625901398ea6a77b73f787",
+                "external/segment_anything_2/sam2/SAM_2.md": "85a7eb958bced5495ff990c2bcbe7d99662c660f",
+                "external/segment_anything_2/setup/README.md": "43b0ca9a641f010102890892964fb810739912be",
+                "external/segment_anything_2/tools/README.md": "a8564377eeb68b2734155031e9c3664cfb4c7694"
+            },
+            "info": {
+                "description": "End-to-end auto-labeling pipeline for video segmentation using SAM2 and CoTracker, with a PyQt5 GUI for interactive annotation and YOLO dataset generation.",
+                "language": "Python",
+                "topics": [
+                    "ai-tools",
+                    "annotation-tool",
+                    "auto-label",
+                    "auto-labeling",
+                    "bounding-box",
+                    "computer-vision",
+                    "cotracker",
+                    "data-labeling",
+                    "deep-learning",
+                    "mask",
+                    "mechanical-engineering",
+                    "object-detection",
+                    "polygon",
+                    "pose-estimation",
+                    "pose-labeling",
+                    "ppose",
+                    "sam2",
+                    "video-segmentation",
+                    "yolo"
+                ],
+                "html_url": "https://github.com/thippeswammy/AutoSegmentor",
+                "private": true
+            },
+            "etag": "W/\"fb99d5da11837c2ef9c6510c55508f9ebc94b559cfbb1355277615476fd24fab\"",
+            "last_pushed": "2026-05-19T17:31:26Z",
+            "last_sync": "2026-05-23 19:30"
+        },
+        "AI_SmartClassRoom": {
+            "files": {},
+            "info": {
+                "description": null,
+                "language": "Python",
+                "topics": [],
+                "html_url": "https://github.com/bharathsr16/AI_SmartClassRoom",
+                "private": false
+            }
+        },
+        "InfratrackAdas": {
+            "files": {
+                "docs/03_data_sources.md": "80b0532a3d3b1c18bb856d066eec188d06af81a3",
+                "docs/04_system_architecture.md": "aa5a2420880f025de11f6141f4a3894b0f288988",
+                "docs/05_temporal_knowledge_graph.md": "cb03211d4de39e3ed763ceaeb4da8ef8f61f51cb",
+                "docs/06_module_specification.md": "9836d9b1d3801d08f18b79ab60957b3779379066",
+                "docs/07_coordinate_frames.md": "6a94be3a4787e39575aea5c1e57469b6587fe05e",
+                "docs/08_failure_modes.md": "2af65e60217d0efc2673eac632a71671dda3d65d",
+                "docs/09_development_roadmap.md": "73c1a803a5d3945d9b670423eaddd3a624cb0b9e",
+                "docs/10_evaluation_metrics.md": "5043642f9b39c10662a9d9715e3b7c55ee5586e9",
+                "docs/Mobile Dataset Ingestion and Multi-Mode System Foundation.md": "e01fe4cb2c67dea74a6923ed8c4712641f13fe1e",
+                "docs/remark.md": "7c5ad8e1b61958eb2f57a4311ca3151e95c833eb",
+                "docs/static_infrastructure_audit.md": "3f7f8074783964395630904cc5a7c741fb7677a3",
+                "plan/InfraTrack_ADAS_DeepAnalysis.md": "7356a3b4be3cdf6767d91f0e175461f3f42abea4",
+                "project.md": "1bd277d16fd450bdd7511057ebbedfbcfe603612",
+                "skill/git-committer.md": "774014cdd69834646168163dc914724a0409f120"
+            },
+            "info": {
+                "description": null,
+                "language": "Python",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/InfratrackAdas",
+                "private": true
+            },
+            "etag": "W/\"2208d42abeaa4dbe10753b1376b92b4f56a1194af81f3273c6772d40de3c31e6\"",
+            "last_pushed": "2026-05-23T03:35:51Z",
+            "last_sync": "2026-05-23 19:30"
+        },
+        "semantic-robot-perception": {
+            "files": {
+                "README.md": "e0cc0139c8562b4848b9d8d212b4750aa52b5524",
+                "my_bot/LICENSE.md": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+                "my_bot/README.md": "e5edeea6e3b94006a644af1b4aed306d062af360",
+                "semantic_mapping/README.md": "bb58f34c287a04290a9156f865390364a3591f4a",
+                "vision_interfaces/README.md": "2deddb82dc5a3b803d50b68654feff82f7d6e5d4",
+                "vision_perception/README.md": "5e97b52841cc354b885f11cceb0c43b7c1efebe3"
+            },
+            "info": {
+                "description": "ROS 2 Humble & Gazebo simulation stack for a stabilized differential drive robot, featuring real-time YOLO/YOLO-World vision perception, centroid tracking, camera-LiDAR sensor fusion, and 3D spatial semantic mapping visualized via persistent RViz MarkerArrays.",
+                "language": "Python",
+                "topics": [
+                    "camera-lidar-fusion",
+                    "computer-vision",
+                    "differential-drive",
+                    "gazebo",
+                    "object-detection",
+                    "object-tracking",
+                    "robotics",
+                    "ros2",
+                    "semantic-mapping",
+                    "sensor-fusion",
+                    "slam",
+                    "yolo",
+                    "yolo-world"
+                ],
+                "html_url": "https://github.com/thippeswammy/semantic-robot-perception",
+                "private": true
+            },
+            "etag": "W/\"11c82e7d33c8bbcdf0ade55d7fe32b23a0d066f6c0376a09187ca9ea4569da54\"",
+            "last_pushed": "2026-05-22T17:51:22Z",
+            "last_sync": "2026-05-23 19:30"
+        },
+        "my_bot_2d": {
+            "files": {},
+            "info": {
+                "description": "Advanced ROS 2 Humble and Gazebo differential-drive mobile robot simulation stack featuring optimized robot physics, accelerated SLAM mapping, high-resolution LiDAR sensing, autonomous navigation, RViz visualization, and automated one-command launch workflows for mapping and navigation.",
+                "language": "Python",
+                "topics": [
+                    "amcl",
+                    "autonomous-navigation",
+                    "differential-drive",
+                    "gazebo",
+                    "gazebo-simulation",
+                    "localization",
+                    "mapping",
+                    "mobile-robot",
+                    "nav2",
+                    "robot-simulation",
+                    "robotics",
+                    "ros2",
+                    "ros2-humble",
+                    "slam-toolbox"
+                ],
+                "html_url": "https://github.com/thippeswammy/my_bot_2d",
+                "private": true
+            }
+        },
+        "thippeswammy.resume": {
+            "files": {},
+            "info": {
+                "description": null,
+                "language": "TeX",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/thippeswammy.resume",
+                "private": true
+            }
+        },
+        "papers": {
+            "files": {},
+            "info": {
+                "description": "The reserch papers, for conferences and workshops or general",
+                "language": "TeX",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/papers",
+                "private": true
+            }
+        },
+        "data_creation": {
+            "files": {},
+            "info": {
+                "description": "synthetic data generation, training workflow setup.",
+                "language": "Python",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/data_creation",
+                "private": true
+            }
+        },
+        "MeshNav": {
+            "files": {},
+            "info": {
+                "description": null,
+                "language": "C++",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/MeshNav",
+                "private": true
+            }
+        },
+        "Yolov_models": {
+            "files": {},
+            "info": {
+                "description": null,
+                "language": "Python",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/Yolov_models",
+                "private": true
+            }
+        },
+        "connect2park": {
+            "files": {
+                "README.md": "f8b3f1926bd01ce06d07aed7fab4556859105976"
+            },
+            "info": {
+                "description": "Real-time smart parking system with Android app and Firebase backend, enabling live slot discovery, booking, navigation, and management with optional IoT/AI-based occupancy detection.",
+                "language": "Java",
+                "topics": [
+                    "android",
+                    "android-application",
+                    "cloud-functions",
+                    "firebase",
+                    "firestore",
+                    "google-maps",
+                    "iot",
+                    "java",
+                    "kotlin",
+                    "location-based-services",
+                    "mobile-app",
+                    "parking-management",
+                    "payment-integration",
+                    "real-time-systems",
+                    "scalability",
+                    "smart-parking"
+                ],
+                "html_url": "https://github.com/thippeswammy/connect2park",
+                "private": true
+            },
+            "etag": "W/\"59af4321ac44a2f74cffb97b65a42b7b8887ceaec8187a43bcfda52e7d3ca732\"",
+            "last_pushed": "2025-04-15T03:45:22Z",
+            "last_sync": "2026-05-23 19:30"
+        },
+        "JarvisControlSystem1": {
+            "files": {},
+            "info": {
+                "description": "A Python project named Jarvis Control System that allows controlling Windows 10 system using speech, actions, text input, camera, sound, and more. Inspired by Jarvis from Iron Man!",
+                "language": "Python",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/JarvisControlSystem1",
+                "private": true
+            }
+        },
+        "IntelliJ-IDEA-Projects": {
+            "files": {},
+            "info": {
+                "description": "ProjectFiles",
+                "language": "Java",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/IntelliJ-IDEA-Projects",
+                "private": true
+            }
+        },
+        "NetBeans-Projects": {
+            "files": {},
+            "info": {
+                "description": "Projects Files",
+                "language": "Java",
+                "topics": [],
+                "html_url": "https://github.com/thippeswammy/NetBeans-Projects",
+                "private": true
+            }
         }
     },
     "selected_repos": [
+        "InfratrackAdas",
+        "ImageProcessingCourse",
+        "semantic-robot-perception",
         "NeetCodeProblems",
         "LaneLinesDetection",
         "Deep-Learning-Specialization",
         "JarvisControlSystem",
+        "AutoSegmentor",
         "my_bot",
         "VO2MAP",
         "MultipleVo",
@@ -1809,6 +2068,7 @@
         "DPVO",
         "ADAS-for-Indian-Road-Vehicle",
         "RoadTagByCameraGps",
+        "connect2park",
         "Carla",
         "Arduino",
         "AR-Cube-Drop",
@@ -1823,7 +2083,6 @@
         "Flappy-bird-game",
         "Maze-game",
         "Snake-GUI-game",
-        "ImageProcessingCourse",
         "SuperMarioGame",
         "BrickGame",
         "BallonBlastGame",
@@ -1832,10 +2091,7 @@
         "SecureAppLocker",
         "MultiAppRunnerLoginAuth",
         "SimpleContactsManager",
-        "TextBasedTicTacToe",
-        "BasicMathCalculatorApp",
-        "HandCricketGame",
-        "NumberGuesserGame"
+        "TextBasedTicTacToe"
     ],
-    "last_sync": "2026-05-23 01:18"
+    "last_sync": "2026-05-23 19:30"
 }
