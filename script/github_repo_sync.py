@@ -9,7 +9,39 @@ from datetime import datetime
 import re
 
 # --- Configuration & Constants ---
-GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
+def load_github_token():
+    # 1. Check environment variable
+    token = os.environ.get("GITHUB_TOKEN")
+    if token:
+        return token
+    
+    # 2. Check local .env file in script dir or parent dir
+    for path in [".env", "../.env", "script/.env"]:
+        if os.path.exists(path):
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        if line.startswith("GITHUB_TOKEN="):
+                            # Strip quotes
+                            val = line.split("=", 1)[1].strip()
+                            if (val.startswith('"') and val.endswith('"')) or (val.startswith("'") and val.endswith("'")):
+                                val = val[1:-1]
+                            return val
+            except:
+                pass
+                
+    # 3. Check local .github_token or .token file
+    for path in [".github_token", "../.github_token", ".token", "../.token", "script/.github_token", "script/.token"]:
+        if os.path.exists(path):
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    return f.read().strip()
+            except:
+                pass
+    return None
+
+GITHUB_TOKEN = load_github_token()
 META_FILE = ".sync_meta.json"
 JS_DATA_FILE = "../projects_data.js"
 USER_AGENT = "GitHubRepoSync-Engine-v10"
@@ -291,7 +323,45 @@ class RepoSyncGUI:
         self.sync_btn.pack(fill="x", pady=(10, 0))
 
     def initial_load(self): 
-        self.log("Fetching repositories...")
+        global GITHUB_TOKEN
+        self.log("Initializing Sync Engine...")
+        self.has_private_scope = False
+        
+        if GITHUB_TOKEN:
+            self.log("Validating GITHUB_TOKEN...")
+            try:
+                res = requests.get("https://api.github.com/user", headers=get_headers())
+                if res.status_code == 200:
+                    user_data = res.json()
+                    # Check Classic Token scopes
+                    scopes = res.headers.get("X-OAuth-Scopes", "")
+                    if scopes:
+                        scopes_list = [s.strip() for s in scopes.split(",")]
+                        if "repo" in scopes_list:
+                            self.has_private_scope = True
+                    # Check if private repos are accessible (Fine-grained or Classic PAT)
+                    if "total_private_repos" in user_data and user_data["total_private_repos"] is not None:
+                        self.has_private_scope = True
+                    
+                    self.log(f"Authenticated as GitHub user: {user_data.get('login')}")
+                    if self.has_private_scope:
+                        self.log("Success: GITHUB_TOKEN has private repository access.")
+                    else:
+                        self.log("WARNING: GITHUB_TOKEN is valid but lacks private repository scope ('repo').")
+                        self.log("Private repositories will NOT be fetched. Please grant 'repo' scope (Classic) or metadata/contents (Fine-grained).")
+                elif res.status_code == 401:
+                    self.log("ERROR: GITHUB_TOKEN is invalid or expired (401). Falling back to public repositories.")
+                    GITHUB_TOKEN = None
+                else:
+                    self.log(f"WARNING: Token validation failed (Status {res.status_code}). Using public mode.")
+                    GITHUB_TOKEN = None
+            except Exception as e:
+                self.log(f"Connection warning during token validation: {e}. Attempting fetch anyway...")
+        else:
+            self.log("No GITHUB_TOKEN detected. Fetching public repositories only.")
+            self.log("Tip: Set GITHUB_TOKEN in your shell, or create a local '.env' file with GITHUB_TOKEN=your_token.")
+
+        self.log("Fetching repositories from GitHub...")
         self.repos_data = fetch_repos(self.username)
         # Pre-populate meta with basic info so 'Build Portfolio' works immediately
         for r in self.repos_data:
@@ -305,7 +375,19 @@ class RepoSyncGUI:
         self.root.after(0, self.on_loaded)
 
     def on_loaded(self):
-        self.auth_label.config(text=f"Status: {len(self.repos_data)} Repos Found", foreground=COLOR_SUCCESS if GITHUB_TOKEN else COLOR_FORK)
+        global GITHUB_TOKEN
+        if GITHUB_TOKEN:
+            if self.has_private_scope:
+                status_text = f"Status: {len(self.repos_data)} Repos (Authenticated + Private)"
+                status_color = COLOR_SUCCESS
+            else:
+                status_text = f"Status: {len(self.repos_data)} Repos (Public Only - Lacks Scope)"
+                status_color = COLOR_WARNING
+        else:
+            status_text = f"Status: {len(self.repos_data)} Repos (Public Only - No Token)"
+            status_color = COLOR_FORK
+            
+        self.auth_label.config(text=status_text, foreground=status_color)
         for r in self.repos_data: self.vars[r['name']] = tk.BooleanVar(value=r['name'] in self.meta.get("selected_repos", []))
         self.refresh_list()
         self.log(f"Ready. {len(self.repos_data)} repositories loaded.")
