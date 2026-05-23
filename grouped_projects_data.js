@@ -14,13 +14,29 @@ window.CLUSTERS = [
 ];
 
 window.PINNED_PROJECTS = [
+  // Raw project IDs
   'autoseg',
   'jarviscontrolsystem',
   'lanemappingtool',
-  'adas-for-indian-road-vehicle',
+  'adas_for_indian_road_vehicle',
   'facerecognition',
-  'mbd-dspace',
-  'droid-slam',
+  'mbd_dspace',
+  'droid_slam',
+  'imageprocessingcourse',
+  'semantic_robot_perception',
+  'rtab_ws',
+  'arduino',
+
+  // Master project IDs (for grouped_projects_data)
+  'adas_road_perception_suite',
+  'autosegmentor_master',
+  'facerecognition_master',
+  'droid_slam_ecosystem',
+  'lanemappingtool_master',
+  'model_based_automotive_design',
+  'semantic_robot_perception_master',
+  'embedded_microcontroller_systems',
+  'rtabmap_slam_suite'
 ];
 
 window.MASTER_PROJECTS = [
@@ -197,15 +213,16 @@ window.MASTER_PROJECTS = [
     id: 'lanemappingtool_master',
     name: 'LaneMappingTool',
     cluster: 'robotics',
-    tagline: 'Lane graph mapping and visualization for autonomous vehicles',
-    summary: 'Transforms noisy recorded vehicle paths into structured graph-based lane networks with B-spline smoothing, junction logic, and an interactive React+Flask web dashboard, deploying directly to autonomous vehicle stacks.',
+    tagline: 'Comprehensive React & Flask lane graph mapping and visualization suite for autonomous vehicles',
+    summary: 'A professional-grade engineering workspace that transforms noisy raw recorded vehicle GPS/IMU paths (.npy) into highly structured, mathematically optimized graph-based road lane networks. Features a modern React & Vite interactive web dashboard, a robust Flask API backend, spline-based curve smoothing algorithms, bidirectional pathfinding, edge-yaw verification, and an automated deployment bridge exporting NetworkX-compatible Pickle data directly into active autonomous vehicle control stacks.',
     highlights: [
-      'Graph-based lane network representation (nodes + edges)',
-      'High-fidelity B-Spline path smoothing and junction analysis',
-      'Interactive React + Vite frontend and Flask REST backend',
-      'Deploys to AV stacks via optimized pickle exports'
+      'Interactive Web Dashboard: Modern sidebar widgets with high-performance canvas rendering (Chart.js), real-time pan/zoom, node drawing, and box selection.',
+      'Graph-Based Data Modeling: Decouples raw points into directed graph nodes and edges, natively resolving complex road junctions, lane merges, splits, and intersections.',
+      'Advanced Spline Interpolation: Automated B-Spline curve smoothing algorithms with dynamic tension tuning and edge-aligned yaw calculations.',
+      'Workspace Utilities: Comprehensive undo/redo history state, bulk zone-ID editing, bidirectional pathfinding validation, and seamless multi-file path merging.',
+      'Autonomous Deployment Pipeline: Formats generated networks to JSON and bridges them via legacy conversion scripts into ROS-ready Python 2.7 NetworkX Pickles.'
     ],
-    tech: ['adas', 'autonomous-driving', 'chart.js', 'flask', 'python', 'react'],
+    tech: ['Python', 'React', 'Flask', 'Vite', 'Chart.js', 'B-Spline', 'NetworkX', 'NumPy', 'REST API', 'Autonomous Driving'],
     github: 'https://github.com/thippeswammy/LaneMappingTool',
     repositories: [
       { name: 'lanemappingtool', role: 'Lane Graph Mapping Tool & React/Flask Dashboard', github: 'https://github.com/thippeswammy/LaneMappingTool' }
