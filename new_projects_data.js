@@ -388,7 +388,7 @@ window.PROJECTS = [
     name: 'LaneMappingTool',
     lang: 'Python',
     tagline: 'Comprehensive React & Flask lane graph mapping and visualization suite for autonomous vehicles',
-    summary: 'A professional-grade engineering workspace that transforms noisy raw recorded vehicle GPS/IMU paths (.npy) into highly structured, mathematically optimized graph-based road lane networks. Features a modern React & Vite interactive web dashboard, a robust Flask API backend, spline-based curve smoothing algorithms, bidirectional pathfinding, edge-yaw verification, and an automated deployment bridge exporting NetworkX-compatible Pickle data directly into active autonomous vehicle control stacks.',
+    summary: 'A professional-grade engineering workspace that transforms noisy raw recorded vehicle paths into highly structured, mathematically optimized graph-based road lane networks. Features a modern React & Vite interactive web dashboard, a robust Flask API backend, spline-based curve smoothing algorithms, bidirectional pathfinding, edge-yaw verification, and an automated deployment bridge exporting NetworkX-compatible Pickle data directly into active autonomous vehicle control stacks.',
     highlights: [
       'Interactive Web Dashboard: Modern sidebar widgets with high-performance canvas rendering (Chart.js), real-time pan/zoom, node drawing, and box selection.',
       'Graph-Based Data Modeling: Decouples raw points into directed graph nodes and edges, natively resolving complex road junctions, lane merges, splits, and intersections.',
