@@ -1,0 +1,30 @@
+{
+  id: 'infratrackadas',
+  cluster: 'robotics',
+  name: 'InfratrackAdas',
+  lang: 'Python',
+  tagline: 'Offline-capable monocular-first road infrastructure auditing and behavioral intelligence system',
+  summary: 'An advanced offline-capable road intelligence system that performs static infrastructure audits, road quality assessments, and dynamic vehicle/pedestrian tracking. Driven by sequential rosbag playback, it fuses SLAM visual odometry and GPS sensors to build a time-indexed Temporal Knowledge Graph (TKG) of the environment, triggering asynchronous VLM queries (Qwen-VL-2B) for detailed defect and anomaly reporting.',
+  highlights: [
+    'Static infrastructure auditing against expected OSM definitions and municipal rules',
+    'Road quality assessment identifying potholes and surface cracks using SegFormer and VLM severity ratings',
+    'Dynamic behavioral monitoring with YOLOv8n object detection and ByteTrack trajectory tracking',
+    'Time-indexed Temporal Knowledge Graph (TKG) built with NetworkX to register entities and spatial-temporal states',
+    'Monocular visual odometry drift correction using EasyOCR sign triangulation',
+    'Interactive HTML Folium-based visualization with Google Maps overlays and heatmaps'
+  ],
+  tech: ['Python', 'ROS 2', 'RTAB-Map', 'YOLOv8', 'SegFormer', 'MiDaS', 'EasyOCR', 'Qwen-VL', 'NetworkX', 'Folium'],
+  github: 'https://github.com/thippeswammy/InfratrackAdas',
+  demo: '',
+  docs: 'script/InfratrackAdas/project.md',
+  paper: '',
+  isPrivate: false,
+  status: 'active',
+  year: '2026',
+  team: 'solo',
+  platform: ['ROS 2', 'Linux', 'CUDA'],
+  datasets: ['KITTI', 'nuScenes', 'CARLA'],
+  thumbnail: '',
+  images: [],
+  metrics: {}
+}
