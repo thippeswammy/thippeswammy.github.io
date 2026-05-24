@@ -14,7 +14,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.13/dist/lenis.css">
-  <script src="projects_data.js"></script>
+  <script src="new_projects_data.js"></script>
+  <script src="grouped_projects_data.js"></script>
 
   <style>
     :root {
@@ -684,6 +685,117 @@
     .mobile-menu-toggle.active span:nth-child(2) { opacity: 0; }
     .mobile-menu-toggle.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
+    /* Segmented View Mode Toggle styling */
+    .view-mode-toggle {
+      display: inline-flex;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 3px;
+      gap: 2px;
+      flex-shrink: 0;
+      height: 40px;
+      align-items: center;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.02);
+    }
+    .mode-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-h);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0 16px;
+      height: 100%;
+      border-radius: 9px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+    }
+    .mode-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .mode-btn.active {
+      background: rgba(99, 102, 241, 0.15);
+      color: #fff;
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      box-shadow: 
+        0 0 15px rgba(99, 102, 241, 0.1),
+        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Master Card component repositories layout styling */
+    .card-master-repos {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      width: 100%;
+    }
+    .master-repos-title {
+      font-family: var(--font-h);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .master-repos-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .master-repo-pill {
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      padding: 12px 16px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .master-repo-pill:hover {
+      background: rgba(255, 255, 255, 0.035);
+      border-color: rgba(255, 255, 255, 0.08);
+      transform: translateX(4px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .master-repo-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .master-repo-name {
+      font-family: var(--font-h);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+      letter-spacing: 0.5px;
+    }
+    .master-repo-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .master-repo-link:hover {
+      transform: scale(1.2);
+      filter: brightness(1.25);
+    }
+    .master-repo-role {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 5px;
+      line-height: 1.4;
+    }
+
   </style>
 
   <!-- GitHub Calendar CSS -->
@@ -717,6 +829,14 @@
       <div class="search-wrapper">
         <span class="search-icon">🔍</span>
         <input type="text" id="project-search" class="search-input" placeholder="Find a project...">
+      </div>
+      <div class="view-mode-toggle">
+        <button id="mode-repos" class="mode-btn active" data-mode="repos">
+          <span class="mode-icon">📂</span> Repositories
+        </button>
+        <button id="mode-grouped" class="mode-btn" data-mode="grouped">
+          <span class="mode-icon">🗂️</span> Grouped Projects
+        </button>
       </div>
       <select id="tech-filter" class="filter-select">
         <option value="all">Technology</option>
@@ -916,18 +1036,32 @@
     const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
     const headerSearchBar = document.querySelector('.header-search-bar');
 
+    window.currentViewMode = 'repos';
+
     let activeTechFilter = 'all';
     let activeClusterFilter = 'all';
     let searchQuery = '';
 
-    // Populate Technology Dropdown
-    const allTech = [...new Set(window.PROJECTS.flatMap(p => p.tech || []))].sort();
-    allTech.forEach(tech => {
-      const opt = document.createElement('option');
-      opt.value = tech;
-      opt.textContent = tech;
-      techFilterSelect.appendChild(opt);
-    });
+    // Populate Technology Dropdown dynamically
+    function populateTechFilter(projectsList) {
+      techFilterSelect.innerHTML = '<option value="all">Technology</option>';
+      const allTech = [...new Set(projectsList.flatMap(p => p.tech || []))].sort();
+      allTech.forEach(tech => {
+        const opt = document.createElement('option');
+        opt.value = tech;
+        opt.textContent = tech;
+        techFilterSelect.appendChild(opt);
+      });
+      if (allTech.includes(activeTechFilter)) {
+        techFilterSelect.value = activeTechFilter;
+      } else {
+        activeTechFilter = 'all';
+        techFilterSelect.value = 'all';
+      }
+    }
+
+    // Initial tech population
+    populateTechFilter(window.PROJECTS);
 
     // Populate Category Dropdown
     window.CLUSTERS.forEach(cluster => {
@@ -936,6 +1070,32 @@
       opt.textContent = cluster.label;
       clusterFilterSelect.appendChild(opt);
     });
+
+    // Toggle View Mode Event Listeners
+    const btnRepos = document.getElementById('mode-repos');
+    const btnGrouped = document.getElementById('mode-grouped');
+    
+    function setViewMode(mode) {
+      window.currentViewMode = mode;
+      if (mode === 'repos') {
+        btnRepos.classList.add('active');
+        btnGrouped.classList.remove('active');
+        populateTechFilter(window.PROJECTS);
+      } else {
+        btnGrouped.classList.add('active');
+        btnRepos.classList.remove('active');
+        populateTechFilter(window.MASTER_PROJECTS);
+      }
+      renderPortfolio();
+      if (typeof renderPinnedProjects === 'function') {
+        renderPinnedProjects(window.PINNED_PROJECTS);
+      }
+    }
+
+    if (btnRepos && btnGrouped) {
+      btnRepos.addEventListener('click', () => setViewMode('repos'));
+      btnGrouped.addEventListener('click', () => setViewMode('grouped'));
+    }
 
     // Main Rendering Function
     function renderPortfolio() {
@@ -953,16 +1113,18 @@
       pinnedLink.textContent = 'Pinned';
       navContainer.appendChild(pinnedLink);
 
-      
       let totalVisible = 0;
+      const activeProjectsList = window.currentViewMode === 'repos' ? window.PROJECTS : window.MASTER_PROJECTS;
 
       // Identify any projects with clusters not in CLUSTERS
       const definedClusterIds = window.CLUSTERS.map(c => c.id);
-      const otherProjects = window.PROJECTS.filter(p => {
-        if (p.hidden) return false;
+      const otherProjects = activeProjectsList.filter(p => {
+        if (p.hidden || p.isHidden) return false;
         const matchesSearch = searchQuery === '' || 
           p.name.toLowerCase().includes(searchQuery) || 
-          p.summary.toLowerCase().includes(searchQuery) ||
+          (p.tagline && p.tagline.toLowerCase().includes(searchQuery)) ||
+          (p.summary && p.summary.toLowerCase().includes(searchQuery)) ||
+          (p.description && p.description.toLowerCase().includes(searchQuery)) ||
           (p.tech && p.tech.some(t => t.toLowerCase().includes(searchQuery)));
         
         const matchesTech = activeTechFilter === 'all' || 
@@ -990,13 +1152,15 @@
         if (cluster.id === 'unassigned') {
           filteredProjects = otherProjects;
         } else {
-          filteredProjects = window.PROJECTS.filter(p => {
-            if (p.hidden) return false;
+          filteredProjects = activeProjectsList.filter(p => {
+            if (p.hidden || p.isHidden) return false;
             if (p.cluster !== cluster.id) return false;
             
             const matchesSearch = searchQuery === '' || 
               p.name.toLowerCase().includes(searchQuery) || 
-              p.summary.toLowerCase().includes(searchQuery) ||
+              (p.tagline && p.tagline.toLowerCase().includes(searchQuery)) ||
+              (p.summary && p.summary.toLowerCase().includes(searchQuery)) ||
+              (p.description && p.description.toLowerCase().includes(searchQuery)) ||
               (p.tech && p.tech.some(t => t.toLowerCase().includes(searchQuery)));
             
             const matchesTech = activeTechFilter === 'all' || 
@@ -1035,20 +1199,45 @@
             card.className = 'card proj-card';
             card.style.setProperty('--accent', cluster.css);
 
-            let linkHtml = p.isPrivate 
-              ? `<div class="card-private">🔒 Private Repository</div>`
-              : `<a href="${p.github}" target="_blank" class="card-link">View Project ↗</a>`;
+            let linkHtml = '';
+            if (p.isPrivate) {
+              linkHtml = `<div class="card-private">🔒 Private Repository</div>`;
+            } else {
+              const btnText = window.currentViewMode === 'repos' ? 'View Project ↗' : 'View Master Project ↗';
+              linkHtml = `<a href="${p.github}" target="_blank" class="card-link">${btnText}</a>`;
+            }
+
+            let reposListHtml = '';
+            if (window.currentViewMode === 'grouped' && p.repositories && p.repositories.length > 0) {
+              reposListHtml = `
+                <div class="card-master-repos">
+                  <div class="master-repos-title">📌 Component Repositories</div>
+                  <div class="master-repos-grid">
+                    ${p.repositories.map(repo => `
+                      <div class="master-repo-pill">
+                        <div class="master-repo-header">
+                          <span class="master-repo-name">${repo.name}</span>
+                          <a href="${repo.github}" target="_blank" class="master-repo-link" title="View Repository">↗</a>
+                        </div>
+                        <div class="master-repo-role">${repo.role}</div>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              `;
+            }
 
             card.innerHTML = `
               <h4 class="card-title">${p.name}</h4>
-              <div class="card-tagline">${p.summary}</div>
-              <p class="card-summary">${p.description || ''}</p>
+              <div class="card-tagline">${p.tagline || p.summary}</div>
+              <p class="card-summary">${p.description || p.summary || ''}</p>
               <ul class="card-highlights">
                 ${(p.highlights || []).map(h => `<li>${h}</li>`).join('')}
               </ul>
               <div class="card-tech-list">
                 ${(p.tech || []).map(t => `<span class="tech-tag">${t}</span>`).join('')}
               </div>
+              ${reposListHtml}
               ${linkHtml}
             `;
             grid.appendChild(card);

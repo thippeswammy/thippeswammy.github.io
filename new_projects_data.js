@@ -14,6 +14,7 @@ window.CLUSTERS = [
 ];
 
 window.PINNED_PROJECTS = [
+  // Raw project IDs
   'autoseg',
   'jarviscontrolsystem',
   'lanemappingtool',
@@ -25,6 +26,17 @@ window.PINNED_PROJECTS = [
   'semantic_robot_perception',
   'rtab_ws',
   'arduino',
+
+  // Master project IDs (for grouped_projects_data)
+  'adas_road_perception_suite',
+  'autosegmentor_master',
+  'facerecognition_master',
+  'droid_slam_ecosystem',
+  'lanemappingtool_master',
+  'model_based_automotive_design',
+  'semantic_robot_perception_master',
+  'embedded_microcontroller_systems',
+  'rtabmap_slam_suite'
 ];
 
 window.PROJECTS = [
