@@ -338,10 +338,30 @@ function renderPinnedProjects(pinnedProjectIds) {
   container.innerHTML = '';
   
   const isGrouped = window.currentViewMode === 'grouped';
-  const projectsSource = isGrouped ? window.MASTER_PROJECTS : window.PROJECTS;
   
   pinnedProjectIds.forEach(id => {
-    const proj = projectsSource.find(p => p.id === id); if (!proj) return;
+    // Try to find in window.MASTER_PROJECTS if grouped, EXCEPT if it's games/research/mobile
+    let proj = null;
+    let isMaster = false;
+    
+    if (isGrouped) {
+      proj = window.MASTER_PROJECTS.find(p => p.id === id);
+      if (proj) {
+        if (['games', 'research', 'mobile'].includes(proj.cluster)) {
+          // If it falls under these clusters, we want individual repository pins!
+          proj = null; 
+        } else {
+          isMaster = true;
+        }
+      }
+    }
+    
+    if (!proj) {
+      proj = window.PROJECTS.find(p => p.id === id);
+      isMaster = false;
+    }
+    
+    if (!proj) return;
     
     let langColor = '#8b949e';
     if (proj.lang === 'C++') langColor = '#f34b7d';
@@ -357,7 +377,7 @@ function renderPinnedProjects(pinnedProjectIds) {
     
     // In grouped mode, list number of child repositories
     let metaText = proj.lang || '';
-    if (isGrouped && proj.repositories) {
+    if (isMaster && proj.repositories) {
       metaText = `${proj.repositories.length} repos`;
     }
     
@@ -375,8 +395,22 @@ window.openPinModal = function () {
   if (!modal || !listContainer) return;
   listContainer.innerHTML = '';
   
-  const isGrouped = window.currentViewMode === 'grouped';
-  const projectsSource = isGrouped ? window.MASTER_PROJECTS : window.PROJECTS;
+  const projectsSource = [];
+  if (window.currentViewMode === 'repos') {
+    projectsSource.push(...window.PROJECTS);
+  } else {
+    // Grouped mode: master projects for standard clusters, individual projects for games, research, mobile
+    window.MASTER_PROJECTS.forEach(proj => {
+      if (!['games', 'research', 'mobile'].includes(proj.cluster)) {
+        projectsSource.push(proj);
+      }
+    });
+    window.PROJECTS.forEach(proj => {
+      if (['games', 'research', 'mobile'].includes(proj.cluster)) {
+        projectsSource.push(proj);
+      }
+    });
+  }
   
   projectsSource.forEach(proj => {
     if (proj.hidden || proj.isHidden) return;
