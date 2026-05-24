@@ -1042,6 +1042,17 @@
     let activeClusterFilter = 'all';
     let searchQuery = '';
 
+    // Mix of master projects and individual projects for games, research, mobile in grouped mode
+    function getEffectiveProjectsList() {
+      if (window.currentViewMode === 'repos') {
+        return window.PROJECTS;
+      } else {
+        const masterSubset = window.MASTER_PROJECTS.filter(p => !['games', 'research', 'mobile'].includes(p.cluster));
+        const individualSubset = window.PROJECTS.filter(p => ['games', 'research', 'mobile'].includes(p.cluster));
+        return [...masterSubset, ...individualSubset];
+      }
+    }
+
     // Populate Technology Dropdown dynamically
     function populateTechFilter(projectsList) {
       techFilterSelect.innerHTML = '<option value="all">Technology</option>';
@@ -1061,7 +1072,7 @@
     }
 
     // Initial tech population
-    populateTechFilter(window.PROJECTS);
+    populateTechFilter(getEffectiveProjectsList());
 
     // Populate Category Dropdown
     window.CLUSTERS.forEach(cluster => {
@@ -1080,12 +1091,11 @@
       if (mode === 'repos') {
         btnRepos.classList.add('active');
         btnGrouped.classList.remove('active');
-        populateTechFilter(window.PROJECTS);
       } else {
         btnGrouped.classList.add('active');
         btnRepos.classList.remove('active');
-        populateTechFilter(window.MASTER_PROJECTS);
       }
+      populateTechFilter(getEffectiveProjectsList());
       renderPortfolio();
       if (typeof renderPinnedProjects === 'function') {
         renderPinnedProjects(window.PINNED_PROJECTS);
@@ -1152,7 +1162,12 @@
         if (cluster.id === 'unassigned') {
           filteredProjects = otherProjects;
         } else {
-          filteredProjects = activeProjectsList.filter(p => {
+          // If cluster is games, research, or mobile, always load individual repositories from PROJECTS
+          const sourceList = (window.currentViewMode === 'repos' || ['games', 'research', 'mobile'].includes(cluster.id))
+            ? window.PROJECTS
+            : window.MASTER_PROJECTS;
+
+          filteredProjects = sourceList.filter(p => {
             if (p.hidden || p.isHidden) return false;
             if (p.cluster !== cluster.id) return false;
             
@@ -1199,16 +1214,18 @@
             card.className = 'card proj-card';
             card.style.setProperty('--accent', cluster.css);
 
+            const isIndividualCard = window.currentViewMode === 'repos' || ['games', 'research', 'mobile'].includes(cluster.id);
+
             let linkHtml = '';
             if (p.isPrivate) {
               linkHtml = `<div class="card-private">🔒 Private Repository</div>`;
             } else {
-              const btnText = window.currentViewMode === 'repos' ? 'View Project ↗' : 'View Master Project ↗';
+              const btnText = isIndividualCard ? 'View Project ↗' : 'View Master Project ↗';
               linkHtml = `<a href="${p.github}" target="_blank" class="card-link">${btnText}</a>`;
             }
 
             let reposListHtml = '';
-            if (window.currentViewMode === 'grouped' && p.repositories && p.repositories.length > 0) {
+            if (!isIndividualCard && p.repositories && p.repositories.length > 0) {
               reposListHtml = `
                 <div class="card-master-repos">
                   <div class="master-repos-title">📌 Component Repositories</div>
