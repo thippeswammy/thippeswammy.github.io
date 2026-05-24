@@ -336,11 +336,37 @@ function initPinnedProjects() {
 function renderPinnedProjects(pinnedProjectIds) {
   const container = document.getElementById('github-pinned-container'); if (!container) return;
   container.innerHTML = '';
+  
+  const isGrouped = window.currentViewMode === 'grouped';
+  const projectsSource = isGrouped ? window.MASTER_PROJECTS : window.PROJECTS;
+  
   pinnedProjectIds.forEach(id => {
-    const proj = window.PROJECTS.find(p => p.id === id); if (!proj) return;
-    let langColor = '#8b949e'; if (proj.lang === 'C++') langColor = '#f34b7d'; else if (proj.lang === 'Python') langColor = '#3572A5';
+    const proj = projectsSource.find(p => p.id === id); if (!proj) return;
+    
+    let langColor = '#8b949e';
+    if (proj.lang === 'C++') langColor = '#f34b7d';
+    else if (proj.lang === 'Python') langColor = '#3572A5';
+    else if (proj.lang === 'Java') langColor = '#b07219';
+    else if (proj.lang === 'C#') langColor = '#178600';
+    else if (proj.lang === 'MATLAB') langColor = '#e16737';
+    else if (proj.lang === 'ROS 2') langColor = '#22d3ee';
+    else if (proj.lang === 'JavaScript') langColor = '#f1e05a';
+    else if (proj.lang === 'Arduino') langColor = '#bd79d1';
+    
     const card = document.createElement('div'); card.className = 'pinned-item'; card.dataset.id = proj.id;
-    card.innerHTML = `<div class="pinned-item-header"><div class="pinned-item-title-wrapper"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg><a href="${proj.github}" target="_blank" class="pinned-item-title">${proj.name}</a></div><span class="pinned-item-badge">${proj.isPrivate ? 'Private' : 'Public'}</span></div><p class="pinned-item-desc">${proj.summary}</p><div class="pinned-item-meta"><span class="pinned-item-lang"><span class="lang-color" style="background-color:${langColor}"></span>${proj.lang}</span></div>`;
+    
+    // In grouped mode, list number of child repositories
+    let metaText = proj.lang || '';
+    if (isGrouped && proj.repositories) {
+      metaText = `${proj.repositories.length} repos`;
+    }
+    
+    let metaHtml = '';
+    if (metaText) {
+      metaHtml = `<span class="pinned-item-lang">${proj.lang ? `<span class="lang-color" style="background-color:${langColor}"></span>` : ''}${metaText}</span>`;
+    }
+    
+    card.innerHTML = `<div class="pinned-item-header"><div class="pinned-item-title-wrapper"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg><a href="${proj.github}" target="_blank" class="pinned-item-title">${proj.name}</a></div><span class="pinned-item-badge">${proj.isPrivate ? 'Private' : 'Public'}</span></div><p class="pinned-item-desc">${proj.tagline || proj.summary}</p><div class="pinned-item-meta">${metaHtml}</div>`;
     container.appendChild(card);
   });
 }
@@ -348,10 +374,14 @@ window.openPinModal = function () {
   const modal = document.getElementById('pin-modal'), listContainer = document.getElementById('pin-modal-list');
   if (!modal || !listContainer) return;
   listContainer.innerHTML = '';
-  window.PROJECTS.forEach(proj => {
-    if (proj.hidden) return;
+  
+  const isGrouped = window.currentViewMode === 'grouped';
+  const projectsSource = isGrouped ? window.MASTER_PROJECTS : window.PROJECTS;
+  
+  projectsSource.forEach(proj => {
+    if (proj.hidden || proj.isHidden) return;
     const item = document.createElement('div'); item.className = 'pin-checkbox-item';
-    item.innerHTML = `<input type="checkbox" id="pin-check-${proj.id}" value="${proj.id}" ${window.PINNED_PROJECTS.includes(proj.id) ? 'checked' : ''} onchange="window.toggleModalPin(this)"><label class="pin-checkbox-label" for="pin-check-${proj.id}"><span class="pin-checkbox-title">${proj.name}</span><span class="pin-checkbox-desc">${proj.summary}</span></label>`;
+    item.innerHTML = `<input type="checkbox" id="pin-check-${proj.id}" value="${proj.id}" ${window.PINNED_PROJECTS.includes(proj.id) ? 'checked' : ''} onchange="window.toggleModalPin(this)"><label class="pin-checkbox-label" for="pin-check-${proj.id}"><span class="pin-checkbox-title">${proj.name}</span><span class="pin-checkbox-desc">${proj.tagline || proj.summary}</span></label>`;
     listContainer.appendChild(item);
   });
   modal.classList.add('active'); document.body.classList.add('modal-open');
