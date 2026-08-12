@@ -3,7 +3,7 @@
 // ═══════════════════════════════════════════════════════════════════
 
 const GITHUB_USERNAME = 'thippeswammy';
-const CONTRIBUTIONS_API = `https://github-contributions.vercel.app/api/v1/${GITHUB_USERNAME}`;
+const CONTRIBUTIONS_API = `https://corsproxy.io/?https://github-contributions.vercel.app/api/v1/${GITHUB_USERNAME}`;
 const START_YEAR = 2020; 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -89,6 +89,8 @@ function normalizeDay(day) {
   } else if (day.contributionLevel !== undefined) {
     const levelMap = { 'NONE': '0', 'FIRST_QUARTILE': '1', 'SECOND_QUARTILE': '2', 'THIRD_QUARTILE': '3', 'FOURTH_QUARTILE': '4' };
     level = levelMap[day.contributionLevel] || String(day.contributionLevel);
+  } else if (day.level !== undefined) {
+    level = String(day.level);
   }
 
   return {
@@ -161,7 +163,7 @@ function normalizeContributions(data) {
   const groupedWeeks = groupDaysIntoWeeks(normalizedDays);
 
   const total = data.totalContributions !== undefined ? data.totalContributions :
-                (data.total !== undefined ? data.total :
+                (data.total !== undefined && typeof data.total === 'number' ? data.total :
                 normalizedDays.reduce((sum, d) => sum + d.contributionCount, 0));
 
   return {
@@ -353,7 +355,7 @@ function setupCustomTooltips(container) {
 }
 
 function loadYearlyFallback(container, year, header) {
-  const fromDate = `${year}-01-01`, toDate = `${year}-12-31`, apiURL = `https://github-contributions.vercel.app/api/v1/${GITHUB_USERNAME}`;
+  const fromDate = `${year}-01-01`, toDate = `${year}-12-31`, apiURL = `https://corsproxy.io/?https://github-contributions.vercel.app/api/v1/${GITHUB_USERNAME}`;
   fetch(apiURL)
     .then(r => r.json())
     .then(data => {
@@ -361,8 +363,15 @@ function loadYearlyFallback(container, year, header) {
       const yearContributions = data.contributions.filter(day => day.date.startsWith(year));
 
       // Get total count for the selected year
-      const yearTotalObj = data.years.find(y => y.year === year);
-      const total = yearTotalObj ? yearTotalObj.total : yearContributions.reduce((sum, d) => sum + (d.count || 0), 0);
+      let total;
+      if (data.total && typeof data.total === 'object' && data.total[year] !== undefined) {
+        total = data.total[year];
+      } else if (data.years) {
+        const yearTotalObj = data.years.find(y => y.year === year);
+        total = yearTotalObj ? yearTotalObj.total : yearContributions.reduce((sum, d) => sum + (d.count || d.contributionCount || 0), 0);
+      } else {
+        total = yearContributions.reduce((sum, d) => sum + (d.count || d.contributionCount || 0), 0);
+      }
 
       const stats = normalizeContributions({
         totalContributions: total,
