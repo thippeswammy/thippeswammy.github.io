@@ -84,7 +84,9 @@ function normalizeDay(day) {
   }
 
   let level = '0';
-  if (day.intensity !== undefined) {
+  if (day.level !== undefined) {
+    level = String(day.level);
+  } else if (day.intensity !== undefined) {
     level = String(day.intensity);
   } else if (day.contributionLevel !== undefined) {
     const levelMap = { 'NONE': '0', 'FIRST_QUARTILE': '1', 'SECOND_QUARTILE': '2', 'THIRD_QUARTILE': '3', 'FOURTH_QUARTILE': '4' };
