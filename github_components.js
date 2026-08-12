@@ -3,7 +3,7 @@
 // ═══════════════════════════════════════════════════════════════════
 
 const GITHUB_USERNAME = 'thippeswammy';
-const CONTRIBUTIONS_API = `https://github-contributions.vercel.app/api/v1/${GITHUB_USERNAME}`;
+const CONTRIBUTIONS_API = `https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}`;
 const START_YEAR = 2020; 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -84,7 +84,9 @@ function normalizeDay(day) {
   }
 
   let level = '0';
-  if (day.intensity !== undefined) {
+  if (day.level !== undefined) {
+    level = String(day.level);
+  } else if (day.intensity !== undefined) {
     level = String(day.intensity);
   } else if (day.contributionLevel !== undefined) {
     const levelMap = { 'NONE': '0', 'FIRST_QUARTILE': '1', 'SECOND_QUARTILE': '2', 'THIRD_QUARTILE': '3', 'FOURTH_QUARTILE': '4' };
@@ -161,7 +163,7 @@ function normalizeContributions(data) {
   const groupedWeeks = groupDaysIntoWeeks(normalizedDays);
 
   const total = data.totalContributions !== undefined ? data.totalContributions :
-                (data.total !== undefined ? data.total :
+                (data.total !== undefined ? (typeof data.total === 'object' ? Object.values(data.total).reduce((sum, v) => sum + v, 0) : data.total) :
                 normalizedDays.reduce((sum, d) => sum + d.contributionCount, 0));
 
   return {
@@ -353,7 +355,7 @@ function setupCustomTooltips(container) {
 }
 
 function loadYearlyFallback(container, year, header) {
-  const fromDate = `${year}-01-01`, toDate = `${year}-12-31`, apiURL = `https://github-contributions.vercel.app/api/v1/${GITHUB_USERNAME}`;
+  const fromDate = `${year}-01-01`, toDate = `${year}-12-31`, apiURL = `https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}`;
   fetch(apiURL)
     .then(r => r.json())
     .then(data => {
@@ -361,8 +363,7 @@ function loadYearlyFallback(container, year, header) {
       const yearContributions = data.contributions.filter(day => day.date.startsWith(year));
 
       // Get total count for the selected year
-      const yearTotalObj = data.years.find(y => y.year === year);
-      const total = yearTotalObj ? yearTotalObj.total : yearContributions.reduce((sum, d) => sum + (d.count || 0), 0);
+      const total = data.total[year] !== undefined ? data.total[year] : yearContributions.reduce((sum, d) => sum + (d.count || 0), 0);
 
       const stats = normalizeContributions({
         totalContributions: total,
