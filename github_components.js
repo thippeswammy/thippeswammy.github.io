@@ -3,7 +3,7 @@
 // ═══════════════════════════════════════════════════════════════════
 
 const GITHUB_USERNAME = 'thippeswammy';
-const CONTRIBUTIONS_API = `https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}`;
+const CONTRIBUTIONS_API = `https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}?y=last`;
 const START_YEAR = 2020; 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -355,7 +355,7 @@ function setupCustomTooltips(container) {
 }
 
 function loadYearlyFallback(container, year, header) {
-  const fromDate = `${year}-01-01`, toDate = `${year}-12-31`, apiURL = `https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}`;
+  const apiURL = `https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}?y=${year}`;
   fetch(apiURL)
     .then(r => r.json())
     .then(data => {
@@ -374,7 +374,8 @@ function loadYearlyFallback(container, year, header) {
       if (header) animateCountUp(header, stats.totalContributions || 0);
       updateAnalytics(stats);
     })
-    .catch(() => {
+    .catch(err => {
+      console.warn(`Failed to fetch dynamic fallback for year ${year}:`, err);
       fetch(`./contributions/contributions_${year}.html`)
         .then(r => r.text())
         .then(html => {
@@ -383,7 +384,8 @@ function loadYearlyFallback(container, year, header) {
           renderCalendar(container, normalizedData);
           if (header) animateCountUp(header, normalizedData.totalContributions);
           updateAnalytics(normalizedData);
-        });
+        })
+        .catch(e => console.warn(`Failed to load HTML fallback for year ${year}:`, e));
     });
 }
 
