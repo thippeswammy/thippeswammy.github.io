@@ -3,7 +3,7 @@
 // ═══════════════════════════════════════════════════════════════════
 
 const GITHUB_USERNAME = 'thippeswammy';
-const CONTRIBUTIONS_API = `https://github-contributions-api.deno.dev/${GITHUB_USERNAME}.json`;
+const CONTRIBUTIONS_API = `https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}?y=last`;
 const START_YEAR = 2020; 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -22,23 +22,34 @@ function initGitHubCalendar() {
   fetch(CONTRIBUTIONS_API)
     .then(response => { if (!response.ok) throw new Error('API unreachable'); return response.json(); })
     .then(data => {
-      renderCalendar(calendarContainer, data);
-      window.addEventListener('resize', () => renderCalendar(calendarContainer, data));
+      // Normalize and slice for the "last year" (last 371 days ending on today/most recent day)
+      const normalizedData = normalizeContributionsForLastYear(data);
+      if (!normalizedData) throw new Error('Normalization failed');
+
+      renderCalendar(calendarContainer, normalizedData);
+      window.addEventListener('resize', () => renderCalendar(calendarContainer, normalizedData));
 
       const contributionSub = document.querySelector('.gh-stat-label');
       const ghHeroHeader = document.querySelector('.gh-hero-header');
       const subLabel = ghHeroHeader ? ghHeroHeader.querySelector('div[style*="font-size: 14px"]') : null;
 
-      if (contributionHeader) animateCountUp(contributionHeader, data.totalContributions || 0);
+      if (contributionHeader) animateCountUp(contributionHeader, normalizedData.totalContributions || 0);
 
-      if (data.contributions && data.contributions.length > 0) {
-        const firstWeek = data.contributions[0], lastWeek = data.contributions[data.contributions.length - 1];
-        const startDate = new Date(firstWeek[0].date), endDate = new Date(lastWeek[lastWeek.length - 1].date);
+      if (normalizedData.contributions && normalizedData.contributions.length > 0) {
+        const weeks = normalizedData.contributions;
+        const firstWeek = weeks[0], lastWeek = weeks[weeks.length - 1];
+
+        // Find first valid day
+        const firstDay = firstWeek.find(d => !d.isEmptyPlaceholder) || firstWeek[0];
+        // Find last valid day
+        const lastDay = [...lastWeek].reverse().find(d => !d.isEmptyPlaceholder) || lastWeek[lastWeek.length - 1];
+
+        const startDate = new Date(firstDay.date), endDate = new Date(lastDay.date);
         const rangeText = `${startDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} - ${endDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
         if (contributionSub) contributionSub.textContent = `contributions in the last year`;
         if (subLabel) subLabel.textContent = `Activity Period: ${rangeText} • Neural Sync Active`;
       }
-      updateAnalytics(data);
+      updateAnalytics(normalizedData);
     })
     .catch(err => {
       console.warn('GitHub API Error, using fallback:', err);
@@ -60,6 +71,130 @@ function animateCountUp(el, target, suffix = '') {
     if (progress < 1) requestAnimationFrame(update);
   }
   requestAnimationFrame(update);
+}
+
+function normalizeDay(day) {
+  if (!day || !day.date) return null;
+
+  let count = 0;
+  if (day.count !== undefined) {
+    count = day.count;
+  } else if (day.contributionCount !== undefined) {
+    count = day.contributionCount;
+  }
+
+  let level = '0';
+  if (day.level !== undefined) {
+    level = String(day.level);
+  } else if (day.intensity !== undefined) {
+    level = String(day.intensity);
+  } else if (day.contributionLevel !== undefined) {
+    const levelMap = { 'NONE': '0', 'FIRST_QUARTILE': '1', 'SECOND_QUARTILE': '2', 'THIRD_QUARTILE': '3', 'FOURTH_QUARTILE': '4' };
+    level = levelMap[day.contributionLevel] || String(day.contributionLevel);
+  }
+
+  return {
+    date: day.date,
+    contributionCount: parseInt(count || 0, 10),
+    contributionLevel: level
+  };
+}
+
+function groupDaysIntoWeeks(flatDays) {
+  // Sort days chronologically
+  flatDays.sort((a, b) => a.date.localeCompare(b.date));
+
+  const weeks = [];
+  let currentWeek = [];
+
+  flatDays.forEach(day => {
+    const dateObj = new Date(day.date + 'T00:00:00'); // avoid timezone shifts
+    const dayOfWeek = dateObj.getDay(); // 0 is Sunday, 6 is Saturday
+
+    // If it's Sunday and we already have days in currentWeek, push currentWeek and start a new one
+    if (dayOfWeek === 0 && currentWeek.length > 0) {
+      weeks.push(currentWeek);
+      currentWeek = [];
+    }
+
+    // Pad the very first week if it doesn't start on Sunday
+    if (weeks.length === 0 && currentWeek.length === 0 && dayOfWeek > 0) {
+      for (let i = 0; i < dayOfWeek; i++) {
+        currentWeek.push({
+          date: '',
+          contributionCount: 0,
+          contributionLevel: '0',
+          isEmptyPlaceholder: true
+        });
+      }
+    }
+
+    currentWeek.push(day);
+  });
+
+  if (currentWeek.length > 0) {
+    while (currentWeek.length < 7) {
+      currentWeek.push({
+        date: '',
+        contributionCount: 0,
+        contributionLevel: '0',
+        isEmptyPlaceholder: true
+      });
+    }
+    weeks.push(currentWeek);
+  }
+
+  return weeks;
+}
+
+function normalizeContributions(data) {
+  if (!data || !data.contributions) return null;
+
+  let flatDays = [];
+  const is2D = Array.isArray(data.contributions[0]);
+
+  if (is2D) {
+    flatDays = data.contributions.flat();
+  } else {
+    flatDays = data.contributions;
+  }
+
+  const normalizedDays = flatDays.map(normalizeDay).filter(Boolean);
+  const groupedWeeks = groupDaysIntoWeeks(normalizedDays);
+
+  const total = data.totalContributions !== undefined ? data.totalContributions :
+                (data.total !== undefined ? (typeof data.total === 'object' ? Object.values(data.total).reduce((sum, v) => sum + v, 0) : data.total) :
+                normalizedDays.reduce((sum, d) => sum + d.contributionCount, 0));
+
+  return {
+    totalContributions: total,
+    contributions: groupedWeeks
+  };
+}
+
+function normalizeContributionsForLastYear(data) {
+  if (!data || !data.contributions) return null;
+
+  const flatDays = Array.isArray(data.contributions[0]) ? data.contributions.flat() : data.contributions;
+  const normalizedDays = flatDays.map(normalizeDay).filter(Boolean);
+
+  // Sort chronologically
+  normalizedDays.sort((a, b) => a.date.localeCompare(b.date));
+
+  // Filter out any future dates beyond today to align with GitHub's current calendar
+  const todayStr = new Date().toISOString().split('T')[0];
+  const pastAndPresentDays = normalizedDays.filter(day => day.date <= todayStr);
+
+  // Take the last 371 days (approx 53 weeks)
+  const lastYearDays = pastAndPresentDays.slice(-371);
+  const groupedWeeks = groupDaysIntoWeeks(lastYearDays);
+
+  const total = lastYearDays.reduce((sum, d) => sum + d.contributionCount, 0);
+
+  return {
+    totalContributions: total,
+    contributions: groupedWeeks
+  };
 }
 
 function renderCalendar(container, data) {
@@ -86,7 +221,6 @@ function renderCalendar(container, data) {
     const masterGrid = document.createElement('div');
     masterGrid.style.cssText = `display: grid; grid-template-columns: 30px repeat(${totalWeeks}, 11px); grid-template-rows: 15px repeat(7, 11px); column-gap: 3px; row-gap: 3px; align-items: center;`;
 
-    const levelMap = { 'NONE': '0', 'FIRST_QUARTILE': '1', 'SECOND_QUARTILE': '2', 'THIRD_QUARTILE': '3', 'FOURTH_QUARTILE': '4' };
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     let lastMonth = -1;
 
@@ -99,21 +233,33 @@ function renderCalendar(container, data) {
     });
 
     data.contributions.forEach((week, weekIdx) => {
-      const colIdx = weekIdx + 2, monthIdx = new Date(week[0].date).getMonth();
-      if (monthIdx !== lastMonth) {
-        const mLabel = document.createElement('span');
-        mLabel.textContent = monthNames[monthIdx];
-        mLabel.style.cssText = `grid-row: 1; grid-column: ${colIdx}; font-size: 10px; color: var(--text-muted); white-space: nowrap;`;
-        masterGrid.appendChild(mLabel);
-        lastMonth = monthIdx;
+      const colIdx = weekIdx + 2;
+
+      // Find first non-placeholder day in this week to label the month
+      const firstValidDay = week.find(d => !d.isEmptyPlaceholder);
+      if (firstValidDay) {
+        const monthIdx = new Date(firstValidDay.date + 'T00:00:00').getMonth();
+        if (monthIdx !== lastMonth) {
+          const mLabel = document.createElement('span');
+          mLabel.textContent = monthNames[monthIdx];
+          mLabel.style.cssText = `grid-row: 1; grid-column: ${colIdx}; font-size: 10px; color: var(--text-muted); white-space: nowrap;`;
+          masterGrid.appendChild(mLabel);
+          lastMonth = monthIdx;
+        }
       }
+
       week.forEach((day, dayIdx) => {
         const dayRect = document.createElement('div');
         dayRect.className = 'ContributionCalendar-day';
         dayRect.style.cssText = `grid-row: ${dayIdx + 2}; grid-column: ${colIdx}; width: 11px; height: 11px; border-radius: 2px;`;
-        dayRect.setAttribute('data-level', levelMap[day.contributionLevel] || '0');
-        dayRect.setAttribute('data-date', day.date);
-        dayRect.setAttribute('data-count', day.contributionCount);
+
+        if (day.isEmptyPlaceholder) {
+          dayRect.style.visibility = 'hidden';
+        } else {
+          dayRect.setAttribute('data-level', day.contributionLevel || '0');
+          dayRect.setAttribute('data-date', day.date);
+          dayRect.setAttribute('data-count', day.contributionCount);
+        }
         masterGrid.appendChild(dayRect);
       });
     });
@@ -127,8 +273,9 @@ function renderCalendar(container, data) {
 }
 
 function renderVerticalCalendar(container, data) {
-  const flatDays = data.contributions.flat();
-  const levelMap = { 'NONE': '0', 'FIRST_QUARTILE': '1', 'SECOND_QUARTILE': '2', 'THIRD_QUARTILE': '3', 'FOURTH_QUARTILE': '4' };
+  // Filter out placeholders for vertical rotated list
+  const flatDays = data.contributions.flat().filter(d => !d.isEmptyPlaceholder);
+
   const calendarWrapper = document.createElement('div');
   calendarWrapper.className = 'gh-calendar-vertical-rotated';
   const grid = document.createElement('div');
@@ -145,7 +292,7 @@ function renderVerticalCalendar(container, data) {
   });
   let currentMonth = -1, currentRow = 2, weeks = [], currentWeek = [];
   flatDays.forEach((day) => {
-    const dDate = new Date(day.date), dayOfWeek = dDate.getDay();
+    const dDate = new Date(day.date + 'T00:00:00'), dayOfWeek = dDate.getDay();
     if (dayOfWeek === 0 && currentWeek.length > 0) { weeks.push(currentWeek); currentWeek = []; }
     currentWeek.push(day);
   });
@@ -154,7 +301,7 @@ function renderVerticalCalendar(container, data) {
     const week1 = weeks[i], week2 = weeks[i + 1] || [];
     let monthToLabel = '';
     [...week1, ...week2].forEach(day => {
-      const dDate = new Date(day.date);
+      const dDate = new Date(day.date + 'T00:00:00');
       if (dDate.getMonth() !== currentMonth) { currentMonth = dDate.getMonth(); monthToLabel = dDate.toLocaleDateString('en-US', { month: 'short' }); }
     });
     if (monthToLabel) {
@@ -167,14 +314,14 @@ function renderVerticalCalendar(container, data) {
     divider.style.cssText = `grid-column: 9; grid-row: ${currentRow}; width: 1px; height: 60%; background: rgba(255,255,255,0.1); justify-self: center;`;
     grid.appendChild(divider);
     week1.forEach(day => {
-      const dDate = new Date(day.date), dayOfWeek = dDate.getDay(), dayRect = document.createElement('div');
-      dayRect.className = 'ContributionCalendar-day'; dayRect.setAttribute('data-level', levelMap[day.contributionLevel] || '0'); dayRect.setAttribute('data-date', day.date); dayRect.setAttribute('data-count', day.contributionCount);
+      const dDate = new Date(day.date + 'T00:00:00'), dayOfWeek = dDate.getDay(), dayRect = document.createElement('div');
+      dayRect.className = 'ContributionCalendar-day'; dayRect.setAttribute('data-level', day.contributionLevel || '0'); dayRect.setAttribute('data-date', day.date); dayRect.setAttribute('data-count', day.contributionCount);
       dayRect.style.cssText = `grid-row: ${currentRow}; grid-column: ${dayOfWeek + 2}; width: 100%; aspect-ratio: 1; border-radius: 2px;`;
       grid.appendChild(dayRect);
     });
     week2.forEach(day => {
-      const dDate = new Date(day.date), dayOfWeek = dDate.getDay(), dayRect = document.createElement('div');
-      dayRect.className = 'ContributionCalendar-day'; dayRect.setAttribute('data-level', levelMap[day.contributionLevel] || '0'); dayRect.setAttribute('data-date', day.date); dayRect.setAttribute('data-count', day.contributionCount);
+      const dDate = new Date(day.date + 'T00:00:00'), dayOfWeek = dDate.getDay(), dayRect = document.createElement('div');
+      dayRect.className = 'ContributionCalendar-day'; dayRect.setAttribute('data-level', day.contributionLevel || '0'); dayRect.setAttribute('data-date', day.date); dayRect.setAttribute('data-count', day.contributionCount);
       dayRect.style.cssText = `grid-row: ${currentRow}; grid-column: ${dayOfWeek + 10}; width: 100%; aspect-ratio: 1; border-radius: 2px;`;
       grid.appendChild(dayRect);
     });
@@ -193,11 +340,11 @@ function setupCustomTooltips(container) {
     if (dayEl) {
       const date = dayEl.getAttribute('data-date'), count = dayEl.getAttribute('data-count');
       if (date) {
-        const dDate = new Date(date), formattedDate = dDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const dDate = new Date(date + 'T00:00:00'), formattedDate = dDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         const textCount = (!count || count === '0') ? 'No contributions' : `${count} contribution${count === '1' ? '' : 's'}`;
         tooltip.innerHTML = `<div style="font-weight:700; color:#fff; margin-bottom:4px;">${textCount}</div><div style="color:var(--text-muted); font-size:11px;">on ${formattedDate}</div>`;
         tooltip.style.display = 'block';
-        const rect = tooltip.getBoundingClientRect(), x = e.pageX || e.touches[0].pageX, y = e.pageY || e.touches[0].pageY;
+        const rect = tooltip.getBoundingClientRect(), x = (e.pageX || e.touches[0].pageX), y = (e.pageY || e.touches[0].pageY);
         tooltip.style.left = `${x - (rect.width / 2)}px`; tooltip.style.top = `${y - rect.height - 15}px`;
       }
     } else { tooltip.style.display = 'none'; }
@@ -208,19 +355,38 @@ function setupCustomTooltips(container) {
 }
 
 function loadYearlyFallback(container, year, header) {
-  const fromDate = `${year}-01-01`, toDate = `${year}-12-31`, apiURL = `https://github-contributions-api.deno.dev/${GITHUB_USERNAME}.json?from=${fromDate}&to=${toDate}`;
-  fetch(apiURL).then(r => r.json()).then(data => {
-    renderCalendar(container, data);
-    if (header) animateCountUp(header, data.totalContributions || 0);
-    updateAnalytics(data);
-  }).catch(() => {
-    fetch(`./contributions/contributions_${year}.html`).then(r => r.text()).then(html => {
-      const stats = extractStatsFromHTML(html);
+  const apiURL = `https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}?y=${year}`;
+  fetch(apiURL)
+    .then(r => r.json())
+    .then(data => {
+      // Filter contributions for this specific year
+      const yearContributions = data.contributions.filter(day => day.date.startsWith(year));
+
+      // Get total count for the selected year
+      const total = data.total[year] !== undefined ? data.total[year] : yearContributions.reduce((sum, d) => sum + (d.count || 0), 0);
+
+      const stats = normalizeContributions({
+        totalContributions: total,
+        contributions: yearContributions
+      });
+
       renderCalendar(container, stats);
-      if (header) animateCountUp(header, stats.totalContributions);
+      if (header) animateCountUp(header, stats.totalContributions || 0);
       updateAnalytics(stats);
+    })
+    .catch(err => {
+      console.warn(`Failed to fetch dynamic fallback for year ${year}:`, err);
+      fetch(`./contributions/contributions_${year}.html`)
+        .then(r => r.text())
+        .then(html => {
+          const stats = extractStatsFromHTML(html);
+          const normalizedData = normalizeContributions(stats);
+          renderCalendar(container, normalizedData);
+          if (header) animateCountUp(header, normalizedData.totalContributions);
+          updateAnalytics(normalizedData);
+        })
+        .catch(e => console.warn(`Failed to load HTML fallback for year ${year}:`, e));
     });
-  });
 }
 
 function extractStatsFromHTML(html) {
@@ -239,7 +405,7 @@ function extractStatsFromHTML(html) {
 
 function updateAnalytics(data) {
   const container = document.getElementById('gh-analytics'); if (!container) return;
-  const flatDays = Array.isArray(data.contributions[0]) ? data.contributions.flat() : data.contributions;
+  const flatDays = data.contributions.flat().filter(d => !d.isEmptyPlaceholder);
   let longestStreak = 0, currentStreak = 0, maxDay = { count: 0, date: '' };
   flatDays.forEach(day => {
     if (day.contributionCount > 0) { currentStreak++; if (currentStreak > longestStreak) longestStreak = currentStreak; if (day.contributionCount > maxDay.count) maxDay = { count: day.contributionCount, date: day.date }; }
