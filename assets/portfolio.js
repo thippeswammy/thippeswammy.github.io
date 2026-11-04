@@ -29,9 +29,10 @@
     h += '<div class="f-top"><h3 class="f-title">' + esc(p.title) + '</h3><div class="f-actions">';
     if (p.status) h += '<span class="badge ' + esc(p.status.kind) + '">' + esc(p.status.label) + '</span>';
     h += copyBtn(p.id, p.title) + '</div></div>';
+    if (p.media) h += '<button class="media" data-zoom aria-label="Expand image: ' + esc(p.media.alt) + '">' +
+      '<img src="' + esc(p.media.src) + '" alt="' + esc(p.media.alt) + '" data-caption="' + esc(p.media.caption || '') + '" loading="lazy" decoding="async">' +
+      '<span class="zoom-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></button>';
     h += '<p class="tagline">' + p.tagline + '</p>';
-    if (p.media) h += '<figure class="media"><img src="' + esc(p.media.src) + '" alt="' + esc(p.media.alt) + '" loading="lazy" decoding="async">' +
-      (p.media.caption ? '<figcaption>' + esc(p.media.caption) + '</figcaption>' : '') + '</figure>';
     h += '<ul>' + p.bullets.map(function (b) { return '<li>' + b + '</li>'; }).join('') + '</ul>';
     if (p.metrics && p.metrics.length) h += '<div class="metrics">' + p.metrics.map(function (m) { return '<div class="metric"><b>' + esc(m.value) + '</b>' + esc(m.label) + '</div>'; }).join('') + '</div>';
     h += tags(p.tags);
@@ -213,8 +214,46 @@
     else { var ta = document.createElement('textarea'); ta.value = url; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch (e) { toast(url); } ta.remove(); }
   }
 
+  /* ---------- lightbox: thumbnail grows into a full view and shrinks back ---------- */
+  var lb = null;
+  function openZoom(btn) {
+    var img = btn.querySelector('img');
+    var from = img.getBoundingClientRect();
+    var ov = document.createElement('div');
+    ov.className = 'lightbox';
+    ov.innerHTML = '<img src="' + esc(img.currentSrc || img.src) + '" alt="' + esc(img.alt) + '">' +
+      (img.dataset.caption ? '<p>' + esc(img.dataset.caption) + '</p>' : '') + '<span class="lb-close" aria-hidden="true">✕</span>';
+    document.body.appendChild(ov);
+    var big = ov.querySelector('img'), cap = ov.querySelector('p');
+    lb = { ov: ov, img: big, thumb: img };
+    if (lenis) lenis.stop();
+    var to = big.getBoundingClientRect();
+    var dx = from.left + from.width / 2 - (to.left + to.width / 2), dy = from.top + from.height / 2 - (to.top + to.height / 2), s = from.width / to.width;
+    if (HAS_GSAP && !REDUCED) {
+      gsap.fromTo(ov, { backgroundColor: 'rgba(6,6,15,0)', backdropFilter: 'blur(0px)' }, { backgroundColor: 'rgba(6,6,15,.88)', backdropFilter: 'blur(14px)', duration: .5, ease: 'power2.out' });
+      gsap.fromTo(big, { x: dx, y: dy, scale: s, borderRadius: 14 }, { x: 0, y: 0, scale: 1, borderRadius: 18, duration: .65, ease: 'expo.out' });
+      gsap.fromTo([cap, ov.querySelector('.lb-close')].filter(Boolean), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .45, delay: .3 });
+    }
+    img.style.visibility = 'hidden';
+  }
+  function closeZoom() {
+    if (!lb) return;
+    var cur = lb; lb = null;
+    var done = function () { cur.thumb.style.visibility = ''; cur.ov.remove(); if (lenis) lenis.start(); };
+    if (!HAS_GSAP || REDUCED) return done();
+    var from = cur.thumb.getBoundingClientRect(), to = cur.img.getBoundingClientRect();
+    var dx = from.left + from.width / 2 - (to.left + to.width / 2), dy = from.top + from.height / 2 - (to.top + to.height / 2), s = from.width / to.width;
+    gsap.to(cur.ov.querySelectorAll('p, .lb-close'), { opacity: 0, duration: .2 });
+    gsap.to(cur.ov, { backgroundColor: 'rgba(6,6,15,0)', backdropFilter: 'blur(0px)', duration: .45, ease: 'power2.in' });
+    gsap.to(cur.img, { x: dx, y: dy, scale: s, borderRadius: 14, duration: .5, ease: 'expo.inOut', onComplete: done });
+  }
+
   function bindEvents() {
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeZoom(); });
     document.addEventListener('click', function (e) {
+      if (lb) { closeZoom(); return; }
+      var z = e.target.closest('[data-zoom]');
+      if (z) { e.preventDefault(); openZoom(z); return; }
       var c = e.target.closest('[data-copy]');
       if (c) { e.preventDefault(); copyLink(c.getAttribute('data-copy')); return; }
       var gh = e.target.closest('.g-head');
