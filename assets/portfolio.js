@@ -91,10 +91,19 @@
       return '<' + tag + ' class="fact reveal"' + (f.href ? ' href="' + esc(f.href) + '"' : '') + '><b>' + esc(f.title) + '</b><span>' + esc(f.text) + '</span></' + tag + '>';
     }).join('') + '</div>';
 
-    // parts
+    // experience (standard order: experience first)
+    h += '<section class="part" id="experience">' + partHead(next(), 'Career', 'Experience', 'experience');
+    h += '<div class="timeline">' + d.experience.map(function (j) {
+      var s = '<div class="card job reveal"><span class="dot"></span><div class="j-head"><div><div class="j-role">' + esc(j.role) + '</div><div class="j-org">' + esc(j.org) + '</div></div><div class="j-when">' + esc(j.when) + '</div></div>';
+      s += '<ul>' + j.points.map(function (p) { return '<li>' + p + '</li>'; }).join('') + '</ul>';
+      if (j.note) s += '<p class="j-note">' + esc(j.note) + '</p>';
+      return s + '</div>';
+    }).join('') + '</div></section>';
+
+    // project parts
     d.parts.forEach(function (part) {
       h += '<section class="part" id="' + esc(part.id) + '">';
-      h += partHead(next(), 'Part ' + part.num, part.title, part.id, part.intro,
+      h += partHead(next(), 'Projects', part.title, part.id, part.intro,
         part.featured.map(function (f) { return { id: f.id, label: shortTitle(f.title) }; })
           .concat(part.groups.map(function (g) { return { id: g.id, label: g.title }; })));
       part.featured.forEach(function (f) { h += renderFeature(f); });
@@ -103,15 +112,6 @@
       }
       h += '</section>';
     });
-
-    // experience
-    h += '<section class="part" id="experience">' + partHead(next(), 'Career', 'Experience', 'experience');
-    h += '<div class="timeline">' + d.experience.map(function (j) {
-      var s = '<div class="card job reveal"><span class="dot"></span><div class="j-head"><div><div class="j-role">' + esc(j.role) + '</div><div class="j-org">' + esc(j.org) + '</div></div><div class="j-when">' + esc(j.when) + '</div></div>';
-      s += '<ul>' + j.points.map(function (p) { return '<li>' + p + '</li>'; }).join('') + '</ul>';
-      if (j.note) s += '<p class="j-note">' + esc(j.note) + '</p>';
-      return s + '</div>';
-    }).join('') + '</div></section>';
 
     // publication
     var pub = d.publication;
@@ -124,14 +124,14 @@
     h += '<section class="part" id="skills">' + partHead(next(), 'Toolbox', 'Skills', 'skills');
     h += '<div class="skills">' + d.skills.map(function (s) { return '<div class="card skill reveal"><h4>' + esc(s.title) + '</h4>' + tags(s.items) + '</div>'; }).join('') + '</div></section>';
 
+    // education
+    h += '<section class="part" id="education">' + partHead(next(), 'Background', 'Education', 'education');
+    h += '<div class="edu">' + d.education.map(function (e) { return '<div class="card reveal"><div><b>' + esc(e.title) + '</b><br><span>' + esc(e.place) + '</span></div><span>' + esc(e.when) + '</span></div>'; }).join('') + '</div></section>';
+
     // more work (bottom)
     var mw = d.more_work;
     h += '<section class="part" id="more-work">' + partHead(next(), 'Beyond the focus', 'More work', 'more-work', esc(mw.intro), mw.groups.map(function (g) { return { id: g.id, label: g.title }; }));
     h += '<div class="groups">' + mw.groups.map(function (g) { return renderGroup(g, false); }).join('') + '</div></section>';
-
-    // education
-    h += '<section class="part" id="education">' + partHead(next(), 'Background', 'Education', 'education');
-    h += '<div class="edu">' + d.education.map(function (e) { return '<div class="card reveal"><div><b>' + esc(e.title) + '</b><br><span>' + esc(e.place) + '</span></div><span>' + esc(e.when) + '</span></div>'; }).join('') + '</div></section>';
 
     // contact
     h += '<section class="part" id="contact"><div class="card contact reveal"><h2>Let\'s talk</h2><p>I\'m looking for ' + esc(P.looking_for) + '.</p><div class="btns">';
@@ -144,9 +144,10 @@
     document.getElementById('app').innerHTML = h;
 
     // nav
-    var nav = d.parts.map(function (p) { return { id: p.id, label: p.nav }; }).concat([
-      { id: 'experience', label: 'Experience' }, { id: 'publication', label: 'Publication' },
-      { id: 'skills', label: 'Skills' }, { id: 'more-work', label: 'More work' }]);
+    var nav = [{ id: 'experience', label: 'Experience' }]
+      .concat(d.parts.map(function (p) { return { id: p.id, label: p.nav }; }))
+      .concat([{ id: 'publication', label: 'Publication' }, { id: 'skills', label: 'Skills' },
+        { id: 'education', label: 'Education' }, { id: 'more-work', label: 'More work' }]);
     document.getElementById('nav').innerHTML = nav.map(function (l) { return '<a href="#' + l.id + '" data-nav="' + l.id + '">' + esc(l.label) + '</a>'; }).join('') +
       '<a href="#contact" class="cta-nav" data-nav="contact">Contact</a>';
 

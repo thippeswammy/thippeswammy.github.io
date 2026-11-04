@@ -83,12 +83,7 @@ def build(d):
     o.append(md(P["summary"], site) + "\n")
     o.append("\n".join(f"- **{f['title']}** — {f['text']}" for f in d["facts"]) + "\n")
 
-    for part in d["parts"]:
-        o.append(f"## {part['num']} · [{part['title']}]({anchor(site, part['id'])})\n")
-        o.append(f"{md(part['intro'], site)}\n")
-        o += [feature(p, site) for p in part["featured"]]
-        o += [group(g, site) for g in part["groups"]]
-
+    # standard order: experience, projects, publication, skills, education, more work
     o.append(f"## [Experience]({anchor(site, 'experience')})\n")
     for j in d["experience"]:
         o.append(f"**{j['role']}** · {j['org']} · *{j['when']}*  ")
@@ -96,6 +91,12 @@ def build(d):
         if j.get("note"):
             o.append(f"\n<sub>{j['note']}</sub>")
         o.append("")
+
+    for part in d["parts"]:
+        o.append(f"## Projects · [{part['title']}]({anchor(site, part['id'])})\n")
+        o.append(f"{md(part['intro'], site)}\n")
+        o += [feature(p, site) for p in part["featured"]]
+        o += [group(g, site) for g in part["groups"]]
 
     pub = d["publication"]
     title = f"[{pub['title']}]({pub['url']})" if pub.get("url") else pub["title"]
@@ -108,14 +109,14 @@ def build(d):
     o += [f"| **{s['title']}** | {', '.join(s['items'])} |" for s in d["skills"]]
     o.append("")
 
+    o.append(f"## [Education]({anchor(site, 'education')})\n")
+    o += [f"- **{e['title']}** — {e['place']} · *{e['when']}*" for e in d["education"]]
+    o.append("")
     mw = d["more_work"]
     o.append(f"## [More work]({anchor(site, 'more-work')})\n")
     o.append(f"{mw['intro']}\n")
     o += [group(g, site) for g in mw["groups"]]
 
-    o.append("## Education\n")
-    o += [f"- **{e['title']}** — {e['place']} · *{e['when']}*" for e in d["education"]]
-    o.append("")
     o.append("---\n")
     o.append(f"<sub>🔒 = private repository, code available on request. "
              f"This README is generated from the same data as [{site.replace('https://', '').rstrip('/')}]({site}).</sub>\n")
