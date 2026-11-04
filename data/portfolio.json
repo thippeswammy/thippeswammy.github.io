@@ -1,0 +1,242 @@
+{
+  "_comment": "Single source of truth for the website (index.html) and the GitHub profile README (script/build_profile_readme.py). Edit here, never in the HTML. Text fields may contain <b>, <a>. Project ids are the URL anchors: https://thippeswammy.github.io/#<id>",
+  "site": "https://thippeswammy.github.io/",
+  "profile": {
+    "name": "Thippeswamy K.S.",
+    "role": "Computer Vision & ML Engineer",
+    "eyebrow": "Computer Vision · Machine Learning · Robotics Perception",
+    "headline": "I build perception systems that let vehicles and robots understand where they are and what is around them.",
+    "summary": "Computer Vision &amp; ML engineer working on <b>detection, segmentation, tracking, monocular depth, visual odometry and SLAM</b> on real sensor data: camera, LiDAR, IMU and GPS. I take models from data and labeling, through training and evaluation, to real-time deployment with <b>PyTorch, TensorRT, C++ and ROS 2</b>. Author of an IEEE DISCOVER 2026 paper on vision-based odometry.",
+    "avatar": "https://avatars.githubusercontent.com/u/73697198?v=4",
+    "email": "thippeswamy636408@gmail.com",
+    "github": "https://github.com/thippeswammy",
+    "linkedin": "https://www.linkedin.com/in/thippeswamy-k-s-448019260/",
+    "resume": "assets/THIPPESWAMY_KS_CV.pdf",
+    "looking_for": "Computer Vision, Machine Learning and robotics-perception roles"
+  },
+  "facts": [
+    { "title": "Junior Robotics Engineer", "text": "Virya Autonomous Technologies · since Sep 2025" },
+    { "title": "IEEE DISCOVER 2026", "text": "Paper on vision-based odometry", "href": "#publication" },
+    { "title": "B.Tech ECE · 8.55 CGPA", "text": "GITAM University, Bengaluru · 2022–2026" },
+    { "title": "Open to CV / ML roles", "text": "Also robotics perception roles", "href": "#contact" }
+  ],
+  "parts": [
+    {
+      "id": "cv-ml",
+      "num": "01",
+      "nav": "CV & ML",
+      "title": "Computer Vision & Machine Learning",
+      "intro": "Perception models trained on real data, evaluated against ground truth and run in real time. This is the work I want to keep doing.",
+      "featured": [
+        {
+          "id": "infrastructer",
+          "title": "InfraStructer: Road-Infrastructure Audit from a Single Camera",
+          "status": { "label": "Private repo · in active development", "kind": "private" },
+          "tagline": "Turns dashcam or phone footage plus phone GPS into a map of road signs, checked against OpenStreetMap, with no LiDAR and no RTK.",
+          "bullets": [
+            "An end-to-end perception pipeline: object and traffic-sign <b>detection</b> → multi-object <b>tracking</b> with appearance re-identification → <b>monocular metric depth</b> → <b>visual odometry</b> → OpenStreetMap <b>map matching</b> → landmark map.",
+            "Rewrote the original ROS 2 / Python prototype as a C++ pipeline (v2.0). It runs <b>live at 10 Hz on a single laptop GPU</b> without dropping frames.",
+            "Deployed models as TorchScript, ONNX and TensorRT FP16 engines: YOLOv8 sign detectors trained on GTSDB and CCTSDB2021, and Depth Anything 3 metric depth. Pose graph and trajectory correction use GTSAM.",
+            "Every code change runs a regression benchmark on 33 real drives from <b>KITTI, Oxford RobotCar and nuScenes</b>. Each run is stored as a baseline so the next change can be compared against it, run by run."
+          ],
+          "metrics": [
+            { "value": "10 Hz", "label": "live on a laptop GPU" },
+            { "value": "33 drives", "label": "3 public datasets" },
+            { "value": "3.2 m", "label": "median trajectory error (ATE), camera + start/end GPS fixes only" },
+            { "value": "~75%", "label": "live map-matching rate" }
+          ],
+          "tags": ["C++17", "LibTorch", "TensorRT", "YOLOv8", "Depth Anything 3", "Multi-object tracking", "Visual odometry", "GTSAM", "OpenStreetMap", "Qt / VTK"],
+          "links": []
+        },
+        {
+          "id": "autosegmentor",
+          "title": "AutoSegmentor: Video-to-Dataset Auto-Labeling",
+          "status": { "label": "Open source · on PyPI", "kind": "public" },
+          "tagline": "Annotate one frame and get detection, segmentation and pose labels for the whole video.",
+          "bullets": [
+            "Combines <b>SAM2</b> mask propagation with <b>CoTracker3</b> keypoint tracking. Clicks or boxes on one frame carry masks and keypoints across long, complex videos.",
+            "A single export produces <b>YOLO datasets for object detection, instance segmentation and pose estimation</b> at the same time, with built-in augmentation and dataset versioning.",
+            "Generates semi-synthetic training data from real footage using the exact masks, so models train robustly from very little hand-labeled data.",
+            "A PyQt5 desktop app with multi-class point and box annotation, a precision zoom and an async GPU engine that keeps the UI responsive. Released as a pip package with a documentation site."
+          ],
+          "metrics": [],
+          "tags": ["SAM2", "CoTracker3", "PyTorch", "YOLO", "Pose estimation", "Data engineering", "PyQt5"],
+          "links": [
+            { "label": "GitHub", "url": "https://github.com/thippeswammy/AutoSegmentor" },
+            { "label": "PyPI", "url": "https://pypi.org/project/autosegmentor/" },
+            { "label": "Docs", "url": "https://thippeswammy.github.io/AutoSegmentor/" },
+            { "label": "Demo video", "url": "https://drive.google.com/file/d/1Y19lwf_IIuzwVe-3j9vX0uicV_iWbrHZ/view?usp=sharing" }
+          ]
+        },
+        {
+          "id": "adas-indian-roads",
+          "title": "Drivable-Region & Object Perception for Indian Roads",
+          "status": { "label": "Open source", "kind": "public" },
+          "tagline": "Road segmentation and object detection for unstructured Indian traffic, built during my MURTI research internship.",
+          "bullets": [
+            "Trained <b>YOLOv8-Seg</b> for road and drivable-space segmentation, object detection and instance segmentation, so the vehicle knows where it can travel.",
+            "Built a dataset of <b>45,000+ annotated images from 40 videos</b> of Indian roads, covering different weather, lighting and road types.",
+            "Refined road masks with SLIC superpixels and tuned inference for real-time use at 854×480."
+          ],
+          "metrics": [
+            { "value": "45k+", "label": "annotated images" },
+            { "value": "40", "label": "source videos" }
+          ],
+          "tags": ["YOLOv8-Seg", "Semantic segmentation", "Object detection", "Dataset curation", "OpenCV"],
+          "links": [ { "label": "GitHub", "url": "https://github.com/thippeswammy/ADAS-for-Indian-Road-Vehicle" } ]
+        }
+      ],
+      "groups": [
+        {
+          "id": "cv-repos",
+          "title": "More Computer Vision & Deep Learning",
+          "desc": "Lane perception, face recognition, segmentation training, stereo depth and coursework.",
+          "items": [
+            { "name": "LaneLinesDetection", "url": "https://github.com/thippeswammy/LaneLinesDetection", "desc": "Classical CV and deep-learning lane and road detection compared side by side: HybridNets multitask inference in ONNX, U-Net road segmentation and curved-lane tracking.", "tech": "ONNX · U-Net · OpenCV" },
+            { "name": "FaceRecognition", "url": "https://github.com/thippeswammy/FaceRecognition", "desc": "Face recognition with two engines: one-shot auto-tagging with depth sensing, and a YOLOv8 detect-and-classify model trained on a custom augmented dataset. Deployed on a Raspberry Pi.", "tech": "YOLOv8 · one-shot learning" },
+            { "name": "Yolov_models", "private": true, "desc": "Workspace for training and evaluating YOLO segmentation models: road extraction from video, plus IoU and ROC test scripts.", "tech": "YOLO11-seg · evaluation" },
+            { "name": "ZED2i", "url": "https://github.com/thippeswammy/ZED2i", "desc": "Stereo data capture for the ZED 2i camera: synchronized left-right images, depth and positional tracking, using threaded, memory-bounded queues.", "tech": "Stereo vision · depth" },
+            { "name": "ImageProcessingCourse", "url": "https://github.com/thippeswammy/ImageProcessingCourse", "desc": "Implementations of core image and video processing topics: filtering, transforms and analysis.", "tech": "Python · OpenCV" },
+            { "name": "Deep-Learning-Specialization", "url": "https://github.com/thippeswammy/Deep-Learning-Specialization", "desc": "Notes and assignments from the Deep Learning Specialization: neural networks, CNNs, sequence models and optimization.", "tech": "Coursework" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "robotics",
+      "num": "02",
+      "nav": "Robotics",
+      "title": "Robotics, SLAM & Localization",
+      "intro": "Knowing where the vehicle is, and placing what the camera sees in 3D: visual odometry, SLAM, sensor fusion and ROS 2.",
+      "featured": [
+        {
+          "id": "vo-benchmark",
+          "title": "Visual Odometry Benchmark for Low-Compute Vehicles",
+          "status": { "label": "IEEE DISCOVER 2026", "kind": "paper" },
+          "tagline": "How well do feature-based, optical-flow and deep-learning visual odometry methods work on an embedded computer, outside the benchmark?",
+          "bullets": [
+            "Compared <b>five monocular VO approaches</b> (feature-based, optical-flow-based and deep-learning-based) on KITTI and on a new <b>campus-scale GITAM dataset</b>. The dataset was recorded on an autonomous ground vehicle with camera, LiDAR and GNSS.",
+            "Validated trajectories against RTK-GNSS. Measured accuracy, drift and compute cost on an <b>NVIDIA Jetson Xavier NX</b>.",
+            "Integrated, extended and evaluated DROID-SLAM, DPVO, ORB-SLAM2/3, stereo SOFT and dense optical-flow VO. This included Jetson (ARM64) builds, ROS 2 wrappers and resource monitoring."
+          ],
+          "metrics": [],
+          "tags": ["Visual odometry", "SLAM", "DROID-SLAM", "DPVO", "ORB-SLAM3", "Jetson", "KITTI"],
+          "links": [
+            { "label": "Paper details", "url": "#publication" },
+            { "label": "DROID-SLAM", "url": "https://github.com/thippeswammy/DROID_slam" },
+            { "label": "DPVO", "url": "https://github.com/thippeswammy/DPVO" },
+            { "label": "ORB-SLAM3", "url": "https://github.com/thippeswammy/ORB_SLAM3" }
+          ]
+        },
+        {
+          "id": "semantic-robot-perception",
+          "title": "Semantic Robot Perception: Camera–LiDAR Fusion & Semantic Mapping",
+          "status": { "label": "Private repo", "kind": "private" },
+          "tagline": "A mobile robot that detects objects, places them in 3D and builds a persistent semantic map (ROS 2 Humble + Gazebo).",
+          "bullets": [
+            "<b>Open-vocabulary detection with YOLO-World</b> plus a centroid tracker, so the target classes are set from a config file without retraining.",
+            "<b>Camera–LiDAR fusion</b> back-projects each tracked detection through the pinhole model and fuses it with LiDAR range to give a 3D object position.",
+            "A semantic map manager registers objects in a database and publishes persistent RViz markers. The pipeline runs as modular ROS 2 packages with custom message interfaces."
+          ],
+          "metrics": [],
+          "tags": ["YOLO-World", "Sensor fusion", "Tracking", "ROS 2", "Gazebo", "Nav2"],
+          "links": []
+        }
+      ],
+      "groups": [
+        {
+          "id": "slam-repos",
+          "title": "Visual Odometry & SLAM",
+          "desc": "Classical and deep visual SLAM, VO benchmarking, camera-plus-GPS data collection.",
+          "items": [
+            { "name": "DROID_slam", "url": "https://github.com/thippeswammy/DROID_slam", "desc": "Deep visual SLAM extended for monocular, stereo and RGB-D setups, with multi-GPU inference, ARM64 (Jetson) support, and trajectory reconstruction and evaluation.", "tech": "PyTorch · CUDA" },
+            { "name": "DPVO", "url": "https://github.com/thippeswammy/DPVO", "desc": "Re-implementation of Deep Patch Visual Odometry, evaluated on KITTI and custom sequences.", "tech": "Deep VO" },
+            { "name": "ORB_SLAM3", "url": "https://github.com/thippeswammy/ORB_SLAM3", "also": [ { "name": "ROS2 wrapper", "url": "https://github.com/thippeswammy/ORB_SLAM3_ROS2" }, { "name": "ORB_SLAM2", "url": "https://github.com/thippeswammy/ORB_SLAM2" } ], "desc": "Extended ORB-SLAM with ROS 2 support for mono, stereo, RGB-D and stereo-inertial modes, KITTI and ROS bag tooling, RealSense input, Jetson builds, resource monitoring and trajectory evaluation.", "tech": "C++ · ROS 2" },
+            { "name": "MultipleVo", "private": true, "desc": "Bench for running several VO methods on the same data, including stereo SOFT, monocular feature-based and dense optical-flow VO, with stored results for comparison.", "tech": "Python · OpenCV" },
+            { "name": "VO2MAP", "private": true, "desc": "Monocular VO on KITTI and calibrated dashcam footage, aligned with road-map routes (OpenRouteService) to place visual trajectories on a map.", "tech": "Camera calibration · map integration" },
+            { "name": "RoadTagByCameraGps", "url": "https://github.com/thippeswammy/RoadTagByCameraGps", "desc": "Android app that records GPS position, device orientation and trajectory alongside the camera, for collecting road data.", "tech": "Kotlin · Android sensors" }
+          ]
+        },
+        {
+          "id": "ros-repos",
+          "title": "ROS 2, Navigation & Autonomous Driving",
+          "desc": "Mobile-robot simulation, navigation, route-network tools, driving simulation.",
+          "items": [
+            { "name": "LaneMappingTool", "url": "https://github.com/thippeswammy/LaneMappingTool", "desc": "Builds the road network an autonomous vehicle follows from noisy recorded paths: spline smoothing, junction logic and bidirectional lanes, exported as a graph for path planning, with editing and analysis views.", "tech": "Python · ROS" },
+            { "name": "my_bot", "url": "https://github.com/thippeswammy/my_bot", "also": [ { "name": "my_bot_2d", "private": true } ], "desc": "Differential-drive robot in ROS 2 Humble and Gazebo: URDF with camera and LiDAR, SLAM mapping, Nav2/AMCL navigation, tuned physics and one-command launchers.", "tech": "ROS 2 · Nav2 · Gazebo" },
+            { "name": "sdf_to_nav_mesh", "url": "https://github.com/thippeswammy/sdf_to_nav_mesh", "also": [ { "name": "3d_robot", "url": "https://github.com/thippeswammy/3d_robot" } ], "desc": "Converts Gazebo SDF worlds into navigation meshes (.ply, .dae, .h5) with terrain metadata, for 3D mesh-based navigation over uneven terrain.", "tech": "ROS 2 · mesh navigation" },
+            { "name": "Carla", "url": "https://github.com/thippeswammy/Carla", "desc": "CARLA simulator scripts for traffic generation, scenario control and vehicle-behaviour experiments.", "tech": "CARLA · Python" },
+            { "name": "ros2_learning", "url": "https://github.com/thippeswammy/ros2_learning", "desc": "ROS 2 practice workspace.", "tech": "ROS 2" }
+          ]
+        }
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "role": "Junior Robotics Engineer",
+      "org": "Virya Autonomous Technologies",
+      "when": "Sep 2025 – Present",
+      "points": [
+        "Work on the software stack for autonomous mobile robots (AMRs).",
+        "Areas: SLAM and localization, multi-sensor fusion (LiDAR, camera, IMU), sensor calibration, ROS 2 system tooling and perception data tooling."
+      ],
+      "note": "Company projects are confidential, so they are not described here."
+    },
+    {
+      "role": "Computer Vision & Robotics Intern",
+      "org": "MURTI (SDV), GITAM University",
+      "when": "2024 – 2025",
+      "points": [
+        "Ran proof-of-concept experiments on visual odometry and SLAM methods, including deep-learning models, to track a vehicle's motion without GPS, with and without LiDAR. This led to the <a href=\"#publication\">IEEE DISCOVER 2026 paper</a>.",
+        "Built a drivable-region detector for Indian roads that finds the road and free space ahead of an autonomous vehicle (<a href=\"#adas-indian-roads\">project</a>)."
+      ]
+    }
+  ],
+  "publication": {
+    "title": "Vision-Based Odometry: Comparative Analysis on Standard and Custom Datasets for Resource-Limited Vehicle Platforms",
+    "authors": "N Sai Pranay Kumar, <b>Thippeswamy K S</b>, Dr. Prithvi Sekhar Pagala",
+    "venue": "2026 IEEE DISCOVER, Puttur",
+    "url": "",
+    "abstract": "Introduces the Custom GITAM Dataset, a campus-scale visual odometry benchmark recorded on an autonomous ground vehicle with camera, LiDAR and GNSS. The paper compares five monocular VO approaches (feature-based, optical-flow and deep-learning) on KITTI and on this dataset. It measures trajectory accuracy, drift and compute cost on an NVIDIA Jetson Xavier NX, using RTK-GNSS as the reference."
+  },
+  "skills": [
+    { "title": "Computer Vision & ML", "items": ["Object detection", "Segmentation", "Multi-object tracking", "Monocular depth", "Pose estimation", "Open-vocabulary detection", "Auto-labeling & dataset engineering", "Model evaluation"] },
+    { "title": "3D Vision, SLAM & Robotics", "items": ["Visual odometry", "Visual / LiDAR SLAM", "Sensor fusion", "LiDAR–camera calibration", "Point-cloud registration (ICP / GICP)", "Map matching", "Navigation (Nav2)"] },
+    { "title": "Frameworks & Deployment", "items": ["PyTorch", "TensorRT", "ONNX", "CUDA", "OpenCV", "YOLO", "SAM2", "CoTracker3", "ROS 2", "RTAB-Map", "GTSAM", "Open3D", "Jetson"] },
+    { "title": "Languages, Tools & Sensors", "items": ["Python", "C++", "Java", "Kotlin", "MATLAB / Simulink", "Git", "Linux", "CMake", "LiDAR", "RealSense", "Stereo (ZED)", "IMU / GNSS"] }
+  ],
+  "more_work": {
+    "intro": "Work outside my current focus, kept here because it shows how I got here: embedded and automotive systems, apps, and the projects I learned to program with.",
+    "groups": [
+      {
+        "id": "embedded",
+        "title": "Embedded & Automotive Systems",
+        "desc": "Model-based design, HIL/SIL, CAN, microcontrollers.",
+        "items": [
+          { "name": "MBD-dSPACE", "url": "https://github.com/thippeswammy/MBD-dSPACE", "desc": "Vehicle control logic on dSPACE SCALEXIO, built in MATLAB/Simulink and validated with SIL and HIL workflows by comparing simulated and hardware responses.", "tech": "Simulink · HIL / SIL" },
+          { "name": "MatlabModels", "url": "https://github.com/thippeswammy/MatlabModels", "desc": "Simulink models for automotive behavioural modelling, sensor interfacing and real-time control on Arduino, Raspberry Pi and STM32.", "tech": "MATLAB · Simulink" },
+          { "name": "Arduino", "url": "https://github.com/thippeswammy/Arduino", "desc": "Embedded projects: CAN communication with MCP2515, camera face tracking, obstacle-avoiding car, traffic control and IoT water management.", "tech": "C++ · CAN" },
+          { "name": "EceProject", "url": "https://github.com/thippeswammy/EceProject", "desc": "ECE coursework and lab projects: stereo camera processing, ESP8266 and Raspberry Pi IoT, and control systems.", "tech": "Embedded · IoT" }
+        ]
+      },
+      {
+        "id": "software",
+        "title": "Software, Apps & Games",
+        "desc": "AI desktop agent, Android and AR apps, DSA practice, early Java projects.",
+        "items": [
+          { "name": "JarvisControlSystem", "url": "https://github.com/thippeswammy/JarvisControlSystem", "desc": "AI desktop agent for Windows that controls apps, windows and system settings from typed, spoken or Telegram commands. It checks its own actions, learns macros and supports pluggable LLM backends (Ollama, OpenAI).", "tech": "Python · LLM agents" },
+          { "name": "connect2park", "private": true, "desc": "Smart parking app with live slot availability, booking and Google Maps navigation, on a Firebase backend.", "tech": "Android · Firebase" },
+          { "name": "SpeechCalculator", "url": "https://github.com/thippeswammy/SpeechCalculator", "desc": "Android calculator that evaluates spoken expressions with a custom parser.", "tech": "Java · speech recognition" },
+          { "name": "AR-Cube-Drop", "url": "https://github.com/thippeswammy/AR-Cube-Drop", "also": [ { "name": "3D Car Racing", "url": "https://github.com/thippeswammy/3D-Car-racing-game" } ], "desc": "Unity projects: an ARFoundation object-placement app and a 3D racing game.", "tech": "Unity · C#" },
+          { "name": "NeetCodeProblems", "url": "https://github.com/thippeswammy/NeetCodeProblems", "desc": "Data-structures and algorithms practice in Java and Kotlin.", "tech": "DSA" },
+          { "name": "Early Java projects (~20)", "url": "https://github.com/thippeswammy?tab=repositories&language=java", "desc": "The games and desktop apps I learned to program with: Swing and Greenfoot games (Snake, Maze, Chain Reaction, Tic-Tac-Toe with AI), plus login, launcher and calculator apps.", "tech": "Java · OOP" }
+        ]
+      }
+    ]
+  },
+  "education": [
+    { "title": "B.Tech, Electronics & Communication Engineering", "place": "GITAM (Deemed to be University), Bengaluru · CGPA 8.55 / 10", "when": "2022 – 2026" },
+    { "title": "Pre-University", "place": "Sri Chaitanya PU College, Ballari · 70%", "when": "2019 – 2021" }
+  ]
+}
