@@ -30,6 +30,7 @@
       "featured": [
         {
           "id": "infrastructer",
+          "short": "Dashcam + phone GPS → road-sign map checked against OpenStreetMap. C++, live at 10 Hz on a laptop GPU, 3.2 m median ATE over 33 KITTI / nuScenes / Oxford drives.",
           "title": "InfraStructer: Road-Infrastructure Audit from a Single Camera",
           "status": { "label": "Private repo · in active development", "kind": "private" },
           "tagline": "Turns dashcam or phone footage plus phone GPS into a map of road signs, checked against OpenStreetMap, with no LiDAR and no RTK.",
@@ -50,6 +51,8 @@
         },
         {
           "id": "autosegmentor",
+          "short": "SAM2 + CoTracker3 auto-labeling: annotate one frame, export YOLO detection, segmentation and pose datasets for the whole video. On PyPI.",
+          "media": { "src": "https://raw.githubusercontent.com/thippeswammy/AutoSegmentor/master/assets/road_poster.jpg", "alt": "AutoSegmentor propagating instance masks for road, vehicles and riders across an Indian street video", "caption": "Masks for road, vehicles and riders propagated across a street video from a few clicks." },
           "title": "AutoSegmentor: Video-to-Dataset Auto-Labeling",
           "status": { "label": "Open source · on PyPI", "kind": "public" },
           "tagline": "Annotate one frame and get detection, segmentation and pose labels for the whole video.",
@@ -70,6 +73,8 @@
         },
         {
           "id": "adas-indian-roads",
+          "short": "YOLOv8-Seg drivable-region and object perception for Indian roads, trained on a 45,000+ image dataset I built from 40 videos.",
+          "media": { "src": "https://raw.githubusercontent.com/thippeswammy/ADAS-for-Indian-Road-Vehicle/HEAD/Model/RoadSeg/val_batch0_pred.jpg", "alt": "YOLOv8-Seg road segmentation predictions on a validation batch, including noisy and low-light augmented frames", "caption": "Validation predictions from the road-segmentation model, including augmented noisy frames." },
           "title": "Drivable-Region & Object Perception for Indian Roads",
           "status": { "label": "Open source", "kind": "public" },
           "tagline": "Road segmentation and object detection for unstructured Indian traffic, built during my MURTI research internship.",
@@ -111,6 +116,7 @@
       "featured": [
         {
           "id": "vo-benchmark",
+          "short": "Five monocular VO methods (feature, optical-flow, deep) compared on KITTI and a new campus dataset, on a Jetson Xavier NX. IEEE DISCOVER 2026.",
           "title": "Visual Odometry Benchmark for Low-Compute Vehicles",
           "status": { "label": "IEEE DISCOVER 2026", "kind": "paper" },
           "tagline": "How well do feature-based, optical-flow and deep-learning visual odometry methods work on an embedded computer, outside the benchmark?",
@@ -130,6 +136,7 @@
         },
         {
           "id": "semantic-robot-perception",
+          "short": "ROS 2 robot with YOLO-World open-vocabulary detection, camera–LiDAR fusion and a persistent 3D semantic map.",
           "title": "Semantic Robot Perception: Camera–LiDAR Fusion & Semantic Mapping",
           "status": { "label": "Private repo", "kind": "private" },
           "tagline": "A mobile robot that detects objects, places them in 3D and builds a persistent semantic map (ROS 2 Humble + Gazebo).",
@@ -200,6 +207,22 @@
     "url": "",
     "abstract": "Introduces the Custom GITAM Dataset, a campus-scale visual odometry benchmark recorded on an autonomous ground vehicle with camera, LiDAR and GNSS. The paper compares five monocular VO approaches (feature-based, optical-flow and deep-learning) on KITTI and on this dataset. It measures trajectory accuracy, drift and compute cost on an NVIDIA Jetson Xavier NX, using RTK-GNSS as the reference."
   },
+  "stack": [
+    { "name": "Python", "logo": "python", "color": "3776AB" },
+    { "name": "C++", "logo": "cplusplus", "color": "00599C" },
+    { "name": "PyTorch", "logo": "pytorch", "color": "EE4C2C" },
+    { "name": "TensorRT", "logo": "nvidia", "color": "76B900" },
+    { "name": "CUDA", "logo": "nvidia", "color": "76B900" },
+    { "name": "ONNX", "logo": "onnx", "color": "005CED" },
+    { "name": "OpenCV", "logo": "opencv", "color": "5C3EE8" },
+    { "name": "YOLO", "logo": "", "color": "111F68" },
+    { "name": "ROS 2", "logo": "ros", "color": "22314E" },
+    { "name": "Open3D", "logo": "", "color": "3d8bfd" },
+    { "name": "GTSAM", "logo": "", "color": "4b5563" },
+    { "name": "Jetson", "logo": "nvidia", "color": "76B900" },
+    { "name": "Linux", "logo": "linux", "color": "FCC624" },
+    { "name": "Git", "logo": "git", "color": "F05032" }
+  ],
   "skills": [
     { "title": "Computer Vision & ML", "items": ["Object detection", "Segmentation", "Multi-object tracking", "Monocular depth", "Pose estimation", "Open-vocabulary detection", "Auto-labeling & dataset engineering", "Model evaluation"] },
     { "title": "3D Vision, SLAM & Robotics", "items": ["Visual odometry", "Visual / LiDAR SLAM", "Sensor fusion", "LiDAR–camera calibration", "Point-cloud registration (ICP / GICP)", "Map matching", "Navigation (Nav2)"] },

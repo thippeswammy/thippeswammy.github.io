@@ -30,6 +30,8 @@
     if (p.status) h += '<span class="badge ' + esc(p.status.kind) + '">' + esc(p.status.label) + '</span>';
     h += copyBtn(p.id, p.title) + '</div></div>';
     h += '<p class="tagline">' + p.tagline + '</p>';
+    if (p.media) h += '<figure class="media"><img src="' + esc(p.media.src) + '" alt="' + esc(p.media.alt) + '" loading="lazy" decoding="async">' +
+      (p.media.caption ? '<figcaption>' + esc(p.media.caption) + '</figcaption>' : '') + '</figure>';
     h += '<ul>' + p.bullets.map(function (b) { return '<li>' + b + '</li>'; }).join('') + '</ul>';
     if (p.metrics && p.metrics.length) h += '<div class="metrics">' + p.metrics.map(function (m) { return '<div class="metric"><b>' + esc(m.value) + '</b>' + esc(m.label) + '</div>'; }).join('') + '</div>';
     h += tags(p.tags);
